@@ -1,0 +1,12 @@
+{
+  "name": "artedguru-lesson-generator",
+  "version": "1.0.0",
+  "description": "ArtEdGuru AI Lesson Plan Generator — Express proxy for Anthropic API",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
