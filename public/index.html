@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ArtEdGuru Lesson Generator</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500&family=Source+Sans+3:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Source Sans 3', sans-serif; background: #faf9f7; color: #1a1a1a; min-height: 100vh; }
+.app { max-width: 860px; margin: 0 auto; padding: 2rem 1rem 3rem; }
+
+/* HEADER */
+.header { text-align: center; margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 1px solid #e8e4df; }
+.header-logo { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 400; color: #1a1a1a; letter-spacing: -0.5px; }
+.header-logo span { color: #c04a20; }
+.header-sub { font-size: 13px; font-weight: 300; color: #888; letter-spacing: 0.08em; text-transform: uppercase; margin-top: 2px; }
+.header-tagline { font-size: 15px; color: #444; margin-top: 10px; line-height: 1.6; max-width: 580px; margin-left: auto; margin-right: auto; }
+.header-tagline strong { font-weight: 600; color: #1a1a1a; }
+
+/* SUBJECT PILLS */
+.section-label { font-size: 11px; font-weight: 600; color: #999; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 10px; }
+.subject-pills { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 8px; }
+.pill { font-size: 13px; padding: 6px 14px; border-radius: 20px; border: 1px solid #ddd; background: #fff; color: #444; cursor: pointer; transition: all .2s; font-family: 'Source Sans 3', sans-serif; }
+.pill:hover { border-color: #c04a20; color: #c04a20; }
+.pill.active { background: #c04a20; color: #fff; border-color: #c04a20; font-weight: 500; }
+.subject-desc { font-size: 13px; color: #666; margin-top: 8px; padding: 10px 14px; background: #f5f2ee; border-radius: 8px; border-left: 3px solid #c04a20; min-height: 38px; line-height: 1.5; margin-bottom: 1.5rem; }
+
+/* FORM */
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+.form-group { display: flex; flex-direction: column; gap: 6px; }
+.form-group label { font-size: 12px; font-weight: 600; color: #777; letter-spacing: 0.05em; text-transform: uppercase; }
+select, input[type=text] { width: 100%; font-size: 14px; padding: 9px 12px; border: 1px solid #ddd; border-radius: 8px; background: #fff; color: #1a1a1a; outline: none; font-family: 'Source Sans 3', sans-serif; transition: border-color .2s; }
+select:focus, input[type=text]:focus { border-color: #c04a20; box-shadow: 0 0 0 3px rgba(192,74,32,0.08); }
+.full-width { grid-column: 1 / -1; }
+
+/* CHECKBOXES */
+.checkbox-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 8px; margin-top: 4px; }
+.checkbox-item { display: flex; align-items: center; gap: 8px; font-size: 13px; color: #333; cursor: pointer; padding: 6px 10px; border: 1px solid #eee; border-radius: 6px; background: #fff; transition: all .15s; }
+.checkbox-item:hover { border-color: #c04a20; background: #fdf5f2; }
+.checkbox-item input { accent-color: #c04a20; width: 14px; height: 14px; }
+
+/* STANDARDS TOGGLE */
+.seg-group { display: inline-flex; border: 1px solid #ddd; border-radius: 8px; overflow: hidden; }
+.seg-btn { font-size: 13px; padding: 7px 14px; background: #fff; color: #555; border: none; cursor: pointer; border-right: 1px solid #ddd; font-family: 'Source Sans 3', sans-serif; transition: all .15s; }
+.seg-btn:last-child { border-right: none; }
+.seg-btn.active { background: #c04a20; color: #fff; font-weight: 500; }
+.seg-btn:hover:not(.active) { background: #f5f2ee; }
+
+/* GENERATE BUTTON */
+.generate-btn { width: 100%; padding: 14px; font-size: 16px; font-weight: 600; border-radius: 10px; cursor: pointer; margin-top: 6px; border: none; background: #c04a20; color: #fff; font-family: 'Source Sans 3', sans-serif; letter-spacing: 0.02em; transition: all .2s; }
+.generate-btn:hover:not(:disabled) { background: #a33d18; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(192,74,32,0.25); }
+.generate-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+/* LOADING */
+.loading-card { background: #fff; border: 1px solid #e8e4df; border-radius: 12px; padding: 2.5rem; text-align: center; margin-top: 1.5rem; }
+.loading-brush { font-size: 36px; display: block; margin-bottom: 1rem; animation: sway 1.5s ease-in-out infinite; }
+@keyframes sway { 0%,100% { transform: rotate(-10deg); } 50% { transform: rotate(10deg); } }
+.loading-title { font-family: 'Playfair Display', serif; font-size: 20px; color: #1a1a1a; margin-bottom: 8px; }
+.loading-sub { font-size: 14px; color: #666; line-height: 1.6; }
+.loading-dots { display: inline-block; }
+.loading-dots::after { content: ''; animation: dots 1.5s steps(4, end) infinite; }
+@keyframes dots { 0%,20% { content: ''; } 40% { content: '.'; } 60% { content: '..'; } 80%,100% { content: '...'; } }
+
+/* OUTPUT */
+.output-card { background: #fff; border: 1px solid #e8e4df; border-radius: 12px; padding: 1.75rem; margin-top: 1.5rem; }
+.output-toolbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; flex-wrap: wrap; gap: 10px; padding-bottom: 1rem; border-bottom: 1px solid #eee; }
+.output-title { font-family: 'Playfair Display', serif; font-size: 18px; color: #1a1a1a; }
+.export-row { display: flex; gap: 6px; flex-wrap: wrap; }
+.export-btn { font-size: 12px; padding: 6px 12px; border-radius: 6px; cursor: pointer; border: 1px solid #ddd; background: #f5f2ee; color: #444; font-family: 'Source Sans 3', sans-serif; transition: all .15s; }
+.export-btn:hover { background: #ede8e2; border-color: #ccc; }
+.export-btn.primary { background: #c04a20; color: #fff; border-color: #c04a20; }
+.export-btn.primary:hover { background: #a33d18; }
+
+/* LESSON CONTENT STYLES */
+.lesson-content { font-size: 14.5px; line-height: 1.8; color: #222; }
+.lesson-content .section-block { margin-bottom: 1.75rem; }
+.lesson-content .section-header { font-family: 'Playfair Display', serif; font-size: 17px; font-weight: 400; color: #1a1a1a; margin-bottom: 8px; padding-bottom: 6px; border-bottom: 1px solid #f0ece6; display: flex; align-items: center; gap: 8px; }
+.lesson-content .section-icon { font-size: 16px; }
+.lesson-content p { margin-bottom: 10px; }
+.lesson-content ul, .lesson-content ol { margin: 8px 0 12px 1.4rem; }
+.lesson-content li { margin-bottom: 5px; }
+.lesson-content strong { font-weight: 600; color: #1a1a1a; }
+.lesson-content a { color: #c04a20; text-decoration: none; }
+.lesson-content a:hover { text-decoration: underline; }
+.lesson-content .eq-box { background: #fdf5f2; border-left: 4px solid #c04a20; padding: 14px 18px; border-radius: 0 8px 8px 0; margin-bottom: 6px; font-size: 15px; font-style: italic; color: #2a2a2a; line-height: 1.7; }
+.lesson-content .lt-box { background: #f0f7ff; border-left: 4px solid #2e7ac4; padding: 14px 18px; border-radius: 0 8px 8px 0; margin-bottom: 6px; font-size: 15px; color: #1a3a5c; line-height: 1.7; }
+.lesson-content .credit-line { font-size: 12px; color: #999; text-align: center; margin-top: 2rem; padding-top: 1rem; border-top: 1px solid #eee; }
+.lesson-content .credit-line a { color: #c04a20; }
+.lesson-content table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13.5px; }
+.lesson-content th { background: #f5f2ee; padding: 9px 12px; text-align: left; font-weight: 600; border: 1px solid #e0dbd4; }
+.lesson-content td { padding: 8px 12px; border: 1px solid #e8e4df; vertical-align: top; }
+.lesson-content tr:nth-child(even) td { background: #faf9f7; }
+
+/* STATUS */
+.status-msg { font-size: 12px; color: #888; font-style: italic; margin-bottom: 8px; }
+.error-msg { color: #c0392b; font-size: 14px; padding: 1rem; background: #fdf2f2; border-radius: 8px; border: 1px solid #f5c6c6; }
+
+/* FOOTER */
+.footer-links { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid #e8e4df; }
+.footer-links a { font-size: 12px; color: #666; text-decoration: none; padding: 5px 12px; border: 1px solid #ddd; border-radius: 20px; background: #fff; transition: all .15s; }
+.footer-links a:hover { background: #fdf5f2; border-color: #c04a20; color: #c04a20; }
+
+@media print {
+  .app > *:not(#output) { display: none; }
+  .output-toolbar { display: none; }
+  .footer-links { display: none; }
+  .output-card { border: none; padding: 0; box-shadow: none; }
+}
+@media (max-width: 600px) {
+  .form-grid { grid-template-columns: 1fr; }
+  .full-width { grid-column: 1; }
+  .header-logo { font-size: 22px; }
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-logo">Art<span>Ed</span>Guru</div>
+    <div class="header-sub">Lesson Generator</div>
+    <div class="header-tagline">
+      <strong>Collaborate with ArtEdGuru.</strong><br>
+      Select your parameters below, and this platform will cross reference 40 years of lessons and resources created by ArtEdGuru to craft a comprehensive, standards-aligned lesson plan ready for your classroom.
+    </div>
+  </div>
+
+  <!-- SUBJECT AREA -->
+  <div class="section-label">I am a... (select your subject area)</div>
+  <div class="subject-pills">
+    <button class="pill active" onclick="setSubject('art',this)">Art teacher</button>
+    <button class="pill" onclick="setSubject('sci',this)">Science / Physics</button>
+    <button class="pill" onclick="setSubject('math',this)">Math / Geometry</button>
+    <button class="pill" onclick="setSubject('hist',this)">History &amp; World Cultures</button>
+    <button class="pill" onclick="setSubject('lit',this)">Literacy / Literature</button>
+    <button class="pill" onclick="setSubject('eng',this)">Engineering &amp; Architecture</button>
+    <button class="pill" onclick="setSubject('sel',this)">S.E.L., Philosophy &amp; Ethics</button>
+    <button class="pill" onclick="setSubject('music',this)">Music / Theatre</button>
+    <button class="pill" onclick="setSubject('media',this)">Media Arts</button>
+    <button class="pill" onclick="setSubject('pe',this)">Health / PE</button>
+    <button class="pill" onclick="setSubject('lang',this)">World Languages</button>
+  </div>
+  <div class="subject-desc" id="subjDesc">Turn STEM lessons into STEAM experiences that improve comprehension, retention, and student engagement.</div>
+
+  <!-- FORM -->
+  <div class="form-grid">
+    <div class="form-group">
+      <label>Grade level</label>
+      <select id="grade">
+        <option value="K-2">K–2 (Early Elementary)</option>
+        <option value="3-5" selected>3–5 (Upper Elementary)</option>
+        <option value="6-8">6–8 (Middle School)</option>
+        <option value="9-12">9–12 (High School)</option>
+        <option value="College/Adult">College / Adult</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Class period length</label>
+      <select id="period">
+        <option value="40 minutes">40 minutes</option>
+        <option value="50 minutes" selected>50 minutes</option>
+        <option value="60 minutes">60 minutes</option>
+        <option value="90 minutes (block)">90 minutes (block)</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Art media</label>
+      <select id="media">
+        <option value="Open to suggestions">Open to suggestions — let ArtEdGuru decide</option>
+        <option value="Drawing (pencil, charcoal, ink)">Drawing (pencil, charcoal, ink)</option>
+        <option value="Painting (watercolor)">Painting — watercolor</option>
+        <option value="Painting (acrylic)">Painting — acrylic</option>
+        <option value="Painting (tempera)">Painting — tempera</option>
+        <option value="Painting (oil)">Painting — oil</option>
+        <option value="Printmaking">Printmaking</option>
+        <option value="Collage & Mixed Media">Collage &amp; mixed media</option>
+        <option value="Sculpture (clay)">Sculpture — clay</option>
+        <option value="Sculpture (found objects)">Sculpture — found objects</option>
+        <option value="Photography & Digital Art">Photography &amp; digital art</option>
+        <option value="Fiber Arts">Fiber arts</option>
+        <option value="Mosaic">Mosaic</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Visual style / mode</label>
+      <select id="mode">
+        <option value="Realistic">Realistic — highly accurate, like a photo (e.g. Mona Lisa)</option>
+        <option value="Abstract">Abstract — expressive but recognizable (e.g. Starry Night)</option>
+        <option value="Non-Objective">Non-Objective — not recognizable (e.g. Pollock's splatters)</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Mode of purpose</label>
+      <select id="purpose">
+        <option value="none">None / Teacher's choice</option>
+        <option value="Illustration (tells or explains)">Illustration — tells or explains</option>
+        <option value="Expression (emotion/idea)">Expression — emotion or idea</option>
+        <option value="Decoration (aesthetic focus)">Decoration — aesthetic focus</option>
+        <option value="Conceptual (idea-driven)">Conceptual — idea-driven</option>
+        <option value="Engineering (building/constructing)">Engineering — building / constructing</option>
+        <option value="Studio Experience (fine arts skills)">Studio Experience — fine arts skills</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Art history / cultural connection</label>
+      <select id="culture">
+        <option value="none">None — use optional field below for custom</option>
+        <option value="Ancient Egypt">Ancient Egypt</option>
+        <option value="Ancient Greece & Rome">Ancient Greece &amp; Rome</option>
+        <option value="Ancient Asia">Ancient Asia</option>
+        <option value="European (general)">European (general)</option>
+        <option value="Renaissance (Italy)">Renaissance — Italy</option>
+        <option value="Baroque">Baroque</option>
+        <option value="Impressionism (France)">Impressionism — France</option>
+        <option value="Surrealism">Surrealism</option>
+        <option value="Modernism / Abstract Expressionism">Modernism / Abstract Expressionism</option>
+        <option value="Japanese art & culture">Japanese art &amp; culture</option>
+        <option value="Indigenous / Native American art">Indigenous / Native American art</option>
+        <option value="African art & culture">African art &amp; culture</option>
+        <option value="Latin American / Mexican muralism">Latin American / Mexican muralism</option>
+        <option value="Chinese art & culture">Chinese art &amp; culture</option>
+        <option value="Contemporary / Street Art">Contemporary / Street art</option>
+      </select>
+    </div>
+
+    <div class="form-group full-width">
+      <label>Optional: specific topic, STEAM subject connection (e.g. math, science, engineering), artist, theme, concept, or custom art history connection not listed above</label>
+      <input type="text" id="custom" placeholder="e.g. Frida Kahlo, math/geometry, engineering, ecosystems, self-portrait, Surrealism in Mexico...">
+    </div>
+
+    <div class="form-group">
+      <label>National standards display</label>
+      <div class="seg-group" id="std-toggle">
+        <button class="seg-btn" data-val="full" onclick="setStd(this)">Full text</button>
+        <button class="seg-btn" data-val="codes" onclick="setStd(this)">Codes only</button>
+        <button class="seg-btn active" data-val="none" onclick="setStd(this)">Hide</button>
+      </div>
+    </div>
+
+    <div class="form-group full-width">
+      <label>Optional add-ons (select all that apply)</label>
+      <div class="checkbox-grid" id="addon-checks">
+        <label class="checkbox-item"><input type="checkbox" value="pacing"> Pacing guide</label>
+        <label class="checkbox-item"><input type="checkbox" value="costs"> Estimated costs</label>
+        <label class="checkbox-item"><input type="checkbox" value="sub"> Sub teacher version</label>
+        <label class="checkbox-item"><input type="checkbox" value="midcrit"> Mid-project critique Qs</label>
+        <label class="checkbox-item"><input type="checkbox" value="finalcrit"> Final critique Qs</label>
+        <label class="checkbox-item"><input type="checkbox" value="iep"> 504/IEP accommodations</label>
+      </div>
+    </div>
+
+  </div>
+
+  <button class="generate-btn" id="genBtn" onclick="generateLesson()">Generate my lesson plan</button>
+
+  <div id="output"></div>
+
+  <!-- FOOTER -->
+  <div class="footer-links">
+    <a href="https://www.artedguru.com" target="_blank">ArtEdGuru blog</a>
+    <a href="https://www.firehousepublications.com" target="_blank">FirehousePublications.com</a>
+    <a href="https://www.youtube.com/@artedguru" target="_blank">YouTube</a>
+    <a href="https://www.etsy.com/shop/ArtEdGuru" target="_blank">Etsy</a>
+    <a href="https://amzn.to/42bGPco" target="_blank">Amazon books</a>
+    <a href="https://www.artedguru.com/art-supplies.html" target="_blank">Art supplies</a>
+    <a href="https://www.teacherspayteachers.com/store/art-ed-guru-dot-com" target="_blank">TeachersPayTeachers</a>
+  </div>
+</div>
+
+<script>
+let currentSubject = 'art';
+let stdMode = 'none';
+let lastLessonText = '';
+
+const subjectData = {
+  art:   { desc: 'Craft a complete visual art lesson built on 40 years of ArtEdGuru classroom experience.', persona: 'You are ArtEdGuru — an expert art educator with 40 years of experience teaching K–12 visual art. The PRIMARY teacher is an ART TEACHER. The lesson is driven by visual art — media, technique, art history, and creative process are central. Write in a warm, teacher-friendly voice.' },
+  sci:   { desc: 'Lessons for science/physics teachers — your core concept is taught THROUGH a visual art project. Art is the vehicle, science is the destination.', persona: 'You are ArtEdGuru — an expert in integrated STEAM curriculum. The PRIMARY teacher is a SCIENCE/PHYSICS TEACHER. The science concept is the core learning goal. Frame objectives around NGSS standards.' },
+  math:  { desc: 'Lessons for math teachers — your core concept (geometry, fractions, patterns) is taught THROUGH a visual art project.', persona: 'You are ArtEdGuru — an expert in integrated STEAM curriculum. The PRIMARY teacher is a MATH TEACHER. The math concept is the core learning goal. Frame objectives around Common Core Math standards.' },
+  hist:  { desc: 'Lessons for history/world cultures teachers — historical events and cultures come alive through the art of that time and place.', persona: 'You are ArtEdGuru — an expert in integrated humanities curriculum. The PRIMARY teacher is a HISTORY or WORLD CULTURES TEACHER. Frame objectives around C3 Social Studies standards.' },
+  lit:   { desc: 'Lessons for English/Literature teachers — visual art responds to, illustrates, or parallels the texts students are reading.', persona: 'You are ArtEdGuru — an expert in integrated language arts curriculum. The PRIMARY teacher is an ENGLISH/LITERATURE TEACHER. Frame objectives around ELA Common Core standards.' },
+  eng:   { desc: 'Lessons for engineering/architecture teachers — structural design, spatial thinking, and the design process explored through art and building.', persona: 'You are ArtEdGuru — an expert in integrated STEAM curriculum. The PRIMARY teacher is an ENGINEERING or ARCHITECTURE TEACHER. Frame objectives around NGSS Engineering Design standards.' },
+  sel:   { desc: 'Lessons for SEL/counselors/philosophy teachers — art as a tool for self-expression, emotional regulation, identity, empathy, and ethics.', persona: 'You are ArtEdGuru — an expert in art therapy-informed SEL and philosophy curriculum. The PRIMARY teacher is an SEL TEACHER, COUNSELOR, or PHILOSOPHY/ETHICS TEACHER. Frame around CASEL SEL competencies.' },
+  music: { desc: 'Lessons for music/theatre teachers — rhythm, composition, performance, and visual storytelling explored through visual art.', persona: 'You are ArtEdGuru — an expert in integrated arts curriculum. The PRIMARY teacher is a MUSIC or THEATRE TEACHER. Frame around National Core Arts Standards for Music or Theatre.' },
+  media: { desc: 'Lessons for Media Arts teachers — photography, digital design, animation, graphic arts, and visual communication.', persona: 'You are ArtEdGuru — an expert in Media Arts curriculum. The PRIMARY teacher is a MEDIA ARTS TEACHER. Frame around National Core Arts Standards for Media Arts.' },
+  pe:    { desc: 'Lessons for PE/Health teachers — anatomy, movement, wellness, and the body explored through visual representation and design.', persona: 'You are ArtEdGuru — an expert in integrated health and PE curriculum. The PRIMARY teacher is a PE or HEALTH TEACHER.' },
+  lang:  { desc: 'Lessons for World Language teachers — art from target-language cultures deepens language acquisition and cultural understanding.', persona: 'You are ArtEdGuru — an expert in integrated World Language curriculum. The PRIMARY teacher is a WORLD LANGUAGE TEACHER. Frame objectives around ACTFL World Language standards.' }
+};
+
+const subjectNames = { art:'Art', sci:'Science/Physics', math:'Math/Geometry', hist:'History & World Cultures', lit:'Literacy/Literature', eng:'Engineering & Architecture', sel:'S.E.L., Philosophy & Ethics', music:'Music/Theatre', media:'Media Arts', pe:'Health/PE', lang:'World Languages' };
+
+function setSubject(key, el) {
+  currentSubject = key;
+  document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('subjDesc').textContent = subjectData[key].desc;
+}
+
+function setStd(btn) {
+  document.querySelectorAll('#std-toggle .seg-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  stdMode = btn.dataset.val;
+}
+
+function buildStandardsBlock(grade) {
+  if (stdMode === 'none') return '';
+  if (stdMode === 'codes') {
+    return `
+
+NATIONAL STANDARDS
+List only the relevant National Core Arts Standards codes for Visual Arts (e.g. VA:Cr1.1.8a) for grade band ${grade}. Present as a compact grouped list. No explanations needed.`;
+  }
+  // full text
+  return `
+
+NATIONAL STANDARDS
+List 3 relevant National Core Arts Standards for Visual Arts for grade band ${grade}. For each standard include the code and one sentence explaining specifically how this lesson meets it.`;
+}
+
+function buildAddonsBlock(addons, period) {
+  if (!addons.length) return '';
+  let out = '\n\nADDITIONAL SECTIONS — include each of these after the Assessment rubric:\n';
+  if (addons.includes('pacing')) out += `\nPACING GUIDE: Break the lesson into a realistic minute-by-minute schedule for a ${period} class. Show approximate time for each phase.\n`;
+  if (addons.includes('costs')) out += '\nESTIMATED MATERIALS COST: Provide a rough per-student cost estimate (low/mid/high range). Note which items are reusable vs. consumable.\n';
+  if (addons.includes('sub')) out += '\nSUBSTITUTE TEACHER VERSION: Write a simplified one-page version a non-art substitute teacher could execute. Use plain language and numbered steps only.\n';
+  if (addons.includes('midcrit')) out += '\nMID-PROJECT CRITIQUE QUESTIONS: Provide 4 discussion questions for a mid-project check-in focused on process and problem-solving.\n';
+  if (addons.includes('finalcrit')) out += '\nFINAL CRITIQUE / REFLECTION QUESTIONS: Provide 4 questions for the final critique including self-assessment and peer-to-peer prompts.\n';
+  if (addons.includes('iep')) out += '\nACCOMMODATIONS & DIFFERENTIATION: Suggest specific modifications for students with fine motor challenges, visual impairments, processing differences, and students needing additional challenge.\n';
+  return out;
+}
+
+async function generateLesson() {
+  const grade   = document.getElementById('grade').value;
+  const period  = document.getElementById('period').value;
+  const media   = document.getElementById('media').value;
+  const mode    = document.getElementById('mode').value;
+  const purpose = document.getElementById('purpose').value;
+  const culture = document.getElementById('culture').value;
+  const custom  = document.getElementById('custom').value.trim();
+  const btn     = document.getElementById('genBtn');
+  const output  = document.getElementById('output');
+  const addons  = [...document.querySelectorAll('#addon-checks input:checked')].map(c => c.value);
+  const subj    = subjectData[currentSubject];
+  const sName   = subjectNames[currentSubject];
+
+  // Build each optional line only if it has a real value
+  const mediaLine    = media === 'Open to suggestions'
+    ? 'Art Media: Choose the most appropriate media for the grade, subject, and topic — briefly explain your choice in the Overview.'
+    : `Art Media: ${media}`;
+  const purposeLine  = purpose !== 'none' ? `Mode of Purpose: ${purpose}` : '';
+  const cultureLine  = culture !== 'none'
+    ? `Art History / Cultural Connection: ${culture} — weave this into the lesson narrative, historical context, and at least one example artist or artwork from this tradition.`
+    : custom
+      ? 'Art History / Cultural Connection: Use the custom topic/artist below if it contains a cultural connection; otherwise choose an appropriate historical connection for the grade and subject.'
+      : 'Art History / Cultural Connection: Choose an appropriate art history connection for the grade level and subject area and include it as a named section in the lesson.';
+  const customLine   = custom ? `Custom Topic / STEAM Connection: ${custom}` : '';
+
+  const stdBlock    = buildStandardsBlock(grade);
+  const addonsBlock = buildAddonsBlock(addons, period);
+
+  const paramLines = [
+    `Subject Area: ${sName}`,
+    `Grade Level: ${grade}`,
+    mediaLine,
+    `Visual Style: ${mode}`,
+    purposeLine,
+    cultureLine,
+    customLine
+  ].filter(Boolean).join('\n');
+
+  const prompt = `${subj.persona}
+
+Generate a complete, teacher-ready lesson plan using the parameters below. Use plain text section headers in ALL CAPS. Do not use markdown symbols (no *, no #, no ---).
+
+${paramLines}
+Period Length: ${period}
+
+Write ALL of the following sections in order:
+
+ESSENTIAL QUESTION
+One compelling open-ended question that frames the lesson for a ${sName} teacher and their students.
+
+LEARNING TARGET
+One clear "I can" statement written for students.
+
+OVERVIEW
+2–3 sentences describing the full arc of the lesson — what students will do, make, and learn.
+
+ART HISTORY / CULTURAL CONNECTION
+2–3 sentences. Name a specific artist or artwork from the relevant culture or period. Explain how this historical example connects to what students will create.
+
+MATERIALS
+A bulleted list of all needed materials. End the list with this exact line: See artedguru.com/art-supplies.html for supplies
+
+VOCABULARY
+5 key terms with brief, student-friendly definitions.
+
+LESSON PROCEDURE
+${period === '90 minutes (block)' ? '8–10' : '5–7'} numbered steps that guide the teacher through the full class period.
+
+ASSESSMENT
+A 4-column rubric. Categories: Project Requirements, Craftsmanship, Originality, Material Care, Time Management. Score levels: 4 = Exceeds, 3 = Meets, 2 = Approaching, 1 = Beginning. Write as a simple table.${stdBlock}${addonsBlock}
+
+Generated with ArtEdGuru — artedguru.com | FirehousePublications.com`;
+
+  btn.disabled = true;
+  btn.textContent = 'Working on it...';
+  lastLessonText = '';
+
+  output.innerHTML = `
+    <div class="loading-card">
+      <span class="loading-brush">🎨</span>
+      <div class="loading-title">We're working on it<span class="loading-dots"></span></div>
+      <div class="loading-sub">Detailed, standards-aligned lessons like this take 30–60 seconds.<br>Please be patient — it's worth the wait!</div>
+    </div>`;
+
+  try {
+    const res = await fetch('/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prompt })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok || data.error) {
+      throw new Error(data.error || 'API error');
+    }
+
+    lastLessonText = (data.content || []).map(b => b.text || '').join('');
+
+    if (!lastLessonText) throw new Error('No content returned from API');
+
+    const formattedHTML = formatLesson(lastLessonText);
+
+    output.innerHTML = `
+      <div class="output-card">
+        <div class="output-toolbar">
+          <span class="output-title">Your lesson plan</span>
+          <div class="export-row">
+            <button class="export-btn" onclick="exportPlainText()">Plain text</button>
+            <button class="export-btn" onclick="exportGoogleDoc()">Google Doc</button>
+            <button class="export-btn" onclick="printLesson()">Print</button>
+            <button class="export-btn primary" onclick="copyLesson()">Copy text</button>
+          </div>
+        </div>
+        <div id="exportStatus"></div>
+        <div class="lesson-content">${formattedHTML}</div>
+      </div>`;
+
+  } catch(e) {
+    output.innerHTML = `<div class="output-card"><div class="error-msg">Something went wrong: ${e.message}. Please try again in a moment.</div></div>`;
+    console.error(e);
+  }
+
+  btn.disabled = false;
+  btn.textContent = 'Generate my lesson plan';
+}
+
+// ─── FORMATTER ────────────────────────────────────────────────────────────────
+
+function formatLesson(text) {
+  const sectionHeaders = [
+    'ESSENTIAL QUESTION', 'LEARNING TARGET', 'LESSON TITLE', 'OVERVIEW',
+    'ART HISTORY / CULTURAL CONNECTION', 'ART HISTORY/CULTURAL CONNECTION',
+    'LEARNING OBJECTIVES', 'NATIONAL STANDARDS', 'NATIONAL STANDARDS ALIGNMENT',
+    'MATERIALS NEEDED', 'MATERIALS', 'VOCABULARY', 'CROSS-CURRICULAR CONNECTIONS',
+    'LESSON PROCEDURE', 'ASSESSMENT', 'EXTENSIONS & DIFFERENTIATION', 'RESOURCES',
+    'PACING GUIDE', 'ESTIMATED MATERIALS COST', 'SUBSTITUTE TEACHER VERSION',
+    'MID-PROJECT CRITIQUE QUESTIONS', 'FINAL CRITIQUE / REFLECTION QUESTIONS',
+    'ACCOMMODATIONS & DIFFERENTIATION', 'TEACHER REFLECTION PROMPT',
+    'ADDITIONAL SECTIONS'
+  ];
+
+  const icons = {
+    'ESSENTIAL QUESTION': '❓',
+    'LEARNING TARGET': '🎯',
+    'LESSON TITLE': '🎨',
+    'OVERVIEW': '📌',
+    'ART HISTORY / CULTURAL CONNECTION': '🖼️',
+    'ART HISTORY/CULTURAL CONNECTION': '🖼️',
+    'LEARNING OBJECTIVES': '📋',
+    'NATIONAL STANDARDS': '📐',
+    'NATIONAL STANDARDS ALIGNMENT': '📐',
+    'MATERIALS NEEDED': '🛠️',
+    'MATERIALS': '🛠️',
+    'VOCABULARY': '📚',
+    'CROSS-CURRICULAR CONNECTIONS': '🔬',
+    'LESSON PROCEDURE': '📋',
+    'ASSESSMENT': '✅',
+    'EXTENSIONS & DIFFERENTIATION': '💡',
+    'RESOURCES': '🌐',
+    'PACING GUIDE': '⏱️',
+    'ESTIMATED MATERIALS COST': '💰',
+    'SUBSTITUTE TEACHER VERSION': '👋',
+    'MID-PROJECT CRITIQUE QUESTIONS': '🔍',
+    'FINAL CRITIQUE / REFLECTION QUESTIONS': '🎭',
+    'ACCOMMODATIONS & DIFFERENTIATION': '♿',
+    'TEACHER REFLECTION PROMPT': '⭐',
+    'ADDITIONAL SECTIONS': '➕'
+  };
+
+  let lines = text.split('\n');
+  let html = '';
+  let currentSection = '';
+  let sectionContent = [];
+
+  function renderSection(header, contentLines) {
+    const body = contentLines.join('\n').trim();
+    if (!body && !header) return '';
+
+    const icon = icons[header] || '';
+    let out = '<div class="section-block">';
+
+    if (header) {
+      const displayHeader = toTitleCase(header);
+      out += `<div class="section-header"><span class="section-icon">${icon}</span>${displayHeader}</div>`;
+    }
+
+    if (header === 'ESSENTIAL QUESTION') {
+      out += `<div class="eq-box">${escHtml(body)}</div>`;
+    } else if (header === 'LEARNING TARGET') {
+      out += `<div class="lt-box">${escHtml(body)}</div>`;
+    } else if (header === 'ASSESSMENT') {
+      // Try to render as a table if it looks tabular
+      out += renderAssessment(body);
+    } else {
+      out += renderBody(body);
+    }
+
+    // Credit line check
+    if (body.includes('Generated with ArtEdGuru') || body.includes('artedguru.com | FirehousePublications')) {
+      // Don't double-render as plain text — skip, credit added at bottom
+    }
+
+    out += '</div>';
+    return out;
+  }
+
+  function renderAssessment(body) {
+    // Look for table-like rows separated by newlines with | characters
+    const rows = body.split('\n').filter(l => l.trim());
+    const hasTable = rows.some(r => r.includes('|'));
+    if (hasTable) {
+      let tableHtml = '<table><thead>';
+      let inHead = true;
+      rows.forEach(row => {
+        if (/^[-|]+$/.test(row.trim())) { tableHtml += '</thead><tbody>'; inHead = false; return; }
+        const cells = row.split('|').map(c => c.trim()).filter((c, i, a) => i > 0 || c);
+        if (!cells.length) return;
+        const tag = inHead ? 'th' : 'td';
+        tableHtml += '<tr>' + cells.map(c => `<${tag}>${escHtml(c)}</${tag}>`).join('') + '</tr>';
+      });
+      tableHtml += '</tbody></table>';
+      return tableHtml;
+    }
+    return renderBody(body);
+  }
+
+  function renderBody(body) {
+    let out = '';
+    const paras = body.split(/\n\n+/);
+    paras.forEach(para => {
+      para = para.trim();
+      if (!para) return;
+      // Skip credit line — handled globally
+      if (para.startsWith('Generated with ArtEdGuru')) return;
+      const paraLines = para.split('\n');
+      const isNumbered = paraLines.every(l => !l.trim() || /^\d+[\.\)]\s/.test(l.trim()));
+      const isBullet   = paraLines.every(l => !l.trim() || /^[-•*]\s/.test(l.trim()));
+      if ((isNumbered || isBullet) && paraLines.filter(l => l.trim()).length > 1) {
+        out += isNumbered ? '<ol>' : '<ul>';
+        paraLines.forEach(l => {
+          l = l.trim();
+          if (!l) return;
+          const content = l.replace(/^\d+[\.\)]\s/, '').replace(/^[-•*]\s/, '');
+          out += `<li>${linkify(escHtml(content))}</li>`;
+        });
+        out += isNumbered ? '</ol>' : '</ul>';
+      } else {
+        paraLines.forEach(l => {
+          l = l.trim();
+          if (!l) return;
+          if (l.startsWith('Generated with ArtEdGuru')) return;
+          out += `<p>${linkify(escHtml(l))}</p>`;
+        });
+      }
+    });
+    return out;
+  }
+
+  function flushSection() {
+    html += renderSection(currentSection, sectionContent);
+    sectionContent = [];
+  }
+
+  lines.forEach(line => {
+    const trimmed = line.trim().toUpperCase();
+    // Strip trailing colon for matching
+    const trimmedClean = trimmed.replace(/:$/, '');
+    const matched = sectionHeaders.find(h => trimmedClean === h || trimmed === h + ':');
+    if (matched) {
+      flushSection();
+      currentSection = matched;
+    } else {
+      sectionContent.push(line);
+    }
+  });
+  flushSection();
+
+  // Always add credit line at the end
+  html += `<div class="credit-line">Generated with <a href="https://artedguru.com" target="_blank">ArtEdGuru</a> — <a href="https://artedguru.com" target="_blank">artedguru.com</a> | <a href="https://firehousepublications.com" target="_blank">FirehousePublications.com</a></div>`;
+
+  return html;
+}
+
+function toTitleCase(str) {
+  const small = new Set(['a','an','the','and','but','or','for','nor','on','at','to','by','in','of','up','as','is']);
+  return str.toLowerCase().split(' ').map((w, i) => (i === 0 || !small.has(w)) ? w.charAt(0).toUpperCase() + w.slice(1) : w).join(' ');
+}
+
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function linkify(s) {
+  return s
+    .replace(/(artedguru\.com[^\s<"]*)/g, '<a href="https://$1" target="_blank">$1</a>')
+    .replace(/(firehousepublications\.com[^\s<"]*)/g, '<a href="https://$1" target="_blank">$1</a>');
+}
+
+// ─── EXPORT FUNCTIONS ──────────────────────────────────────────────────────────
+
+function copyLesson() {
+  if (!lastLessonText) return;
+  navigator.clipboard.writeText(lastLessonText).then(() => {
+    const b = document.querySelector('.export-btn.primary');
+    const orig = b.textContent;
+    b.textContent = 'Copied!';
+    setTimeout(() => b.textContent = orig, 2000);
+  });
+}
+
+function exportPlainText() {
+  if (!lastLessonText) return;
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([lastLessonText], {type:'text/plain'}));
+  a.download = 'artedguru-lesson-plan.txt';
+  a.click();
+}
+
+function printLesson() { window.print(); }
+
+function exportGoogleDoc() {
+  if (!lastLessonText) return;
+  const el = document.getElementById('exportStatus');
+  if (el) el.innerHTML = '<p class="status-msg">Opening Google Docs — paste your lesson with Ctrl+V (or Cmd+V on Mac)</p>';
+  navigator.clipboard.writeText(lastLessonText).then(() => {
+    window.open('https://docs.google.com/document/create?title=ArtEdGuru+Lesson+Plan', '_blank');
+  });
+}
+</script>
+</body>
+</html>
