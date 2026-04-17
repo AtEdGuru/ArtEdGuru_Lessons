@@ -554,6 +554,8 @@ function formatLesson(text) {
   }
 
   function renderAssessment(body) {
+    // Remove credit line from assessment body
+    body = body.split('\n').filter(l => !l.includes('Generated with ArtEdGuru')).join('\n');
     // Look for table-like rows separated by newlines with | characters
     const rows = body.split('\n').filter(l => l.trim());
     const hasTable = rows.some(r => r.includes('|'));
