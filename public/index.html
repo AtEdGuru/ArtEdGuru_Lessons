@@ -556,7 +556,6 @@ function formatLesson(text) {
   function renderAssessment(body) {
     // Remove credit line from assessment body
     body = body.split('\n').filter(l => !l.includes('Generated with ArtEdGuru')).join('\n');
-    // Look for table-like rows separated by newlines with | characters
     const rows = body.split('\n').filter(l => l.trim());
     const hasTable = rows.some(r => r.includes('|'));
     if (hasTable) {
@@ -568,6 +567,25 @@ function formatLesson(text) {
         if (!cells.length) return;
         const tag = inHead ? 'th' : 'td';
         tableHtml += '<tr>' + cells.map(c => `<${tag}>${escHtml(c)}</${tag}>`).join('') + '</tr>';
+      });
+      tableHtml += '</tbody></table>';
+      return tableHtml;
+    }
+    // Handle labeled rubric format (Category:\n4 = ...\n3 = ...) 
+    const categories = ['Project Requirements', 'Craftsmanship', 'Originality', 'Material Care', 'Time Management'];
+    const hasCategories = categories.some(c => body.includes(c));
+    if (hasCategories) {
+      let tableHtml = '<table><thead><tr><th>Category</th><th>4 — Exceeds</th><th>3 — Meets</th><th>2 — Approaching</th><th>1 — Beginning</th></tr></thead><tbody>';
+      categories.forEach(cat => {
+        const catRegex = new RegExp(cat + '[:\\s]*([\\s\\S]*?)(?=' + categories.filter(c => c !== cat).join('|') + '|$)');
+        const match = body.match(catRegex);
+        if (!match) return;
+        const block = match[1].trim();
+        const levels = [4, 3, 2, 1].map(n => {
+          const levelMatch = block.match(new RegExp(n + '\\s*[=:]\\s*([^\\d]+?)(?=[1234]\\s*[=:]|$)'));
+          return levelMatch ? levelMatch[1].trim() : '';
+        });
+        tableHtml += `<tr><td><strong>${cat}</strong></td>${levels.map(l => `<td>${escHtml(l)}</td>`).join('')}</tr>`;
       });
       tableHtml += '</tbody></table>';
       return tableHtml;
