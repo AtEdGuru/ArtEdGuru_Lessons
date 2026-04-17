@@ -186,7 +186,8 @@ select:focus, input[type=text]:focus { border-color: #c04a20; box-shadow: 0 0 0 
     <div class="form-group">
       <label>Visual style / mode</label>
       <select id="mode">
-        <option value="Realistic">Realistic — highly accurate, like a photo (e.g. Mona Lisa)</option>
+        <option value="Open to suggestions">Let ArtEdGuru decide — best style for the lesson</option>
+<option value="Realistic">Realistic — highly accurate, like a photo (e.g. Mona Lisa)</option>
         <option value="Abstract">Abstract — expressive but recognizable (e.g. Starry Night)</option>
         <option value="Non-Objective">Non-Objective — not recognizable (e.g. Pollock's splatters)</option>
       </select>
@@ -305,17 +306,31 @@ function setStd(btn) {
 
 function buildStandardsBlock(grade) {
   if (stdMode === 'none') return '';
+  const sName = subjectNames[currentSubject];
+  const standardsMap = {
+    'Art': 'National Core Arts Standards for Visual Arts (VA:Cr, VA:Pr, VA:Re, VA:Cn)',
+    'Math/Geometry': 'Common Core State Standards for Mathematics (CCSS.MATH)',
+    'Science/Physics': 'Next Generation Science Standards (NGSS)',
+    'History & World Cultures': 'C3 Framework for Social Studies State Standards',
+    'Literacy/Literature': 'Common Core ELA Standards (CCSS.ELA-LITERACY)',
+    'Engineering & Architecture': 'NGSS Engineering Design Standards',
+    'S.E.L., Philosophy & Ethics': 'CASEL Social-Emotional Learning Competency Framework',
+    'Music/Theatre': 'National Core Arts Standards for Music and Theatre',
+    'Media Arts': 'National Core Arts Standards for Media Arts',
+    'Health/PE': 'SHAPE America National Health and Physical Education Standards',
+    'World Languages': 'ACTFL World-Readiness Standards for Learning Languages'
+  };
+  const stdName = standardsMap[sName] || 'National Core Arts Standards for Visual Arts';
   if (stdMode === 'codes') {
     return `
 
 NATIONAL STANDARDS
-List only the relevant National Core Arts Standards codes for Visual Arts (e.g. VA:Cr1.1.8a) for grade band ${grade}. Present as a compact grouped list. No explanations needed.`;
+List only the relevant ${stdName} codes for grade band ${grade}. Present as a compact grouped list. No explanations needed.`;
   }
-  // full text
   return `
 
 NATIONAL STANDARDS
-List 3 relevant National Core Arts Standards for Visual Arts for grade band ${grade}. For each standard include the code and one sentence explaining specifically how this lesson meets it.`;
+List 3 relevant ${stdName} for grade band ${grade}. For each standard include the code and one sentence explaining specifically how this lesson meets it.`;
 }
 
 function buildAddonsBlock(addons, period) {
