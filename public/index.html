@@ -144,6 +144,12 @@ select:focus, input[type=text]:focus { border-color: #c04a20; box-shadow: 0 0 0 
 .rubric-table th { background: #f0f0f0; font-weight: bold; }
 .rubric-footer { font-size: 11px; color: #555; margin-top: 8px; }
 .rubric-reflection { font-size: 13px; font-weight: bold; margin-top: 8px; }
+.resources-block { background: #f0f7ff; border: 1px solid #2e7ac4; border-radius: 8px; padding: 12px 16px; margin-top: 1.5rem; font-size: 14px; }
+.resources-block ul { margin: 8px 0 0 1.2rem; }
+.resources-block li { margin-bottom: 6px; }
+.resources-block a { color: #c04a20; text-decoration: none; font-weight: 500; }
+.resources-block a:hover { text-decoration: underline; }
+.res-type { color: #888; font-size: 12px; }
 .forms-links { font-size: 13px; color: #444; text-align: center; margin-top: 1.5rem; padding: 10px; background: #f5f2ee; border-radius: 8px; }
 .forms-links a { color: #c04a20; text-decoration: none; font-weight: 500; }
 .forms-links a:hover { text-decoration: underline; }
@@ -495,10 +501,12 @@ Generated with ArtEdGuru — artedguru.com | FirehousePublications.com`;
     }
 
     lastLessonText = (data.content || []).map(b => b.text || '').join('');
+    const resources = data.artedguru_resources || [];
 
     if (!lastLessonText) throw new Error('No content returned from API');
 
     const formattedHTML = formatLesson(lastLessonText);
+    const resourcesHTML = resources.length ? `<div class="resources-block"><strong>📚 Related ArtEdGuru Resources:</strong><ul>${resources.map(r => `<li><a href="${r.url}" target="_blank">${r.title}</a> <span class="res-type">(${r.type})</span></li>`).join('')}</ul></div>` : '';
     const hasProgressDoc = addons.includes('progressdoc');
     const hasRubric = addons.includes('rubric');
     const formsHTML = (hasProgressDoc ? getProgressDocHTML() : '') + (hasRubric ? getRubricHTML() : '');
@@ -515,7 +523,7 @@ Generated with ArtEdGuru — artedguru.com | FirehousePublications.com`;
           </div>
         </div>
         <div id="exportStatus"></div>
-        <div class="lesson-content">${formattedHTML}</div>
+        <div class="lesson-content">${formattedHTML}${resourcesHTML}</div>
       </div>`;
 
   } catch(e) {

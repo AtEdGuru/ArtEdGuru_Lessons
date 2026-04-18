@@ -1,4 +1,6 @@
 const express = require('express');
+const SUPABASE_URL = process.env.SUPABASE_URL;
+const SUPABASE_KEY = process.env.SUPABASE_KEY;
 const path = require('path');
 
 const app = express();
@@ -54,6 +56,21 @@ When generating lesson plans:
       return res.status(response.status).json({ error: data.error?.message || 'Anthropic API error' });
     }
 
+    // Search Supabase for related resources
+    const lessonText = JSON.stringify(data).toLowerCase();
+    let resources = [];
+    try {
+      const keywords = req.body.prompt.toLowerCase().match(/drawing|painting|sculpture|printmaking|collage|watercolor|acrylic|clay|photography|mosaic|fiber|portrait|landscape|color|design|STEAM|math|science|history/gi) || [];
+      const uniqueKeywords = [...new Set(keywords)].slice(0, 3);
+      if (uniqueKeywords.length && SUPABASE_URL && SUPABASE_KEY) {
+        const filter = uniqueKeywords.map(k => `tags.ilike.%${k}%`).join(',');
+        const supaRes = await fetch(`${SUPABASE_URL}/rest/v1/resources?or=(${filter})&limit=3`, {
+          headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+        });
+        resources = await supaRes.json();
+      }
+    } catch(e) { console.log('Supabase error:', e.message); }
+    data.artedguru_resources = resources;
     res.json(data);
   } catch (err) {
     console.error('Server error:', err);
