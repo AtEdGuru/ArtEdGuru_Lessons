@@ -70,7 +70,7 @@ When generating lesson plans:
         });
         resources = await supaRes.json();
       }
-    } catch(e) { console.log('Supabase error:', e.message); }
+    } catch(e) { console.log('Supabase error:', e.message); console.log('Supabase URL:', SUPABASE_URL ? 'set' : 'missing'); console.log('Supabase KEY:', SUPABASE_KEY ? 'set' : 'missing'); }
     data.artedguru_resources = resources;
     res.json(data);
   } catch (err) {
