@@ -1,18 +1,41 @@
 const express = require('express');
-const SUPABASE_URL = process.env.SUPABASE_URL;
-const SUPABASE_KEY = process.env.SUPABASE_KEY;
 const path = require('path');
 
 const app = express();
 app.use(express.json({ limit: '1mb' }));
 app.use(express.static(path.join(__dirname, 'public')));
 
+const SUPABASE_URL = process.env.SUPABASE_URL || '';
+const SUPABASE_KEY = process.env.SUPABASE_KEY || '';
+
+async function getRelatedResources(prompt) {
+  if (!SUPABASE_URL || !SUPABASE_KEY) return [];
+  try {
+    const words = prompt.toLowerCase().match(/drawing|painting|sculpture|printmaking|collage|watercolor|acrylic|clay|photography|mosaic|fiber|portrait|landscape|color|design|steam|math|science|history/g) || [];
+    const unique = [...new Set(words)].slice(0, 3);
+    if (!unique.length) return [];
+    const filter = unique.map(k => `tags.ilike.%${k}%`).join(',');
+    const url = `${SUPABASE_URL.replace(/\/$/, '')}/rest/v1/resources?or=(${filter})&limit=3&select=title,url,type`;
+    const res = await fetch(url, {
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`
+      }
+    });
+    const json = await res.json();
+    return Array.isArray(json) ? json : [];
+  } catch(e) {
+    console.error('Supabase error:', e.message);
+    return [];
+  }
+}
+
 app.post('/generate', async (req, res) => {
   const { prompt } = req.body;
   if (!prompt) return res.status(400).json({ error: 'No prompt provided' });
 
   const apiKey = process.env.ANTHROPIC_API_KEY;
-  if (!apiKey) return res.status(500).json({ error: 'ANTHROPIC_API_KEY not set in Replit Secrets' });
+  if (!apiKey) return res.status(500).json({ error: 'ANTHROPIC_API_KEY not set' });
 
   try {
     const response = await fetch('https://api.anthropic.com/v1/messages', {
@@ -56,26 +79,9 @@ When generating lesson plans:
       return res.status(response.status).json({ error: data.error?.message || 'Anthropic API error' });
     }
 
-    // Search Supabase for related resources
-    const lessonText = JSON.stringify(data).toLowerCase();
-    let resources = [];
-    try {
-      const keywords = req.body.prompt.toLowerCase().match(/drawing|painting|sculpture|printmaking|collage|watercolor|acrylic|clay|photography|mosaic|fiber|portrait|landscape|color|design|STEAM|math|science|history/gi) || [];
-      const uniqueKeywords = [...new Set(keywords)].slice(0, 3);
-      if (uniqueKeywords.length && SUPABASE_URL && SUPABASE_KEY) {
-        const filter = uniqueKeywords.map(k => `tags.ilike.%${k}%`).join(',');
-        const supaBase = SUPABASE_URL.endsWith('/') ? SUPABASE_URL.slice(0,-1) : SUPABASE_URL;
-        const supaRes = await fetch(`${supaBase}/rest/v1/resources?or=(${filter})&limit=3&select=title,url,type`, {
-          headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' }
-        });
-        const supaData = await supaRes.json();
-        console.log('Supabase status:', supaRes.status);
-        console.log('Supabase response:', JSON.stringify(supaData).slice(0,200));
-        resources = Array.isArray(supaData) ? supaData : [];
-      }
-    } catch(e) { console.log('Supabase error:', e.message); console.log('Supabase URL:', SUPABASE_URL ? 'set' : 'missing'); console.log('Supabase KEY:', SUPABASE_KEY ? 'set' : 'missing'); }
-    data.artedguru_resources = resources;
+    data.artedguru_resources = await getRelatedResources(prompt);
     res.json(data);
+
   } catch (err) {
     console.error('Server error:', err);
     res.status(500).json({ error: err.message || 'Internal server error' });
