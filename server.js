@@ -16,7 +16,7 @@ async function getRelatedResources(prompt) {
     if (!unique.length) return [];
  const supaBase = SUPABASE_URL.replace(/\/$/, '');
 const keyword = unique[0] || 'painting';
-const url = `${supaBase}/rest/v1/resources?Tags=ilike.%25${keyword}%25&limit=3&select=Title,URL,Type`;
+const url = `${supaBase}/rest/v1/resources?Tags=ilike.*${keyword}*&limit=3&select=Title,URL,Type`;
     const res = await fetch(url, {
       headers: {
         'apikey': SUPABASE_KEY,
