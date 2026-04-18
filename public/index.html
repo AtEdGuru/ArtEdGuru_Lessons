@@ -231,6 +231,17 @@ select:focus, input[type=text]:focus { border-color: #c04a20; box-shadow: 0 0 0 
       <input type="text" id="custom" placeholder="e.g. Frida Kahlo, math/geometry, engineering, ecosystems, self-portrait, Surrealism in Mexico...">
     </div>
 
+   <div class="form-group">
+      <label>Lesson duration</label>
+      <select id="duration">
+        <option value="single class period">Single class period</option>
+        <option value="2-3 class periods">2–3 class periods</option>
+        <option value="1 week">1 week</option>
+        <option value="2 weeks">2 weeks</option>
+        <option value="4 weeks">4 weeks</option>
+      </select>
+    </div>
+
     <div class="form-group">
       <label>National standards display</label>
       <div class="seg-group" id="std-toggle">
@@ -249,6 +260,8 @@ select:focus, input[type=text]:focus { border-color: #c04a20; box-shadow: 0 0 0 
         <label class="checkbox-item"><input type="checkbox" value="midcrit"> Mid-project critique Qs</label>
         <label class="checkbox-item"><input type="checkbox" value="finalcrit"> Final critique Qs</label>
         <label class="checkbox-item"><input type="checkbox" value="iep"> 504/IEP accommodations</label>
+        <label class="checkbox-item"><input type="checkbox" value="progressdoc"> Project Progress Document</label>
+        <label class="checkbox-item"><input type="checkbox" value="rubric"> Universal Art Project Rubric</label>
       </div>
     </div>
 
@@ -342,12 +355,15 @@ function buildAddonsBlock(addons, period) {
   if (addons.includes('midcrit')) out += '\nMID-PROJECT CRITIQUE QUESTIONS: Provide 4 discussion questions for a mid-project check-in focused on process and problem-solving.\n';
   if (addons.includes('finalcrit')) out += '\nFINAL CRITIQUE / REFLECTION QUESTIONS: Provide 4 questions for the final critique including self-assessment and peer-to-peer prompts.\n';
   if (addons.includes('iep')) out += '\nACCOMMODATIONS & DIFFERENTIATION: Suggest specific modifications for students with fine motor challenges, visual impairments, processing differences, and students needing additional challenge.\n';
+  if (addons.includes('progressdoc')) out += '\nPROJECT PROGRESS DOCUMENT: Generate a filled-in Project Progress Document for this lesson. Include: Project Title, 3 numbered Requirements students must meet, 3 "To exceed expectations I can..." goals, and a Peer Feedback prompt. Format clearly with labeled sections.\n';
+  if (addons.includes('rubric')) out += '\nUNIVERSAL ART PROJECT RUBRIC: Generate a filled-in Universal Art Project Rubric for this lesson using these exact 5 categories: Project Requirements, Process/Research & Documentation, Time & Management, Detail/Complexity/Craftsmanship & Care, Original/Personal & Unique. Use 4 scoring columns: 100%/Exceeds Expectations, 90%/Meets Expectations, 80%/Approaches Expectations, 70-65%/Missed Expectations. Include an "I exceeded expectations by:" fill-in for the Exceeds column. Add "Created by artedguru.com & FirehousePublications.com" at the bottom.\n';
   return out;
 }
 
 async function generateLesson() {
-  const grade   = document.getElementById('grade').value;
-  const period  = document.getElementById('period').value;
+  const grade    = document.getElementById('grade').value;
+  const period   = document.getElementById('period').value;
+  const duration = document.getElementById('duration').value;
   const media   = document.getElementById('media').value;
   const mode    = document.getElementById('mode').value;
   const purpose = document.getElementById('purpose').value;
@@ -364,6 +380,7 @@ async function generateLesson() {
     ? 'Art Media: Choose the most appropriate media for the grade, subject, and topic — briefly explain your choice in the Overview.'
     : `Art Media: ${media}`;
   const purposeLine  = purpose !== 'none' ? `Mode of Purpose: ${purpose}` : '';
+  const durationLine = duration !== 'single class period' ? `Lesson Duration: This is a ${duration} project — scope the lesson procedure, materials, and assessment accordingly.` : '';
   const cultureLine  = culture !== 'none'
     ? `Art History / Cultural Connection: ${culture} — weave this into the lesson narrative, historical context, and at least one example artist or artwork from this tradition.`
     : custom
@@ -374,14 +391,15 @@ async function generateLesson() {
   const stdBlock    = buildStandardsBlock(grade);
   const addonsBlock = buildAddonsBlock(addons, period);
 
-  const paramLines = [
+    const paramLines = [
     `Subject Area: ${sName}`,
     `Grade Level: ${grade}`,
     mediaLine,
     `Visual Style: ${mode}`,
     purposeLine,
     cultureLine,
-    customLine
+    customLine,
+    durationLine
   ].filter(Boolean).join('\n');
 
   const prompt = `${subj.persona}
@@ -485,7 +503,7 @@ function formatLesson(text) {
     'PACING GUIDE', 'ESTIMATED MATERIALS COST', 'SUBSTITUTE TEACHER VERSION',
     'MID-PROJECT CRITIQUE QUESTIONS', 'FINAL CRITIQUE / REFLECTION QUESTIONS',
     'ACCOMMODATIONS & DIFFERENTIATION', 'TEACHER REFLECTION PROMPT',
-    'ADDITIONAL SECTIONS'
+    'ADDITIONAL SECTIONS', 'PROJECT PROGRESS DOCUMENT', 'UNIVERSAL ART PROJECT RUBRIC'
   ];
 
   const icons = {
@@ -513,7 +531,9 @@ function formatLesson(text) {
     'FINAL CRITIQUE / REFLECTION QUESTIONS': '🎭',
     'ACCOMMODATIONS & DIFFERENTIATION': '♿',
     'TEACHER REFLECTION PROMPT': '⭐',
-    'ADDITIONAL SECTIONS': '➕'
+    'ADDITIONAL SECTIONS': '➕',
+    'PROJECT PROGRESS DOCUMENT': '📋',
+    'UNIVERSAL ART PROJECT RUBRIC': '📊'
   };
 
   let lines = text.split('\n');
