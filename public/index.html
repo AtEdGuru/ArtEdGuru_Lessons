@@ -112,6 +112,39 @@ select:focus, input[type=text]:focus { border-color: #c04a20; box-shadow: 0 0 0 
   .full-width { grid-column: 1; }
   .header-logo { font-size: 22px; }
 }
+
+.form-suggestions { background: #f0f7ff; border: 1px solid #2e7ac4; border-radius: 10px; padding: 1.25rem; margin-top: 1.5rem; }
+.form-suggestions h3 { font-size: 15px; color: #1a3a5c; margin-bottom: 8px; }
+.form-tip { font-size: 13px; color: #555; margin-bottom: 12px; }
+.suggestion-block { margin-bottom: 12px; }
+.suggestion-block strong { font-size: 13px; color: #333; }
+.suggestion-content { font-size: 13px; color: #444; background: #fff; border: 1px solid #ddd; border-radius: 6px; padding: 8px 12px; margin-top: 4px; }
+.printable-form { background: #fff; border: 1px solid #e8e4df; border-radius: 12px; padding: 1.75rem; margin-top: 1.5rem; font-family: Arial, sans-serif; font-size: 13px; }
+.form-header-row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
+.form-main-title { font-size: 20px; font-weight: bold; }
+.form-subtext { font-size: 12px; color: #444; margin-bottom: 10px; }
+.form-field-block { margin-bottom: 8px; }
+.form-line-long { display: inline-block; border-bottom: 1px solid #000; width: 60%; margin-left: 4px; }
+.form-line-med { display: inline-block; border-bottom: 1px solid #000; width: 40%; margin-left: 4px; }
+.form-line-short { display: inline-block; border-bottom: 1px solid #000; width: 60px; margin: 0 4px; }
+.form-divider-line { border: none; border-top: 1px solid #000; margin: 12px 0; }
+.form-two-col { display: flex; gap: 20px; }
+.form-left-col { flex: 1; }
+.form-right-col { width: 200px; }
+.form-numbered { margin-bottom: 8px; }
+.instructor-box { border: 3px solid #000; padding: 8px; }
+.instructor-header { background: #000; color: #fff; text-align: center; font-weight: bold; font-size: 12px; padding: 4px; margin-bottom: 8px; }
+.progress-row { display: flex; align-items: center; gap: 4px; margin-bottom: 4px; font-size: 12px; }
+.form-bottom-row { display: flex; justify-content: space-between; margin-top: 8px; }
+.form-footer-right { text-align: right; font-size: 12px; margin-top: 8px; }
+.rubric-header-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 13px; }
+.rubric-title { text-align: center; font-size: 18px; font-weight: bold; font-style: italic; margin-bottom: 12px; }
+.rubric-table { width: 100%; border-collapse: collapse; font-size: 11px; }
+.rubric-table th, .rubric-table td { border: 1px solid #000; padding: 6px 8px; vertical-align: top; }
+.rubric-table th { background: #f0f0f0; font-weight: bold; }
+.rubric-footer { font-size: 11px; color: #555; margin-top: 8px; }
+.rubric-reflection { font-size: 13px; font-weight: bold; margin-top: 8px; }
+@media print { .output-toolbar, .export-row, .generate-btn, .footer-links, .header, .subject-pills, .subject-desc, .form-grid, #std-toggle, #addon-checks, .section-label { display: none !important; } }
 </style>
 </head>
 <body>
@@ -466,6 +499,9 @@ Generated with ArtEdGuru — artedguru.com | FirehousePublications.com`;
     if (!lastLessonText) throw new Error('No content returned from API');
 
     const formattedHTML = formatLesson(lastLessonText);
+    const hasProgressDoc = addons.includes('progressdoc');
+    const hasRubric = addons.includes('rubric');
+    const formsHTML = (hasProgressDoc ? getProgressDocHTML() : '') + (hasRubric ? getRubricHTML() : '');
 
     output.innerHTML = `
       <div class="output-card">
@@ -479,7 +515,7 @@ Generated with ArtEdGuru — artedguru.com | FirehousePublications.com`;
           </div>
         </div>
         <div id="exportStatus"></div>
-        <div class="lesson-content">${formattedHTML}</div>
+        <div class="lesson-content">${formattedHTML}</div>${formsHTML}
       </div>`;
 
   } catch(e) {
@@ -686,6 +722,182 @@ function linkify(s) {
 }
 
 // ─── EXPORT FUNCTIONS ──────────────────────────────────────────────────────────
+
+function showFormSuggestions(lessonText) {
+  // Extract suggestions from lesson text
+  const titleMatch = lessonText.match(/LESSON (?:PLAN|TITLE)[:\s]*([^\n]+)/i) || lessonText.match(/Essential Question[\s\S]{0,200}Learning Target[\s\S]{0,100}/i);
+  
+  // Build suggestions panel
+  const suggestionsHtml = `
+    <div class="form-suggestions">
+      <h3>📋 Form Suggestions — based on your generated lesson</h3>
+      <p class="form-tip">Use these suggestions to fill in your blank forms. Print the forms below.</p>
+      
+      <div class="suggestion-block">
+        <strong>Suggested Project Title:</strong>
+        <div class="suggestion-content" id="suggest-title">See your lesson Overview above</div>
+      </div>
+
+      <div class="suggestion-block">
+        <strong>Requirements (Meet Expectations):</strong>
+        <div class="suggestion-content" id="suggest-reqs">See Materials and Lesson Procedure above</div>
+      </div>
+
+      <div class="suggestion-block">
+        <strong>To Exceed Expectations, I can...</strong>
+        <div class="suggestion-content" id="suggest-exceed">See Assessment rubric above for Exceeds column</div>
+      </div>
+
+      <div class="suggestion-block">
+        <strong>Peer Feedback Prompt:</strong>
+        <div class="suggestion-content">Look at a classmate's work. What do you notice first? What technique surprised you? Give one specific compliment and one suggestion.</div>
+      </div>
+    </div>`;
+  return suggestionsHtml;
+}
+
+function getProgressDocHTML() {
+  return `
+    <div class="printable-form" id="progress-doc-form">
+      <div class="form-header-row">
+        <span class="form-main-title">Project Progress Document</span>
+        <span class="form-field-inline">Name _____________________________ pd _____</span>
+      </div>
+      <p class="form-subtext">This paper will document your daily participation, progress, feedback, &amp; grade.</p>
+      <div class="form-field-block"><strong>Project Title:</strong> <span class="form-line-long"></span></div>
+      <div class="form-field-block">My reference or inspirations for this project is: <span class="form-line-long"></span></div>
+      <div class="form-field-block">My personal connection: <span class="form-line-long"></span></div>
+      <hr class="form-divider-line"/>
+      <div class="form-two-col">
+        <div class="form-left-col">
+          <div class="form-field-block">Intro. date &nbsp;&nbsp;&nbsp; ___/___/_______</div>
+          <div class="form-field-block"><strong>DEADLINE:</strong> &nbsp;&nbsp;&nbsp; ___/___/_______</div>
+          <br/>
+          <div><strong>Requirements:</strong></div>
+          <div class="form-numbered">1. <span class="form-line-med"></span></div>
+          <div class="form-numbered">2. <span class="form-line-med"></span></div>
+          <div class="form-numbered">3. <span class="form-line-med"></span></div>
+          <br/>
+          <div><strong>To exceed expectations, I can...</strong></div>
+          <div class="form-numbered">1. <span class="form-line-med"></span></div>
+          <div class="form-numbered">2. <span class="form-line-med"></span></div>
+          <div class="form-numbered">3. <span class="form-line-med"></span></div>
+          <br/>
+          <div><strong>Peer Feedback by</strong> <span class="form-line-med"></span></div>
+          <div class="form-field-block">Actionable advice for success: <span class="form-line-long"></span></div>
+          <div class="form-line-long"></div>
+        </div>
+        <div class="form-right-col">
+          <div class="instructor-box">
+            <div class="instructor-header">...Instructor Section Only...</div>
+            <div class="progress-rows">
+              <div class="progress-row"><span>10%</span><span class="form-line-short"></span><span class="progress-label" style="writing-mode:vertical-rl;transform:rotate(180deg);font-size:10px;">Sketch</span></div>
+              <div class="progress-row"><span>20%</span><span class="form-line-short"></span></div>
+              <div class="progress-row"><span>25%</span><span class="form-line-short"></span><span>(quarter)</span></div>
+              <div class="progress-row"><span>30%</span><span class="form-line-short"></span><span class="progress-label" style="writing-mode:vertical-rl;transform:rotate(180deg);font-size:10px;">Project Work Phase</span></div>
+              <div class="progress-row"><span>40%</span><span class="form-line-short"></span></div>
+              <div class="progress-row"><span>50%</span><span class="form-line-short"></span><span>(half)</span></div>
+              <div class="progress-row"><span>60%</span><span class="form-line-short"></span></div>
+              <div class="progress-row"><span>70%</span><span class="form-line-short"></span></div>
+              <div class="progress-row"><span>75%</span><span class="form-line-short"></span><span>(3/4)</span></div>
+              <div class="progress-row"><span>80%</span><span class="form-line-short"></span><span class="progress-label" style="writing-mode:vertical-rl;transform:rotate(180deg);font-size:10px;">Detail &amp; finishing</span></div>
+              <div class="progress-row"><span>85%</span><span class="form-line-short"></span></div>
+              <div class="progress-row"><span>90%</span><span class="form-line-short"></span></div>
+              <div class="progress-row"><span>95%</span><span class="form-line-short"></span></div>
+            </div>
+            <div class="form-subtext">(Percent complete, not a grade)</div>
+          </div>
+        </div>
+      </div>
+      <hr class="form-divider-line"/>
+      <div class="form-line-long"></div>
+      <div class="form-line-long"></div>
+      <div class="form-bottom-row">
+        <span class="form-line-med"></span>
+        <span class="form-line-med"></span>
+      </div>
+      <div class="form-footer-right">I will take this advice: [__] Yes or [__] No thank you.</div>
+      <button class="export-btn" onclick="window.print()">🖨️ Print Progress Document</button>
+    </div>`;
+}
+
+function getRubricHTML() {
+  return `
+    <div class="printable-form" id="rubric-form">
+      <div class="rubric-header-row">
+        <span>Name ___________________________</span>
+        <span>Title ___________________________</span>
+        <span>Pd.______</span>
+      </div>
+      <div class="rubric-title">Universal Art Project Rubric</div>
+      <table class="rubric-table">
+        <thead>
+          <tr>
+            <th></th>
+            <th colspan="4" style="text-align:center">Criteria</th>
+            <th>Points</th>
+          </tr>
+          <tr>
+            <th></th>
+            <th>100% / 20pts<br/>Exceeds Expectations</th>
+            <th>90% / 18pts<br/>Meets Expectations</th>
+            <th>80% / 16pts<br/>Approaches Exp.</th>
+            <th>70%-65% / 14pts<br/>Missed Exp.</th>
+            <th>0/F</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Project Requirements</strong></td>
+            <td><em>I exceeded expectations by:</em><br/><br/><br/></td>
+            <td>Expected use &amp; combination of art elements &amp; principles. Work included all requirements.</td>
+            <td>Acceptable use of art elements &amp; principles but lacked depth in exploring requirements.</td>
+            <td>Lacks evidence of thoughtful use of elements &amp; principles &amp; minimally met required components.</td>
+            <td>____</td>
+          </tr>
+          <tr>
+            <td><strong>Process, Research &amp; Documentation</strong></td>
+            <td><em>I exceeded expectations by:</em><br/><br/><br/></td>
+            <td>Research &amp; documentation are present &amp; meet expectations. Prewriting &amp; sketches are complete &amp; purposeful.</td>
+            <td>Research and/or documentation is present but thin. Artist did not fully take advantage of pre-work opportunities.</td>
+            <td>Research and/or documentation was missing &amp; had a negative impact on the final work. Evidence of depth was lacking.</td>
+            <td>____</td>
+          </tr>
+          <tr>
+            <td><strong>Time &amp; Management</strong></td>
+            <td><em>I exceeded expectations by:</em><br/><br/><br/></td>
+            <td>Student was mostly independently motivated with a few social and/or digital distractions. Work was mostly self-driven.</td>
+            <td>Student was sometimes distracted from work OR finished early without using the extra time to exceed expectations.</td>
+            <td>Often reminded to stay on task. Social/digital interactions impeded work. Lack of focus had a strong impact on project work.</td>
+            <td>____</td>
+          </tr>
+          <tr>
+            <td><strong>Detail, Complexity, Craftsmanship &amp; Care</strong></td>
+            <td><em>I exceeded expectations by:</em><br/><br/><br/></td>
+            <td>Media is without folds/rips or evidence of poor handling. Materials &amp; techniques were explored &amp; met handling expectations. Visual challenges were attempted.</td>
+            <td>Media handling could have avoided minor rips or folds. Media or technique was not fully explored. Visual challenges were minimal.</td>
+            <td>Poor handling or storage had an impact. Media &amp; techniques show little evidence of exploration. Visual challenges were avoided.</td>
+            <td>____</td>
+          </tr>
+          <tr>
+            <td><strong>Original, Personal &amp; Unique</strong><br/><em>(Always credit your inspirations)</em></td>
+            <td>100% original &amp; highly personal because:<br/><br/></td>
+            <td>Generally personal &amp; unique but inspired by:<br/><br/></td>
+            <td>Topically personalized &amp; based on:<br/><br/></td>
+            <td>Topical &amp; highly derivative of:<br/><br/></td>
+            <td>Copied</td>
+          </tr>
+          <tr>
+            <td colspan="5"><strong>Comments:</strong><br/><br/><br/></td>
+            <td><strong>Grade</strong><br/><br/>____</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="rubric-footer">Created by www.artedguru.com &amp; www.FirehousePublications.com</div>
+      <div class="rubric-reflection"><strong>If you could do this project again, what might you do differently?</strong></div>
+      <button class="export-btn" onclick="window.print()">🖨️ Print Rubric</button>
+    </div>`;
+}
 
 function copyLesson() {
   if (!lastLessonText) return;
