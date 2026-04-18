@@ -14,8 +14,8 @@ async function getRelatedResources(prompt) {
     const words = prompt.toLowerCase().match(/drawing|painting|sculpture|printmaking|collage|watercolor|acrylic|clay|photography|mosaic|fiber|portrait|landscape|color|design|steam|math|science|history/g) || [];
     const unique = [...new Set(words)].slice(0, 3);
     if (!unique.length) return [];
-    const filter = unique.map(k => `tags.ilike.%${k}%`).join(',');
-    const url = `${SUPABASE_URL.replace(/\/$/, '')}/rest/v1/resources?or=(${filter})&limit=3&select=title,url,type`;
+   const filter = unique.map(k => `Tags.ilike.%${k}%`).join(',');
+    const url = `${SUPABASE_URL.replace(/\/$/, '')}/rest/v1/resources?or=(${filter})&limit=3&select=Title,URL,Type`;
     const res = await fetch(url, {
       headers: {
         'apikey': SUPABASE_KEY,
