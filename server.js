@@ -66,7 +66,7 @@ When generating lesson plans:
         const filter = uniqueKeywords.map(k => `tags.ilike.%${k}%`).join(',');
         const supaBase = SUPABASE_URL.endsWith('/') ? SUPABASE_URL.slice(0,-1) : SUPABASE_URL;
         const supaRes = await fetch(`${supaBase}/rest/v1/resources?or=(${filter})&limit=3&select=title,url,type`, {
-          headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+          headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json', 'Prefer': 'return=representation' }
         });
         resources = await supaRes.json();
       }
