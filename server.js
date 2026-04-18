@@ -66,9 +66,12 @@ When generating lesson plans:
         const filter = uniqueKeywords.map(k => `tags.ilike.%${k}%`).join(',');
         const supaBase = SUPABASE_URL.endsWith('/') ? SUPABASE_URL.slice(0,-1) : SUPABASE_URL;
         const supaRes = await fetch(`${supaBase}/rest/v1/resources?or=(${filter})&limit=3&select=title,url,type`, {
-          headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json', 'Prefer': 'return=representation' }
+          headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' }
         });
-        resources = await supaRes.json();
+        const supaData = await supaRes.json();
+        console.log('Supabase status:', supaRes.status);
+        console.log('Supabase response:', JSON.stringify(supaData).slice(0,200));
+        resources = Array.isArray(supaData) ? supaData : [];
       }
     } catch(e) { console.log('Supabase error:', e.message); console.log('Supabase URL:', SUPABASE_URL ? 'set' : 'missing'); console.log('Supabase KEY:', SUPABASE_KEY ? 'set' : 'missing'); }
     data.artedguru_resources = resources;
