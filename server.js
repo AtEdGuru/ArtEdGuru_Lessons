@@ -46,6 +46,8 @@ app.get('/debug-supabase', async (req, res) => {
     console.log('SUPABASE_KEY exists?', !!process.env.SUPABASE_KEY);
     const client = getSupabase();
     console.log('client created?', !!client);
+console.log('URL value:', process.env.SUPABASE_URL);
+console.log('KEY length:', process.env.SUPABASE_KEY?.length);
     const result = await client.from('resources').select('Title, URL, Type').limit(3);
     console.log('raw result:', JSON.stringify(result));
     res.json(result);
