@@ -1,30 +1,34 @@
 const express = require('express');
 const path = require('path');
+const { createClient } = require('@supabase/supabase-js');
 
 const app = express();
 app.use(express.json({ limit: '1mb' }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-const SUPABASE_URL = process.env.SUPABASE_URL || '';
-const SUPABASE_KEY = process.env.SUPABASE_KEY || '';
+const supabase = createClient(
+  process.env.SUPABASE_URL || '',
+  process.env.SUPABASE_KEY || ''
+);
 
 async function getRelatedResources(prompt) {
-  if (!SUPABASE_URL || !SUPABASE_KEY) return [];
   try {
-    const words = prompt.toLowerCase().match(/drawing|painting|sculpture|printmaking|collage|watercolor|acrylic|clay|photography|mosaic|fiber|portrait|landscape|color|design|steam|math|science|history/g) || [];
+    const words = prompt.toLowerCase().match(/drawing|painting|sculpture|printmaking|collage|watercolor|acrylic|clay|photography|mosaic|fiber|portrait|landscape|color|design|steam|math|science|history|ceramic|mural|textile|charcoal|pastel|ink/g) || [];
     const unique = [...new Set(words)].slice(0, 3);
     if (!unique.length) return [];
- const supaBase = SUPABASE_URL.replace(/\/$/, '');
-const keyword = unique[0] || 'painting';
-const url = `${supaBase}/rest/v1/resources?Tags=ilike.*${keyword}*&limit=3&select=Title,URL,Type`;
-    const res = await fetch(url, {
-      headers: {
-        'apikey': SUPABASE_KEY,
-        'Authorization': `Bearer ${SUPABASE_KEY}`
-      }
-    });
-    const json = await res.json();
-    return Array.isArray(json) ? json : [];
+
+    let query = supabase.from('resources').select('Title, URL, Type');
+    
+    // Build OR conditions for each keyword
+    const conditions = unique.map(k => `Tags.ilike.%${k}%`).join(',');
+    const { data, error } = await query.or(conditions).limit(3);
+    
+    if (error) {
+      console.error('Supabase query error:', error.message);
+      return [];
+    }
+    console.log('Supabase found:', data?.length, 'resources for keywords:', unique);
+    return data || [];
   } catch(e) {
     console.error('Supabase error:', e.message);
     return [];
@@ -39,6 +43,16 @@ app.post('/generate', async (req, res) => {
   if (!apiKey) return res.status(500).json({ error: 'ANTHROPIC_API_KEY not set' });
 
   try {
+    // Get related resources BEFORE generating
+    const resources = await getRelatedResources(prompt);
+    
+    // Inject resources into the prompt if found
+    let enhancedPrompt = prompt;
+    if (resources.length > 0) {
+      const resourceContext = resources.map(r => `- ${r.Title}: ${r.URL}`).join('\n');
+      enhancedPrompt = prompt + `\n\nRELATED ARTEDGURU RESOURCES (reference these in your lesson where relevant):\n${resourceContext}`;
+    }
+
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
@@ -69,8 +83,9 @@ When generating lesson plans:
 - Frame assessment around growth and personal investment, not just technical compliance
 - Always give students something to strive for beyond the minimum
 - Materials lists should be practical and budget-conscious
-- Lessons should feel doable in a real public school classroom with real students`,
-        messages: [{ role: 'user', content: prompt }]
+- Lessons should feel doable in a real public school classroom with real students
+- If related ArtEdGuru resources are provided, naturally reference them where relevant`,
+        messages: [{ role: 'user', content: enhancedPrompt }]
       })
     });
 
@@ -80,7 +95,7 @@ When generating lesson plans:
       return res.status(response.status).json({ error: data.error?.message || 'Anthropic API error' });
     }
 
-    data.artedguru_resources = await getRelatedResources(prompt);
+    data.artedguru_resources = resources;
     res.json(data);
 
   } catch (err) {
