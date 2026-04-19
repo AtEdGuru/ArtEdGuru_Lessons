@@ -484,7 +484,7 @@ Generated with ArtEdGuru — artedguru.com | FirehousePublications.com`;
     <div class="loading-card">
       <span class="loading-brush">🎨</span>
       <div class="loading-title">We're working on it<span class="loading-dots"></span></div>
-      <div class="loading-sub">Detailed, standards-aligned lessons like this take 30–60 seconds.<br>Please be patient — it's worth the wait!</div>
+      <div class="loading-sub">Detailed lessons like this take 1–2 minutes. Please be patient — it's worth the wait!</div>
     </div>`;
 
   try {
@@ -506,7 +506,7 @@ Generated with ArtEdGuru — artedguru.com | FirehousePublications.com`;
     if (!lastLessonText) throw new Error('No content returned from API');
 
     const formattedHTML = formatLesson(lastLessonText);
-    const resourcesHTML = resources.length ? `<div class="resources-block"><strong>📚 Related ArtEdGuru Resources:</strong><ul>${resources.map(r => `<li><a href="${r.URL}" target="_blank">${r.Title}</a> <span class="res-type">(${r.Type})</span></li>`).join('')}</ul></div>` : '';
+    const resourcesHTML = resources.length ? `<div class="resources-block"><strong>📚 Other Lessons by ArtEdGuru:</strong><ul>${resources.map(r => `<li><a href="${r.URL}" target="_blank">${r.Title}</a> <span class="res-type">(${r.Type})</span></li>`).join('')}</ul></div>` : '';
     const hasProgressDoc = addons.includes('progressdoc');
     const hasRubric = addons.includes('rubric');
     const formsHTML = (hasProgressDoc ? getProgressDocHTML() : '') + (hasRubric ? getRubricHTML() : '');
