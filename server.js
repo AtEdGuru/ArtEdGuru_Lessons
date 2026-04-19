@@ -8,8 +8,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 let supabase = null;
 function getSupabase() {
-  const url = process.env.SUPABASE_URL || 'https://cqgwlosjodiflfihaodr.supabase.co';
- const key = process.env.SUPABASE_KEY;
+const url = process.env.SB_URL;
+const key = process.env.SB_KEY;
   if (!supabase && url && key) {
     supabase = createClient(url, key);
   }
