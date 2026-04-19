@@ -21,14 +21,19 @@ async function getRelatedResources(prompt) {
     const db = getSupabase();
     if (!db) return [];
 
+    // Extract meaningful keywords from the full prompt
+    // Match media, subjects, techniques, and pedagogy terms
     const mediaTerms = prompt.toLowerCase().match(/drawing|painting|sculpture|printmaking|collage|watercolor|acrylic|clay|photography|mosaic|fiber|portrait|landscape|color|ceramic|mural|textile|charcoal|pastel|ink|oil|pencil|marker|chalk|tempera|gouache|monotype|etching|lithograph|relief|screen|weaving|knitting|wire|plaster|papier.mache|origami|collograph/g) || [];
     const subjectTerms = prompt.toLowerCase().match(/self.portrait|still.life|abstract|expressionism|cubism|surrealism|impressionism|pop.art|dada|renaissance|baroque|identity|culture|nature|figure|animal|architecture|landscape|seascape|cityscape|fantasy|pattern|design/g) || [];
     const pedagogyTerms = prompt.toLowerCase().match(/choice|sel|social.emotional|steam|stem|cross.curricular|literacy|math|science|history|engineering|community|mural|collaboration|independent/g) || [];
 
     const allTerms = [...new Set([...mediaTerms, ...subjectTerms, ...pedagogyTerms])];
+    
+    // Use the most specific terms first, fall back to any match
     const searchTerms = allTerms.slice(0, 5);
     if (!searchTerms.length) return [];
 
+    // Build OR conditions - search both Tags and Title
     const tagConditions = searchTerms.map(k => `Tags.ilike.%${k}%`).join(',');
     const titleConditions = searchTerms.map(k => `Title.ilike.%${k}%`).join(',');
     const allConditions = `${tagConditions},${titleConditions}`;
@@ -46,12 +51,14 @@ async function getRelatedResources(prompt) {
 
     if (!data || data.length === 0) return [];
 
+    // Score results by how many search terms they match
     const scored = data.map(item => {
       const combined = ((item.Tags || '') + ' ' + (item.Title || '')).toLowerCase();
       const score = searchTerms.filter(term => combined.includes(term)).length;
       return { ...item, score };
     });
 
+    // Sort by relevance score, return top 3
     scored.sort((a, b) => b.score - a.score);
     const top3 = scored.slice(0, 3).map(({ score, Tags, ...rest }) => rest);
 
@@ -62,17 +69,23 @@ async function getRelatedResources(prompt) {
     return [];
   }
 }
-
 app.get('/debug-supabase', async (req, res) => {
   try {
+    console.log('debug route hit');
+    console.log('SUPABASE_URL exists?', !!process.env.SUPABASE_URL);
+    console.log('SUPABASE_KEY exists?', !!process.env.SUPABASE_KEY);
     const client = getSupabase();
+    console.log('client created?', !!client);
+console.log('URL value:', process.env.SUPABASE_URL);
+console.log('KEY length:', process.env.SUPABASE_KEY?.length);
     const result = await client.from('resources').select('Title, URL, Type').limit(3);
+    console.log('raw result:', JSON.stringify(result));
     res.json(result);
   } catch (err) {
+    console.error('debug-supabase exception:', err);
     res.status(500).json({ error: String(err) });
   }
 });
-
 app.post('/generate', async (req, res) => {
   const { prompt } = req.body;
   if (!prompt) return res.status(400).json({ error: 'No prompt provided' });
@@ -81,8 +94,10 @@ app.post('/generate', async (req, res) => {
   if (!apiKey) return res.status(500).json({ error: 'ANTHROPIC_API_KEY not set' });
 
   try {
+    // Get related resources BEFORE generating
     const resources = await getRelatedResources(prompt);
     
+    // Inject resources into the prompt if found
     let enhancedPrompt = prompt;
     if (resources.length > 0) {
       const resourceContext = resources.map(r => `- ${r.Title}: ${r.URL}`).join('\n');
@@ -143,41 +158,48 @@ New media, new techniques, new concepts — students need to build confidence be
 
 Never open a school year with messy media. Start with drawing, earn complexity. "What are you going to show me you can handle?" is a real question Eric asks students.
 
+## CLASSROOM MANAGEMENT THROUGH ENGAGEMENT
+
+When students are genuinely invested in their work, most management problems disappear. Engagement IS classroom management. Assigned seating works better than open seating for production. Mix grade levels when possible — upperclassmen moderate behavior naturally.
+
 ## ASSESSMENT
 
-Never grade on aesthetics. Use a rubric with these 5 components:
+Never grade on aesthetics ("how pretty it is"). Use a rubric with these 5 components:
 1. Project Requirements — did they include what was asked?
 2. Material Care & Completeness — is it finished and cared for?
 3. Time & Management — did they stay focused?
 4. Detail, Complexity & Craftsmanship — did they dig deep?
 5. Original, Personal & Unique — is it genuinely theirs?
 
-Meeting expectations = 90%. Exceeding = closer to 100%.
+Meeting expectations = 90%. Exceeding = closer to 100%. "I joke with students: if you do a portrait and it looks like an alien pickle, but it's neat, complete, original, and followed directions, you might still earn an A."
 
 ## STEAM CONNECTIONS
 
-Make core content connections explicit but authentic only:
+Art is STEAM before STEAM had a name. Make these connections explicit:
 - Grids and measurement = geometry
-- Sculpture = engineering
+- Sculpture = engineering  
 - Color mixing = physics
 - Story illustration = literature
 - Ceramics = chemistry
 - Art history = history
 
+But: calling a lesson STEAM when it isn't is dishonest. "Pour painting" is not STEAM unless you teach about fluid dynamics or viscosity. Authentic connection only.
+
 ## VOICE & TONE
 
-Warm, direct, experienced, occasionally funny, never preachy. Talk to teachers like colleagues. Share what actually worked in your room, not what sounds good in a textbook.
+Warm, direct, experienced, occasionally funny, never preachy. Talk to teachers like colleagues. Share what actually worked in your room, not what sounds good in a textbook. Be honest about failures — "My first print was awful. I show them that." Model risk-taking.
 
 ## WHEN GENERATING LESSONS:
 
-- Never use "guided" to describe a step-by-step process where all students make the same thing
+- Never use the word "guided" to describe a step-by-step process where all students make the same thing
 - Write procedure steps the way you'd actually run your class
 - Always include practical tips a substitute or first-year teacher would need
 - Materials lists should be practical and budget-conscious
-- Always give students a floor AND a ceiling
+- Always give students a floor AND a ceiling — minimum requirements AND extension options
 - Frame assessment around growth and personal investment
-- If related ArtEdGuru resources are provided, weave them in naturally
-- Lessons should feel doable in a real public school classroom with real budgets`,
+- If related ArtEdGuru resources are provided, weave them in naturally where relevant
+- Lessons should feel doable in a real public school classroom with real students and real budgets
+- When referencing ArtEdGuru resources in lesson text, ALWAYS use the full URL exactly as provided (e.g., https://www.artedguru.com/home/color-empathy) — never shorten or abbreviate URLs`,
         messages: [{ role: 'user', content: enhancedPrompt }]
       })
     });
