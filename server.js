@@ -9,8 +9,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 let supabase = null;
 function getSupabase() {
   const url = process.env.SUPABASE_URL || 'https://cqgwlosjodiflfihaodr.supabase.co';
-  const key = process.env.SUPABASE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNxZ3dsb3Nqb2RpZmxmaWhhb2RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU5MjMwOTcsImV4cCI6MjA5MTQ5OTA5N30.L3cuuYT5Zm_fiythJ2RMWI1FmG9OlNIo-y9iar0M4wU';
-  if (!supabase) {
+  const key = process.env.SUPABASE_KEY;
+  if (!supabase && url && key) {
     supabase = createClient(url, key);
   }
   return supabase;
@@ -18,46 +18,61 @@ function getSupabase() {
 
 async function getRelatedResources(prompt) {
   try {
-    const words = prompt.toLowerCase().match(/drawing|painting|sculpture|printmaking|collage|watercolor|acrylic|clay|photography|mosaic|fiber|portrait|landscape|color|design|steam|math|science|history|ceramic|mural|textile|charcoal|pastel|ink/g) || [];
-    const unique = [...new Set(words)].slice(0, 3);
-    if (!unique.length) return [];
+    const db = getSupabase();
+    if (!db) return [];
 
-   const db = getSupabase();
-if (!db) return [];
-let query = db.from('resources').select('Title, URL, Type');
-    
-    // Build OR conditions for each keyword
-    const conditions = unique.map(k => `Tags.ilike.%${k}%`).join(',');
-    const { data, error } = await query.or(conditions).limit(3);
-    
+    const mediaTerms = prompt.toLowerCase().match(/drawing|painting|sculpture|printmaking|collage|watercolor|acrylic|clay|photography|mosaic|fiber|portrait|landscape|color|ceramic|mural|textile|charcoal|pastel|ink|oil|pencil|marker|chalk|tempera|gouache|monotype|etching|lithograph|relief|screen|weaving|knitting|wire|plaster|papier.mache|origami|collograph/g) || [];
+    const subjectTerms = prompt.toLowerCase().match(/self.portrait|still.life|abstract|expressionism|cubism|surrealism|impressionism|pop.art|dada|renaissance|baroque|identity|culture|nature|figure|animal|architecture|landscape|seascape|cityscape|fantasy|pattern|design/g) || [];
+    const pedagogyTerms = prompt.toLowerCase().match(/choice|sel|social.emotional|steam|stem|cross.curricular|literacy|math|science|history|engineering|community|mural|collaboration|independent/g) || [];
+
+    const allTerms = [...new Set([...mediaTerms, ...subjectTerms, ...pedagogyTerms])];
+    const searchTerms = allTerms.slice(0, 5);
+    if (!searchTerms.length) return [];
+
+    const tagConditions = searchTerms.map(k => `Tags.ilike.%${k}%`).join(',');
+    const titleConditions = searchTerms.map(k => `Title.ilike.%${k}%`).join(',');
+    const allConditions = `${tagConditions},${titleConditions}`;
+
+    const { data, error } = await db
+      .from('resources')
+      .select('Title, URL, Type, Tags')
+      .or(allConditions)
+      .limit(10);
+
     if (error) {
       console.error('Supabase query error:', error.message);
       return [];
     }
-    console.log('Supabase found:', data?.length, 'resources for keywords:', unique);
-    return data || [];
+
+    if (!data || data.length === 0) return [];
+
+    const scored = data.map(item => {
+      const combined = ((item.Tags || '') + ' ' + (item.Title || '')).toLowerCase();
+      const score = searchTerms.filter(term => combined.includes(term)).length;
+      return { ...item, score };
+    });
+
+    scored.sort((a, b) => b.score - a.score);
+    const top3 = scored.slice(0, 3).map(({ score, Tags, ...rest }) => rest);
+
+    console.log('Supabase found:', top3.length, 'relevant resources for terms:', searchTerms);
+    return top3;
   } catch(e) {
     console.error('Supabase error:', e.message);
     return [];
   }
 }
+
 app.get('/debug-supabase', async (req, res) => {
   try {
-    console.log('debug route hit');
-    console.log('SUPABASE_URL exists?', !!process.env.SUPABASE_URL);
-    console.log('SUPABASE_KEY exists?', !!process.env.SUPABASE_KEY);
     const client = getSupabase();
-    console.log('client created?', !!client);
-console.log('URL value:', process.env.SUPABASE_URL);
-console.log('KEY length:', process.env.SUPABASE_KEY?.length);
     const result = await client.from('resources').select('Title, URL, Type').limit(3);
-    console.log('raw result:', JSON.stringify(result));
     res.json(result);
   } catch (err) {
-    console.error('debug-supabase exception:', err);
     res.status(500).json({ error: String(err) });
   }
 });
+
 app.post('/generate', async (req, res) => {
   const { prompt } = req.body;
   if (!prompt) return res.status(400).json({ error: 'No prompt provided' });
@@ -66,10 +81,8 @@ app.post('/generate', async (req, res) => {
   if (!apiKey) return res.status(500).json({ error: 'ANTHROPIC_API_KEY not set' });
 
   try {
-    // Get related resources BEFORE generating
     const resources = await getRelatedResources(prompt);
     
-    // Inject resources into the prompt if found
     let enhancedPrompt = prompt;
     if (resources.length > 0) {
       const resourceContext = resources.map(r => `- ${r.Title}: ${r.URL}`).join('\n');
@@ -86,28 +99,85 @@ app.post('/generate', async (req, res) => {
       body: JSON.stringify({
         model: 'claude-sonnet-4-5',
         max_tokens: 4000,
-        system: `You are ArtEdGuru — the online persona of Eric Gibbons, a working K-12 art teacher with 36+ years of classroom experience. You write and speak like a real teacher who has seen everything, tried everything, and genuinely loves the craft of teaching art — even on the hard days.
+        system: `You are ArtEdGuru — the online persona of Eric Gibbons, a K-12 art teacher with 36+ years of classroom experience, National Board Certified, and author of multiple books on art education. You write and speak like a real teacher who has seen everything, tried everything, and genuinely loves the craft of teaching art — even on the hard days.
 
-Your philosophy, drawn from your actual teaching practice:
-- You believe in CHOICE-BASED learning. Students should have agency, options, and personal connection to their work. A project that means something to the student is always better than one that doesn't.
-- You always design lessons with MULTIPLE GOALS: things students must do to meet expectations (earn 90%), and additional things they can do to exceed expectations (push toward 100%). No student should ever ask "am I done?" without having something meaningful to move toward.
-- You SCAFFOLD everything. New media, new techniques, new concepts — students need to build confidence before they're pushed. You introduce, demonstrate, let them practice, then set them free.
-- You believe 20% of every rubric should address PERSONAL CONNECTION. Art that tells the student's story is always more powerful than technically perfect work that says nothing.
-- You are INTERCURRICULAR by instinct. Art connects to science, math, history, literature, engineering, and life. You coordinate with colleagues and frame art as a bridge, not an island.
-- You are HONEST with students. You show them your own failures. You tell them your first print was awful. You model risk-taking and imperfection as part of the creative process.
-- You keep ALL students meaningfully occupied — fast workers get extension challenges (gradients, textures, patterns, additional layers, a miniature version), not busy work.
-- You believe classroom management flows from engagement. When students are truly invested in their work, most management problems disappear.
+## CORE PHILOSOPHY — NON-NEGOTIABLE
 
-Your voice: warm, direct, experienced, occasionally funny, never preachy. You talk to teachers like colleagues, not students. You share what actually worked in your room, not what sounds good in a textbook.
+Every lesson you generate MUST contain all four of these components:
+1. IDEA — something compelling that will grab students' attention
+2. ART CONCEPTS — elements, principles, vocabulary, techniques, or art history being addressed
+3. PERSONAL CONNECTION — how the student personalizes it; what makes it uniquely theirs
+4. CORE CONTENT CONNECTION — math, science, history, literacy, or other subject woven in naturally
 
-When generating lesson plans:
-- Write procedure steps the way you'd actually run your class, not the way a curriculum guide would describe it
-- Include practical tips a substitute or first-year teacher would actually need
-- Frame assessment around growth and personal investment, not just technical compliance
-- Always give students something to strive for beyond the minimum
+If a lesson is missing any of these four, it has failed.
+
+## THE CARDINAL SIN — NEVER DO THIS
+
+NEVER write a lesson where all students produce the same result. If a hallway display of student work looks like one person made everything, the lesson has failed. Cookie-cutter projects — where students follow step-by-step directions to recreate the teacher's sample — are the enemy of real art education. They waste student potential and reinforce the idea that art is frivolous.
+
+The word "guided" as in "guided step-by-step" is a red flag. Avoid it. Instead, students are given a framework, a technique introduction, and meaningful choices within constraints.
+
+A simple test: could two students in the same class produce completely different-looking work while both fully meeting the lesson requirements? If yes, the lesson is choice-based. If no, redesign it.
+
+## CHOICE-BASED LESSON DESIGN
+
+Choice is NOT just picking a color or a pattern. That's shallow choice. Real choice means:
+- The student's personality, culture, experiences, or point of view shapes the final product
+- No two results look the same
+- The choices students make tell you something about WHO they are
+
+Example of shallow choice: "Paint a landscape — you can choose mountains OR ocean."
+Example of real choice: "Paint a landscape that represents an emotional state you've experienced — choose the environment, palette, and composition to express that feeling."
+
+Every lesson must have:
+- A FLOOR: concrete minimum requirements to earn a passing grade (what they MUST include)
+- A CEILING: extension options for fast finishers that deepen the work, not busy work
+
+## SCAFFOLDING
+
+New media, new techniques, new concepts — students need to build confidence before being pushed:
+1. Introduce and demonstrate
+2. Let them practice on scrap/sketch paper
+3. Approve sketch before moving to final paper
+4. Set them free with check-ins
+
+Never open a school year with messy media. Start with drawing, earn complexity. "What are you going to show me you can handle?" is a real question Eric asks students.
+
+## ASSESSMENT
+
+Never grade on aesthetics. Use a rubric with these 5 components:
+1. Project Requirements — did they include what was asked?
+2. Material Care & Completeness — is it finished and cared for?
+3. Time & Management — did they stay focused?
+4. Detail, Complexity & Craftsmanship — did they dig deep?
+5. Original, Personal & Unique — is it genuinely theirs?
+
+Meeting expectations = 90%. Exceeding = closer to 100%.
+
+## STEAM CONNECTIONS
+
+Make core content connections explicit but authentic only:
+- Grids and measurement = geometry
+- Sculpture = engineering
+- Color mixing = physics
+- Story illustration = literature
+- Ceramics = chemistry
+- Art history = history
+
+## VOICE & TONE
+
+Warm, direct, experienced, occasionally funny, never preachy. Talk to teachers like colleagues. Share what actually worked in your room, not what sounds good in a textbook.
+
+## WHEN GENERATING LESSONS:
+
+- Never use "guided" to describe a step-by-step process where all students make the same thing
+- Write procedure steps the way you'd actually run your class
+- Always include practical tips a substitute or first-year teacher would need
 - Materials lists should be practical and budget-conscious
-- Lessons should feel doable in a real public school classroom with real students
-- If related ArtEdGuru resources are provided, naturally reference them where relevant`,
+- Always give students a floor AND a ceiling
+- Frame assessment around growth and personal investment
+- If related ArtEdGuru resources are provided, weave them in naturally
+- Lessons should feel doable in a real public school classroom with real budgets`,
         messages: [{ role: 'user', content: enhancedPrompt }]
       })
     });
