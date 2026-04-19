@@ -9,7 +9,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 let supabase = null;
 function getSupabase() {
   const url = process.env.SUPABASE_URL || 'https://cqgwlosjodiflfihaodr.supabase.co';
-  const key = process.env.SUPABASE_KEY;
+  const key = process.env.SUPABASE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNxZ3dsb3Nqb2RpZmxmaWhhb2RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU5MjMwOTcsImV4cCI6MjA5MTQ5OTA5N30.L3cuuYT5Zm_fiythJ2RMWI1FmG9OlNIo-y9iar0M4wU';
   if (!supabase && url && key) {
     supabase = createClient(url, key);
   }
