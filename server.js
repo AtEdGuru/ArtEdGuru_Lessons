@@ -69,6 +69,19 @@ async function getRelatedResources(prompt) {
     return [];
   }
 }
+app.get('/debug-env', (req, res) => {
+  const safe = Object.keys(process.env)
+    .filter(k => !k.includes('KEY') && !k.includes('SECRET') && !k.includes('TOKEN'))
+    .reduce((obj, k) => ({ ...obj, [k]: process.env[k] }), {});
+  res.json({ 
+    allVarNames: Object.keys(process.env),
+    safeVars: safe,
+    sbUrl: !!process.env.SB_URL,
+    sbKey: !!process.env.SB_KEY,
+    supabaseUrl: !!process.env.SUPABASE_URL,
+    supabaseKey: !!process.env.SUPABASE_KEY
+  });
+});
 app.get('/debug-supabase', async (req, res) => {
   try {
     console.log('debug route hit');
