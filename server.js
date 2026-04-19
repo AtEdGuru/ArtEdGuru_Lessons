@@ -6,10 +6,13 @@ const app = express();
 app.use(express.json({ limit: '1mb' }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-const supabase = createClient(
-  process.env.SUPABASE_URL || '',
-  process.env.SUPABASE_KEY || ''
-);
+let supabase = null;
+function getSupabase() {
+  if (!supabase && process.env.SUPABASE_URL && process.env.SUPABASE_KEY) {
+    supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
+  }
+  return supabase;
+}
 
 async function getRelatedResources(prompt) {
   try {
@@ -17,7 +20,9 @@ async function getRelatedResources(prompt) {
     const unique = [...new Set(words)].slice(0, 3);
     if (!unique.length) return [];
 
-    let query = supabase.from('resources').select('Title, URL, Type');
+   const db = getSupabase();
+if (!db) return [];
+let query = db.from('resources').select('Title, URL, Type');
     
     // Build OR conditions for each keyword
     const conditions = unique.map(k => `Tags.ilike.%${k}%`).join(',');
