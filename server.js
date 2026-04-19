@@ -39,7 +39,21 @@ let query = db.from('resources').select('Title, URL, Type');
     return [];
   }
 }
-
+app.get('/debug-supabase', async (req, res) => {
+  try {
+    console.log('debug route hit');
+    console.log('SUPABASE_URL exists?', !!process.env.SUPABASE_URL);
+    console.log('SUPABASE_KEY exists?', !!process.env.SUPABASE_KEY);
+    const client = getSupabase();
+    console.log('client created?', !!client);
+    const result = await client.from('resources').select('Title, URL, Type').limit(3);
+    console.log('raw result:', JSON.stringify(result));
+    res.json(result);
+  } catch (err) {
+    console.error('debug-supabase exception:', err);
+    res.status(500).json({ error: String(err) });
+  }
+});
 app.post('/generate', async (req, res) => {
   const { prompt } = req.body;
   if (!prompt) return res.status(400).json({ error: 'No prompt provided' });
