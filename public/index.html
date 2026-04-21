@@ -446,7 +446,7 @@ async function submitFeedback() {
   status.textContent = 'Sending...';
 
   try {
-    const res = await fetch('https://formspree.io/f/artedguru-feedback', {
+    const res = await fetch('https://formspree.io/f/xojynwbj', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
       body: JSON.stringify({ name: name || 'Anonymous', message, _replyto: 'lovsart@gmail.com' })
