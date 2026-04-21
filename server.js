@@ -192,15 +192,15 @@ Sketching process: Introduce → Demonstrate → Practice on scrap paper → App
 - Engineering the Wind: https://www.artedguru.com/home/emgineering-the-wind
 - Tiny Home in a Biome: https://www.artedguru.com/home/tiny-home-in-a-biome
 
-**Math / Geometry (do NOT default to tessellations — use the full range below):**
+**Math / Geometry — IMPORTANT: Do NOT generate a tessellation lesson unless the user explicitly types "tessellation" in the custom field. Choose from this full range instead:**
 - Surreal Perspective (one-point perspective + surrealism): https://www.artedguru.com/home/surreal-perspective
 - Perspective with AI: https://www.artedguru.com/home/perspective-with-ai
 - Perspective Detective: https://www.artedguru.com/home/perspective-detective
 - Polyhedra Piñatas: https://www.artedguru.com/home/polyhedra-pinatas-and-more
-- Tessellations (ONLY generate a tessellation lesson if the user explicitly requests it in their custom field — do not suggest it otherwise): https://www.artedguru.com/home/tessellations-without-the-grid
-- Other math-connected approaches (no specific URL — reference artedguru.com): origami geometry, wire fractal trees, Calder mobiles (cantilever/balance), snowflakes with angle calculation, paper tower engineering challenge, cartography with rulers and grids, facial proportion measurement, crystalline sculpture, repeating pattern design, paper airplane aerodynamics
+- Tessellations (ONLY if user explicitly requests it): https://www.artedguru.com/home/tessellations-without-the-grid
+- Other math-connected approaches (no specific URL — reference artedguru.com): Mondrian-style data painting, origami geometry, wire fractal trees, Calder mobiles (cantilever/balance), snowflakes with angle calculation, paper tower engineering challenge, cartography with rulers and grids, facial proportion measurement, crystalline sculpture, repeating pattern design, paper airplane aerodynamics
 
-**Math Example — Mondrian/Cereal project:** A student painted a Mondrian-style grid where each color block's size represented the percentage of a specific breakfast cereal they consumed. Their favorite cereal (too sugary, rarely purchased) was a small block at the top. Larger blocks = cereals consumed most but liked least. Math: percentage, proportion, data visualization. Art: Mondrian/De Stijl, geometric composition, primary colors. Completely personal — no two students' results could look the same. Use this as inspiration for math-connected lessons.
+**Math Example — one possibility among many:** A student once painted a Mondrian-style grid where each color block's size represented the percentage of a specific breakfast cereal they consumed. Math: percentage, proportion, data visualization. Art: Mondrian/De Stijl, geometric composition, primary colors. This is ONE example of how math and personal connection can combine — not a default. Every math lesson should feel fresh and different.
 
 **Early Finishers (use these — never suggest a new major project):**
 - Multiple Goals for Student Success: https://www.artedguru.com/home/multiple-goals-for-student-success
