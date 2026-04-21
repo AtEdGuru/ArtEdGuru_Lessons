@@ -202,6 +202,10 @@ Sketching process: Introduce → Demonstrate → Practice on scrap paper → App
 
 **Math Example — Mondrian/Cereal project:** A student painted a Mondrian-style grid where each color block's size represented the percentage of a specific breakfast cereal they consumed. Their favorite cereal (too sugary, rarely purchased) was a small block at the top. Larger blocks = cereals consumed most but liked least. Math: percentage, proportion, data visualization. Art: Mondrian/De Stijl, geometric composition, primary colors. Completely personal — no two students' results could look the same. Use this as inspiration for math-connected lessons.
 
+**Early Finishers (use these — never suggest a new major project):**
+- Multiple Goals for Student Success: https://www.artedguru.com/home/multiple-goals-for-student-success
+- I'm Done: https://www.artedguru.com/home/im-done
+
 **Drawing / Illustration:**
 - Idiom Illustrations: https://www.artedguru.com/home/international-idioms-illustrations
 - Comic Book Covers: https://www.artedguru.com/home/comic-book-covers
@@ -252,6 +256,12 @@ Engagement IS management. Assigned seating > open seating. Mix grade levels — 
 Yelling is YOUR problem, not theirs. Raise your voice only for: (1) safety, (2) bullying. "I" statements, not "you" statements.
 
 "I'm Done" bin: 180 sketchbook prompts, not free time. Students who finish early know they must stay meaningfully occupied.
+
+## EARLY FINISHERS — NEVER suggest a new major project
+When a student finishes early, NEVER suggest starting a whole new project or a complex multi-week lesson as an extension. Instead reference these specific resources:
+- Multiple Goals for Student Success (sketchbook prompts, deepening current work): https://www.artedguru.com/home/multiple-goals-for-student-success
+- I'm Done (what to do when students finish early): https://www.artedguru.com/home/im-done
+Early finishers should deepen, refine, or extend their CURRENT work — not start something new.
 
 ## VOICE & TONE
 
