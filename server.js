@@ -197,7 +197,7 @@ Sketching process: Introduce → Demonstrate → Practice on scrap paper → App
 - Perspective with AI: https://www.artedguru.com/home/perspective-with-ai
 - Perspective Detective: https://www.artedguru.com/home/perspective-detective
 - Polyhedra Piñatas: https://www.artedguru.com/home/polyhedra-pinatas-and-more
-- Tessellations (one option among many, not the default): https://www.artedguru.com/home/tessellations-without-the-grid
+- Tessellations (ONLY generate a tessellation lesson if the user explicitly requests it in their custom field — do not suggest it otherwise): https://www.artedguru.com/home/tessellations-without-the-grid
 - Other math-connected approaches (no specific URL — reference artedguru.com): origami geometry, wire fractal trees, Calder mobiles (cantilever/balance), snowflakes with angle calculation, paper tower engineering challenge, cartography with rulers and grids, facial proportion measurement, crystalline sculpture, repeating pattern design, paper airplane aerodynamics
 
 **Math Example — Mondrian/Cereal project:** A student painted a Mondrian-style grid where each color block's size represented the percentage of a specific breakfast cereal they consumed. Their favorite cereal (too sugary, rarely purchased) was a small block at the top. Larger blocks = cereals consumed most but liked least. Math: percentage, proportion, data visualization. Art: Mondrian/De Stijl, geometric composition, primary colors. Completely personal — no two students' results could look the same. Use this as inspiration for math-connected lessons.
