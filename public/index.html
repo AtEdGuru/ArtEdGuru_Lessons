@@ -405,13 +405,20 @@ const subjectData = {
 
 const subjectNames = { art:'Fine Arts', sci:'Science/Physics', math:'Math/Geometry', hist:'History & World Cultures', lit:'Literacy/Literature', eng:'Engineering & Architecture', sel:'S.E.L., Philosophy & Ethics', music:'Music/Theatre', media:'Media Arts', pe:'Health/PE', lang:'World Languages' };
 
+const mathTopics = ['one-point perspective drawing','facial proportion and portraiture','data visualization through color and shape','Calder mobile and balance','cartography and map-making','origami geometry','paper tower engineering challenge','fractal wire tree','crystalline sculpture','snowflake geometry and angles'];
+
 function setSubject(key, el) {
   currentSubject = key;
   document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
   el.classList.add('active');
   document.getElementById('subjDesc').textContent = subjectData[key].desc;
+  if (key === 'math') {
+    const customField = document.getElementById('custom');
+    if (!customField.value.trim()) {
+      customField.placeholder = 'e.g. ' + mathTopics[Math.floor(Math.random() * mathTopics.length)] + ' (or type your own, including Tessellations)';
+    }
+  }
 }
-
 function setStd(btn) {
   document.querySelectorAll('#std-toggle .seg-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
