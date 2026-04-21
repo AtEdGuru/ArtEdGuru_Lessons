@@ -97,14 +97,33 @@ select:focus, input[type=text]:focus { border-color: #c04a20; box-shadow: 0 0 0 
 .error-msg { color: #c0392b; font-size: 14px; padding: 1rem; background: #fdf2f2; border-radius: 8px; border: 1px solid #f5c6c6; }
 
 /* FOOTER */
-.footer-links { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid #e8e4df; }
+.site-footer { margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid #e8e4df; }
+.footer-links { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 1rem; }
 .footer-links a { font-size: 12px; color: #666; text-decoration: none; padding: 5px 12px; border: 1px solid #ddd; border-radius: 20px; background: #fff; transition: all .15s; }
 .footer-links a:hover { background: #fdf5f2; border-color: #c04a20; color: #c04a20; }
+.footer-legal { text-align: center; font-size: 11px; color: #aaa; line-height: 1.8; }
+.footer-legal a { color: #888; text-decoration: underline; }
+.footer-legal a:hover { color: #c04a20; }
+
+/* FEEDBACK BANNER */
+.feedback-banner { background: #f5f2ee; border: 1px solid #e0dbd4; border-radius: 8px; padding: 10px 16px; margin-top: 1.5rem; font-size: 13px; color: #555; text-align: center; }
+.feedback-banner a { color: #c04a20; font-weight: 600; text-decoration: none; }
+.feedback-banner a:hover { text-decoration: underline; }
+
+/* TERMS MODAL */
+.modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center; }
+.modal-overlay.open { display: flex; }
+.modal-box { background: #fff; border-radius: 12px; padding: 2rem; max-width: 600px; width: 90%; max-height: 80vh; overflow-y: auto; position: relative; }
+.modal-box h2 { font-family: 'Playfair Display', serif; font-size: 22px; margin-bottom: 1rem; }
+.modal-box p { font-size: 14px; line-height: 1.7; color: #444; margin-bottom: 1rem; }
+.modal-close { position: absolute; top: 1rem; right: 1rem; background: none; border: none; font-size: 22px; cursor: pointer; color: #888; }
+.modal-close:hover { color: #1a1a1a; }
 
 @media print {
   .app > *:not(#output) { display: none; }
   .output-toolbar { display: none; }
-  .footer-links { display: none; }
+  .site-footer { display: none; }
+  .feedback-banner { display: none; }
   .output-card { border: none; padding: 0; box-shadow: none; }
 }
 @media (max-width: 600px) {
@@ -153,7 +172,7 @@ select:focus, input[type=text]:focus { border-color: #c04a20; box-shadow: 0 0 0 
 .forms-links { font-size: 13px; color: #444; text-align: center; margin-top: 1.5rem; padding: 10px; background: #f5f2ee; border-radius: 8px; }
 .forms-links a { color: #c04a20; text-decoration: none; font-weight: 500; }
 .forms-links a:hover { text-decoration: underline; }
-@media print { .output-toolbar, .export-row, .generate-btn, .footer-links, .header, .subject-pills, .subject-desc, .form-grid, #std-toggle, #addon-checks, .section-label { display: none !important; } }
+@media print { .output-toolbar, .export-row, .generate-btn, .site-footer, .feedback-banner, .header, .subject-pills, .subject-desc, .form-grid, #std-toggle, #addon-checks, .section-label { display: none !important; } }
 </style>
 </head>
 <body>
@@ -170,9 +189,9 @@ select:focus, input[type=text]:focus { border-color: #c04a20; box-shadow: 0 0 0 
   </div>
 
   <!-- SUBJECT AREA -->
-  <div class="section-label">I am a... (select your subject area)</div>
+  <div class="section-label">Select Subject Area</div>
   <div class="subject-pills">
-    <button class="pill active" onclick="setSubject('art',this)">Art teacher</button>
+    <button class="pill active" onclick="setSubject('art',this)">Fine Arts</button>
     <button class="pill" onclick="setSubject('sci',this)">Science / Physics</button>
     <button class="pill" onclick="setSubject('math',this)">Math / Geometry</button>
     <button class="pill" onclick="setSubject('hist',this)">History &amp; World Cultures</button>
@@ -184,12 +203,12 @@ select:focus, input[type=text]:focus { border-color: #c04a20; box-shadow: 0 0 0 
     <button class="pill" onclick="setSubject('pe',this)">Health / PE</button>
     <button class="pill" onclick="setSubject('lang',this)">World Languages</button>
   </div>
-  <div class="subject-desc" id="subjDesc">Turn STEM lessons into STEAM experiences that improve comprehension, retention, and student engagement.</div>
+  <div class="subject-desc" id="subjDesc">Craft a complete visual art lesson built on 40 years of ArtEdGuru classroom experience.</div>
 
   <!-- FORM -->
   <div class="form-grid">
     <div class="form-group">
-      <label>Grade level</label>
+      <label>1. Grade Level</label>
       <select id="grade">
         <option value="K-2">K–2 (Early Elementary)</option>
         <option value="3-5" selected>3–5 (Upper Elementary)</option>
@@ -199,7 +218,7 @@ select:focus, input[type=text]:focus { border-color: #c04a20; box-shadow: 0 0 0 
       </select>
     </div>
     <div class="form-group">
-      <label>Class period length</label>
+      <label>2. Class Period Length</label>
       <select id="period">
         <option value="40 minutes">40 minutes</option>
         <option value="50 minutes" selected>50 minutes</option>
@@ -208,7 +227,7 @@ select:focus, input[type=text]:focus { border-color: #c04a20; box-shadow: 0 0 0 
       </select>
     </div>
     <div class="form-group">
-      <label>Art media</label>
+      <label>3. Art Media</label>
       <select id="media">
         <option value="Open to suggestions">Open to suggestions — let ArtEdGuru decide</option>
         <option value="Drawing (pencil, charcoal, ink)">Drawing (pencil, charcoal, ink)</option>
@@ -226,16 +245,16 @@ select:focus, input[type=text]:focus { border-color: #c04a20; box-shadow: 0 0 0 
       </select>
     </div>
     <div class="form-group">
-      <label>Visual style / mode</label>
+      <label>4. Visual Style / Mode</label>
       <select id="mode">
         <option value="Open to suggestions">Let ArtEdGuru decide — best style for the lesson</option>
-<option value="Realistic">Realistic — highly accurate, like a photo (e.g. Mona Lisa)</option>
+        <option value="Realistic">Realistic — highly accurate, like a photo (e.g. Mona Lisa)</option>
         <option value="Abstract">Abstract — expressive but recognizable (e.g. Starry Night)</option>
         <option value="Non-Objective">Non-Objective — not recognizable (e.g. Pollock's splatters)</option>
       </select>
     </div>
     <div class="form-group">
-      <label>Mode of purpose</label>
+      <label>5. Mode of Purpose</label>
       <select id="purpose">
         <option value="none">None / Teacher's choice</option>
         <option value="Illustration (tells or explains)">Illustration — tells or explains</option>
@@ -247,7 +266,7 @@ select:focus, input[type=text]:focus { border-color: #c04a20; box-shadow: 0 0 0 
       </select>
     </div>
     <div class="form-group">
-      <label>Art history / cultural connection</label>
+      <label>6. Art History / Cultural Connection</label>
       <select id="culture">
         <option value="none">None — use optional field below for custom</option>
         <option value="Ancient Egypt">Ancient Egypt</option>
@@ -269,12 +288,12 @@ select:focus, input[type=text]:focus { border-color: #c04a20; box-shadow: 0 0 0 
     </div>
 
     <div class="form-group full-width">
-      <label>Optional: specific topic, STEAM subject connection (e.g. math, science, engineering), artist, theme, concept, or custom art history connection not listed above</label>
+      <label>7. Optional: Specific Topic, STEAM Connection, Artist, Theme, or Custom Art History</label>
       <input type="text" id="custom" placeholder="e.g. Frida Kahlo, math/geometry, engineering, ecosystems, self-portrait, Surrealism in Mexico...">
     </div>
 
-   <div class="form-group">
-      <label>Lesson duration</label>
+    <div class="form-group">
+      <label>8. Lesson Duration</label>
       <select id="duration">
         <option value="single class period">Single class period</option>
         <option value="2-3 class periods">2–3 class periods</option>
@@ -285,7 +304,7 @@ select:focus, input[type=text]:focus { border-color: #c04a20; box-shadow: 0 0 0 
     </div>
 
     <div class="form-group">
-      <label>National standards display</label>
+      <label>9. National Standards Display</label>
       <div class="seg-group" id="std-toggle">
         <button class="seg-btn" data-val="full" onclick="setStd(this)">Full text</button>
         <button class="seg-btn" data-val="codes" onclick="setStd(this)">Codes only</button>
@@ -294,7 +313,7 @@ select:focus, input[type=text]:focus { border-color: #c04a20; box-shadow: 0 0 0 
     </div>
 
     <div class="form-group full-width">
-      <label>Optional add-ons (select all that apply)</label>
+      <label>10. Optional Add-Ons (select all that apply)</label>
       <div class="checkbox-grid" id="addon-checks">
         <label class="checkbox-item"><input type="checkbox" value="pacing"> Pacing guide</label>
         <label class="checkbox-item"><input type="checkbox" value="costs"> Estimated costs</label>
@@ -309,17 +328,58 @@ select:focus, input[type=text]:focus { border-color: #c04a20; box-shadow: 0 0 0 
 
   <button class="generate-btn" id="genBtn" onclick="generateLesson()">Generate my lesson plan</button>
 
+  <!-- BETA FEEDBACK BANNER -->
+  <div class="feedback-banner">
+    🧪 <strong>Beta version</strong> — How is ArtEdGuru working for you? <a href="#" onclick="openFeedback(); return false;">Send feedback to Eric</a>
+  </div>
+
   <div id="output"></div>
 
   <!-- FOOTER -->
-  <div class="footer-links">
-    <a href="https://www.artedguru.com" target="_blank">ArtEdGuru blog</a>
-    <a href="https://www.firehousepublications.com" target="_blank">FirehousePublications.com</a>
-    <a href="https://www.youtube.com/@artedguru" target="_blank">YouTube</a>
-    <a href="https://www.etsy.com/shop/ArtEdGuru" target="_blank">Etsy</a>
-    <a href="https://amzn.to/42bGPco" target="_blank">Amazon books</a>
-    <a href="https://www.artedguru.com/art-supplies.html" target="_blank">Art supplies</a>
-    <a href="https://www.teacherspayteachers.com/store/art-ed-guru-dot-com" target="_blank">TeachersPayTeachers</a>
+  <div class="site-footer">
+    <div class="footer-links">
+      <a href="https://www.artedguru.com" target="_blank">ArtEdGuru blog</a>
+      <a href="https://www.firehousepublications.com" target="_blank">FirehousePublications.com</a>
+      <a href="https://www.youtube.com/@artedguru" target="_blank">YouTube</a>
+      <a href="https://www.etsy.com/shop/ArtEdGuru" target="_blank">Etsy</a>
+      <a href="https://amzn.to/42bGPco" target="_blank">Amazon books</a>
+      <a href="https://www.artedguru.com/art-supplies.html" target="_blank">Art supplies</a>
+      <a href="https://www.teacherspayteachers.com/store/art-ed-guru-dot-com" target="_blank">TeachersPayTeachers</a>
+    </div>
+    <div class="footer-legal">
+      &copy; Eric Gibbons / ArtEdGuru&trade; — All rights reserved. &nbsp;|&nbsp;
+      <a href="#" onclick="openTerms(); return false;">Terms of Use</a>
+    </div>
+  </div>
+</div>
+
+<!-- TERMS OF USE MODAL -->
+<div class="modal-overlay" id="termsModal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeTerms()">&times;</button>
+    <h2>Terms of Use</h2>
+    <p>Welcome to the ArtEdGuru Lesson Generator. By using this tool, you agree to the following terms.</p>
+    <p><strong>Intended Use.</strong> This tool is provided for educational purposes. Lesson plans generated are intended to assist teachers and educators in planning classroom activities.</p>
+    <p><strong>Intellectual Property.</strong> All content, branding, and methodologies on this platform are the intellectual property of Eric Gibbons / ArtEdGuru&trade;. The ArtEdGuru name and logo are registered trademarks. Generated lesson plans may be used freely in your own classroom. Resale or redistribution of generated content is not permitted without written consent.</p>
+    <p><strong>Accuracy.</strong> Lesson plans are AI-assisted and draw on Eric Gibbons' published works and teaching philosophy. Always apply your own professional judgment before using any generated content in your classroom.</p>
+    <p><strong>Privacy.</strong> We do not store the content of your lesson generation requests beyond what is necessary to generate your response.</p>
+    <p><strong>Contact.</strong> Questions? Visit <a href="https://www.artedguru.com" target="_blank">artedguru.com</a>.</p>
+    <p style="font-size:12px; color:#aaa;">Last updated April 2026.</p>
+  </div>
+</div>
+
+<!-- FEEDBACK MODAL -->
+<div class="modal-overlay" id="feedbackModal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeFeedback()">&times;</button>
+    <h2>Send Feedback</h2>
+    <p style="font-size:14px; color:#555; margin-bottom:1.25rem;">Thanks for helping make ArtEdGuru better! Share what's working, what isn't, or any ideas you have.</p>
+    <div style="display:flex; flex-direction:column; gap:12px;">
+      <input type="text" id="fbName" placeholder="Your name (optional)" style="width:100%;">
+      <textarea id="fbMessage" placeholder="Your feedback..." rows="5" style="width:100%; font-size:14px; padding:9px 12px; border:1px solid #ddd; border-radius:8px; font-family:'Source Sans 3',sans-serif; resize:vertical; outline:none;"></textarea>
+      <button class="generate-btn" style="margin-top:0;" onclick="submitFeedback()">Send Feedback</button>
+      <div id="fbStatus" style="font-size:13px; color:#888; text-align:center;"></div>
+    </div>
   </div>
 </div>
 
@@ -342,7 +402,7 @@ const subjectData = {
   lang:  { desc: 'Lessons for World Language teachers — art from target-language cultures deepens language acquisition and cultural understanding.', persona: 'You are ArtEdGuru — an expert in integrated World Language curriculum. The PRIMARY teacher is a WORLD LANGUAGE TEACHER. Frame objectives around ACTFL World Language standards.' }
 };
 
-const subjectNames = { art:'Art', sci:'Science/Physics', math:'Math/Geometry', hist:'History & World Cultures', lit:'Literacy/Literature', eng:'Engineering & Architecture', sel:'S.E.L., Philosophy & Ethics', music:'Music/Theatre', media:'Media Arts', pe:'Health/PE', lang:'World Languages' };
+const subjectNames = { art:'Fine Arts', sci:'Science/Physics', math:'Math/Geometry', hist:'History & World Cultures', lit:'Literacy/Literature', eng:'Engineering & Architecture', sel:'S.E.L., Philosophy & Ethics', music:'Music/Theatre', media:'Media Arts', pe:'Health/PE', lang:'World Languages' };
 
 function setSubject(key, el) {
   currentSubject = key;
@@ -357,11 +417,49 @@ function setStd(btn) {
   stdMode = btn.dataset.val;
 }
 
+// ─── MODALS ────────────────────────────────────────────────────────────────────
+function openTerms() { document.getElementById('termsModal').classList.add('open'); }
+function closeTerms() { document.getElementById('termsModal').classList.remove('open'); }
+function openFeedback() { document.getElementById('feedbackModal').classList.add('open'); }
+function closeFeedback() { document.getElementById('feedbackModal').classList.remove('open'); document.getElementById('fbStatus').textContent = ''; }
+
+// Close modals on overlay click
+document.addEventListener('click', function(e) {
+  if (e.target.id === 'termsModal') closeTerms();
+  if (e.target.id === 'feedbackModal') closeFeedback();
+});
+
+async function submitFeedback() {
+  const name = document.getElementById('fbName').value.trim();
+  const message = document.getElementById('fbMessage').value.trim();
+  const status = document.getElementById('fbStatus');
+  if (!message) { status.textContent = 'Please enter a message before sending.'; return; }
+
+  status.textContent = 'Sending...';
+
+  try {
+    const res = await fetch('https://formspree.io/f/artedguru-feedback', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({ name: name || 'Anonymous', message, _replyto: 'lovsart@gmail.com' })
+    });
+    if (res.ok) {
+      status.textContent = '✅ Thank you! Your feedback has been sent.';
+      document.getElementById('fbName').value = '';
+      document.getElementById('fbMessage').value = '';
+    } else {
+      status.textContent = 'Something went wrong. Please try again.';
+    }
+  } catch(e) {
+    status.textContent = 'Something went wrong. Please try again.';
+  }
+}
+
 function buildStandardsBlock(grade) {
   if (stdMode === 'none') return '';
   const sName = subjectNames[currentSubject];
   const standardsMap = {
-    'Art': 'National Core Arts Standards for Visual Arts (VA:Cr, VA:Pr, VA:Re, VA:Cn)',
+    'Fine Arts': 'National Core Arts Standards for Visual Arts (VA:Cr, VA:Pr, VA:Re, VA:Cn)',
     'Math/Geometry': 'Common Core State Standards for Mathematics (CCSS.MATH)',
     'Science/Physics': 'Next Generation Science Standards (NGSS)',
     'History & World Cultures': 'C3 Framework for Social Studies State Standards',
@@ -375,15 +473,9 @@ function buildStandardsBlock(grade) {
   };
   const stdName = standardsMap[sName] || 'National Core Arts Standards for Visual Arts';
   if (stdMode === 'codes') {
-    return `
-
-NATIONAL STANDARDS
-List only the relevant ${stdName} codes for grade band ${grade}. Present as a compact grouped list. No explanations needed.`;
+    return `\n\nNATIONAL STANDARDS\nList only the relevant ${stdName} codes for grade band ${grade}. Present as a compact grouped list. No explanations needed.`;
   }
-  return `
-
-NATIONAL STANDARDS
-List 3 relevant ${stdName} for grade band ${grade}. For each standard include the code and one sentence explaining specifically how this lesson meets it.`;
+  return `\n\nNATIONAL STANDARDS\nList 3 relevant ${stdName} for grade band ${grade}. For each standard include the code and one sentence explaining specifically how this lesson meets it.`;
 }
 
 function buildAddonsBlock(addons, period) {
@@ -395,7 +487,6 @@ function buildAddonsBlock(addons, period) {
   if (addons.includes('midcrit')) out += '\nMID-PROJECT CRITIQUE QUESTIONS: Provide 4 discussion questions for a mid-project check-in focused on process and problem-solving.\n';
   if (addons.includes('finalcrit')) out += '\nFINAL CRITIQUE / REFLECTION QUESTIONS: Provide 4 questions for the final critique including self-assessment and peer-to-peer prompts.\n';
   if (addons.includes('iep')) out += '\nACCOMMODATIONS & DIFFERENTIATION: Suggest specific modifications for students with fine motor challenges, visual impairments, processing differences, and students needing additional challenge.\n';
-
   return out;
 }
 
@@ -414,7 +505,6 @@ async function generateLesson() {
   const subj    = subjectData[currentSubject];
   const sName   = subjectNames[currentSubject];
 
-  // Build each optional line only if it has a real value
   const mediaLine    = media === 'Open to suggestions'
     ? 'Art Media: Choose the most appropriate media for the grade, subject, and topic — briefly explain your choice in the Overview.'
     : `Art Media: ${media}`;
@@ -430,7 +520,7 @@ async function generateLesson() {
   const stdBlock    = buildStandardsBlock(grade);
   const addonsBlock = buildAddonsBlock(addons, period);
 
-    const paramLines = [
+  const paramLines = [
     `Subject Area: ${sName}`,
     `Grade Level: ${grade}`,
     mediaLine,
@@ -507,9 +597,6 @@ Generated with ArtEdGuru — artedguru.com | FirehousePublications.com`;
 
     const formattedHTML = formatLesson(lastLessonText);
     const resourcesHTML = resources.length ? `<div class="resources-block"><strong>📚 Other Lessons by ArtEdGuru:</strong><ul>${resources.map(r => `<li><a href="${r.URL}" target="_blank">${r.Title}</a> <span class="res-type">(${r.Type})</span></li>`).join('')}</ul></div>` : '';
-    const hasProgressDoc = addons.includes('progressdoc');
-    const hasRubric = addons.includes('rubric');
-    const formsHTML = (hasProgressDoc ? getProgressDocHTML() : '') + (hasRubric ? getRubricHTML() : '');
 
     output.innerHTML = `
       <div class="output-card">
@@ -551,33 +638,16 @@ function formatLesson(text) {
   ];
 
   const icons = {
-    'ESSENTIAL QUESTION': '❓',
-    'LEARNING TARGET': '🎯',
-    'LESSON TITLE': '🎨',
-    'OVERVIEW': '📌',
-    'ART HISTORY / CULTURAL CONNECTION': '🖼️',
-    'ART HISTORY/CULTURAL CONNECTION': '🖼️',
-    'LEARNING OBJECTIVES': '📋',
-    'NATIONAL STANDARDS': '📐',
-    'NATIONAL STANDARDS ALIGNMENT': '📐',
-    'MATERIALS NEEDED': '🛠️',
-    'MATERIALS': '🛠️',
-    'VOCABULARY': '📚',
-    'CROSS-CURRICULAR CONNECTIONS': '🔬',
-    'LESSON PROCEDURE': '📋',
-    'ASSESSMENT': '✅',
-    'EXTENSIONS & DIFFERENTIATION': '💡',
-    'RESOURCES': '🌐',
-    'PACING GUIDE': '⏱️',
-    'ESTIMATED MATERIALS COST': '💰',
-    'SUBSTITUTE TEACHER VERSION': '👋',
-    'MID-PROJECT CRITIQUE QUESTIONS': '🔍',
-    'FINAL CRITIQUE / REFLECTION QUESTIONS': '🎭',
-    'ACCOMMODATIONS & DIFFERENTIATION': '♿',
-    'TEACHER REFLECTION PROMPT': '⭐',
-    'ADDITIONAL SECTIONS': '➕',
-    'PROJECT PROGRESS DOCUMENT': '📋',
-    'UNIVERSAL ART PROJECT RUBRIC': '📊'
+    'ESSENTIAL QUESTION': '❓', 'LEARNING TARGET': '🎯', 'LESSON TITLE': '🎨',
+    'OVERVIEW': '📌', 'ART HISTORY / CULTURAL CONNECTION': '🖼️', 'ART HISTORY/CULTURAL CONNECTION': '🖼️',
+    'LEARNING OBJECTIVES': '📋', 'NATIONAL STANDARDS': '📐', 'NATIONAL STANDARDS ALIGNMENT': '📐',
+    'MATERIALS NEEDED': '🛠️', 'MATERIALS': '🛠️', 'VOCABULARY': '📚',
+    'CROSS-CURRICULAR CONNECTIONS': '🔬', 'LESSON PROCEDURE': '📋', 'ASSESSMENT': '✅',
+    'EXTENSIONS & DIFFERENTIATION': '💡', 'RESOURCES': '🌐', 'PACING GUIDE': '⏱️',
+    'ESTIMATED MATERIALS COST': '💰', 'SUBSTITUTE TEACHER VERSION': '👋',
+    'MID-PROJECT CRITIQUE QUESTIONS': '🔍', 'FINAL CRITIQUE / REFLECTION QUESTIONS': '🎭',
+    'ACCOMMODATIONS & DIFFERENTIATION': '♿', 'TEACHER REFLECTION PROMPT': '⭐',
+    'ADDITIONAL SECTIONS': '➕', 'PROJECT PROGRESS DOCUMENT': '📋', 'UNIVERSAL ART PROJECT RUBRIC': '📊'
   };
 
   let lines = text.split('\n');
@@ -588,37 +658,26 @@ function formatLesson(text) {
   function renderSection(header, contentLines) {
     const body = contentLines.join('\n').trim();
     if (!body && !header) return '';
-
     const icon = icons[header] || '';
     let out = '<div class="section-block">';
-
     if (header) {
       const displayHeader = toTitleCase(header);
       out += `<div class="section-header"><span class="section-icon">${icon}</span>${displayHeader}</div>`;
     }
-
     if (header === 'ESSENTIAL QUESTION') {
       out += `<div class="eq-box">${escHtml(body)}</div>`;
     } else if (header === 'LEARNING TARGET') {
       out += `<div class="lt-box">${escHtml(body)}</div>`;
     } else if (header === 'ASSESSMENT') {
-      // Try to render as a table if it looks tabular
       out += renderAssessment(body);
     } else {
       out += renderBody(body);
     }
-
-    // Credit line check
-    if (body.includes('Generated with ArtEdGuru') || body.includes('artedguru.com | FirehousePublications')) {
-      // Don't double-render as plain text — skip, credit added at bottom
-    }
-
     out += '</div>';
     return out;
   }
 
   function renderAssessment(body) {
-    // Remove credit line from assessment body
     body = body.split('\n').filter(l => !l.includes('Generated with ArtEdGuru')).join('\n');
     const rows = body.split('\n').filter(l => l.trim());
     const hasTable = rows.some(r => r.includes('|'));
@@ -635,7 +694,6 @@ function formatLesson(text) {
       tableHtml += '</tbody></table>';
       return tableHtml;
     }
-    // Handle labeled rubric format (Category:\n4 = ...\n3 = ...) 
     const categories = ['Project Requirements', 'Craftsmanship', 'Originality', 'Material Care', 'Time Management'];
     const hasCategories = categories.some(c => body.includes(c));
     if (hasCategories) {
@@ -663,7 +721,6 @@ function formatLesson(text) {
     paras.forEach(para => {
       para = para.trim();
       if (!para) return;
-      // Skip credit line — handled globally
       if (para.startsWith('Generated with ArtEdGuru')) return;
       const paraLines = para.split('\n');
       const isNumbered = paraLines.every(l => !l.trim() || /^\d+[\.\)]\s/.test(l.trim()));
@@ -696,7 +753,6 @@ function formatLesson(text) {
 
   lines.forEach(line => {
     const trimmed = line.trim().toUpperCase();
-    // Strip trailing colon for matching
     const trimmedClean = trimmed.replace(/:$/, '');
     const matched = sectionHeaders.find(h => trimmedClean === h || trimmed === h + ':');
     if (matched) {
@@ -708,7 +764,6 @@ function formatLesson(text) {
   });
   flushSection();
 
-  // Always add credit line at the end
   html += `<div class="forms-links"><strong>📋 Printable ArtEdGuru Forms:</strong> <a href="https://www.artedguru.com/uploads/3/0/6/1/30613521/project_progress_document.pdf" target="_blank">Project Progress Document &amp; Universal Rubric — Free Download</a></div><div class="credit-line">Generated with <a href="https://artedguru.com" target="_blank">ArtEdGuru</a> — <a href="https://artedguru.com" target="_blank">artedguru.com</a> | <a href="https://firehousepublications.com" target="_blank">FirehousePublications.com</a></div>`;
 
   return html;
@@ -718,193 +773,11 @@ function toTitleCase(str) {
   const small = new Set(['a','an','the','and','but','or','for','nor','on','at','to','by','in','of','up','as','is']);
   return str.toLowerCase().split(' ').map((w, i) => (i === 0 || !small.has(w)) ? w.charAt(0).toUpperCase() + w.slice(1) : w).join(' ');
 }
-
-function escHtml(s) {
-  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
-
+function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 function linkify(s) {
   return s
     .replace(/(artedguru\.com[^\s<"]*)/g, '<a href="https://$1" target="_blank">$1</a>')
     .replace(/(firehousepublications\.com[^\s<"]*)/g, '<a href="https://$1" target="_blank">$1</a>');
-}
-
-// ─── EXPORT FUNCTIONS ──────────────────────────────────────────────────────────
-
-function showFormSuggestions(lessonText) {
-  // Extract suggestions from lesson text
-  const titleMatch = lessonText.match(/LESSON (?:PLAN|TITLE)[:\s]*([^\n]+)/i) || lessonText.match(/Essential Question[\s\S]{0,200}Learning Target[\s\S]{0,100}/i);
-  
-  // Build suggestions panel
-  const suggestionsHtml = `
-    <div class="form-suggestions">
-      <h3>📋 Form Suggestions — based on your generated lesson</h3>
-      <p class="form-tip">Use these suggestions to fill in your blank forms. Print the forms below.</p>
-      
-      <div class="suggestion-block">
-        <strong>Suggested Project Title:</strong>
-        <div class="suggestion-content" id="suggest-title">See your lesson Overview above</div>
-      </div>
-
-      <div class="suggestion-block">
-        <strong>Requirements (Meet Expectations):</strong>
-        <div class="suggestion-content" id="suggest-reqs">See Materials and Lesson Procedure above</div>
-      </div>
-
-      <div class="suggestion-block">
-        <strong>To Exceed Expectations, I can...</strong>
-        <div class="suggestion-content" id="suggest-exceed">See Assessment rubric above for Exceeds column</div>
-      </div>
-
-      <div class="suggestion-block">
-        <strong>Peer Feedback Prompt:</strong>
-        <div class="suggestion-content">Look at a classmate's work. What do you notice first? What technique surprised you? Give one specific compliment and one suggestion.</div>
-      </div>
-    </div>`;
-  return suggestionsHtml;
-}
-
-function getProgressDocHTML() {
-  return `
-    <div class="printable-form" id="progress-doc-form">
-      <div class="form-header-row">
-        <span class="form-main-title">Project Progress Document</span>
-        <span class="form-field-inline">Name _____________________________ pd _____</span>
-      </div>
-      <p class="form-subtext">This paper will document your daily participation, progress, feedback, &amp; grade.</p>
-      <div class="form-field-block"><strong>Project Title:</strong> <span class="form-line-long"></span></div>
-      <div class="form-field-block">My reference or inspirations for this project is: <span class="form-line-long"></span></div>
-      <div class="form-field-block">My personal connection: <span class="form-line-long"></span></div>
-      <hr class="form-divider-line"/>
-      <div class="form-two-col">
-        <div class="form-left-col">
-          <div class="form-field-block">Intro. date &nbsp;&nbsp;&nbsp; ___/___/_______</div>
-          <div class="form-field-block"><strong>DEADLINE:</strong> &nbsp;&nbsp;&nbsp; ___/___/_______</div>
-          <br/>
-          <div><strong>Requirements:</strong></div>
-          <div class="form-numbered">1. <span class="form-line-med"></span></div>
-          <div class="form-numbered">2. <span class="form-line-med"></span></div>
-          <div class="form-numbered">3. <span class="form-line-med"></span></div>
-          <br/>
-          <div><strong>To exceed expectations, I can...</strong></div>
-          <div class="form-numbered">1. <span class="form-line-med"></span></div>
-          <div class="form-numbered">2. <span class="form-line-med"></span></div>
-          <div class="form-numbered">3. <span class="form-line-med"></span></div>
-          <br/>
-          <div><strong>Peer Feedback by</strong> <span class="form-line-med"></span></div>
-          <div class="form-field-block">Actionable advice for success: <span class="form-line-long"></span></div>
-          <div class="form-line-long"></div>
-        </div>
-        <div class="form-right-col">
-          <div class="instructor-box">
-            <div class="instructor-header">...Instructor Section Only...</div>
-            <div class="progress-rows">
-              <div class="progress-row"><span>10%</span><span class="form-line-short"></span><span class="progress-label" style="writing-mode:vertical-rl;transform:rotate(180deg);font-size:10px;">Sketch</span></div>
-              <div class="progress-row"><span>20%</span><span class="form-line-short"></span></div>
-              <div class="progress-row"><span>25%</span><span class="form-line-short"></span><span>(quarter)</span></div>
-              <div class="progress-row"><span>30%</span><span class="form-line-short"></span><span class="progress-label" style="writing-mode:vertical-rl;transform:rotate(180deg);font-size:10px;">Project Work Phase</span></div>
-              <div class="progress-row"><span>40%</span><span class="form-line-short"></span></div>
-              <div class="progress-row"><span>50%</span><span class="form-line-short"></span><span>(half)</span></div>
-              <div class="progress-row"><span>60%</span><span class="form-line-short"></span></div>
-              <div class="progress-row"><span>70%</span><span class="form-line-short"></span></div>
-              <div class="progress-row"><span>75%</span><span class="form-line-short"></span><span>(3/4)</span></div>
-              <div class="progress-row"><span>80%</span><span class="form-line-short"></span><span class="progress-label" style="writing-mode:vertical-rl;transform:rotate(180deg);font-size:10px;">Detail &amp; finishing</span></div>
-              <div class="progress-row"><span>85%</span><span class="form-line-short"></span></div>
-              <div class="progress-row"><span>90%</span><span class="form-line-short"></span></div>
-              <div class="progress-row"><span>95%</span><span class="form-line-short"></span></div>
-            </div>
-            <div class="form-subtext">(Percent complete, not a grade)</div>
-          </div>
-        </div>
-      </div>
-      <hr class="form-divider-line"/>
-      <div class="form-line-long"></div>
-      <div class="form-line-long"></div>
-      <div class="form-bottom-row">
-        <span class="form-line-med"></span>
-        <span class="form-line-med"></span>
-      </div>
-      <div class="form-footer-right">I will take this advice: [__] Yes or [__] No thank you.</div>
-      <button class="export-btn" onclick="window.print()">🖨️ Print Progress Document</button>
-    </div>`;
-}
-
-function getRubricHTML() {
-  return `
-    <div class="printable-form" id="rubric-form">
-      <div class="rubric-header-row">
-        <span>Name ___________________________</span>
-        <span>Title ___________________________</span>
-        <span>Pd.______</span>
-      </div>
-      <div class="rubric-title">Universal Art Project Rubric</div>
-      <table class="rubric-table">
-        <thead>
-          <tr>
-            <th></th>
-            <th colspan="4" style="text-align:center">Criteria</th>
-            <th>Points</th>
-          </tr>
-          <tr>
-            <th></th>
-            <th>100% / 20pts<br/>Exceeds Expectations</th>
-            <th>90% / 18pts<br/>Meets Expectations</th>
-            <th>80% / 16pts<br/>Approaches Exp.</th>
-            <th>70%-65% / 14pts<br/>Missed Exp.</th>
-            <th>0/F</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><strong>Project Requirements</strong></td>
-            <td><em>I exceeded expectations by:</em><br/><br/><br/></td>
-            <td>Expected use &amp; combination of art elements &amp; principles. Work included all requirements.</td>
-            <td>Acceptable use of art elements &amp; principles but lacked depth in exploring requirements.</td>
-            <td>Lacks evidence of thoughtful use of elements &amp; principles &amp; minimally met required components.</td>
-            <td>____</td>
-          </tr>
-          <tr>
-            <td><strong>Process, Research &amp; Documentation</strong></td>
-            <td><em>I exceeded expectations by:</em><br/><br/><br/></td>
-            <td>Research &amp; documentation are present &amp; meet expectations. Prewriting &amp; sketches are complete &amp; purposeful.</td>
-            <td>Research and/or documentation is present but thin. Artist did not fully take advantage of pre-work opportunities.</td>
-            <td>Research and/or documentation was missing &amp; had a negative impact on the final work. Evidence of depth was lacking.</td>
-            <td>____</td>
-          </tr>
-          <tr>
-            <td><strong>Time &amp; Management</strong></td>
-            <td><em>I exceeded expectations by:</em><br/><br/><br/></td>
-            <td>Student was mostly independently motivated with a few social and/or digital distractions. Work was mostly self-driven.</td>
-            <td>Student was sometimes distracted from work OR finished early without using the extra time to exceed expectations.</td>
-            <td>Often reminded to stay on task. Social/digital interactions impeded work. Lack of focus had a strong impact on project work.</td>
-            <td>____</td>
-          </tr>
-          <tr>
-            <td><strong>Detail, Complexity, Craftsmanship &amp; Care</strong></td>
-            <td><em>I exceeded expectations by:</em><br/><br/><br/></td>
-            <td>Media is without folds/rips or evidence of poor handling. Materials &amp; techniques were explored &amp; met handling expectations. Visual challenges were attempted.</td>
-            <td>Media handling could have avoided minor rips or folds. Media or technique was not fully explored. Visual challenges were minimal.</td>
-            <td>Poor handling or storage had an impact. Media &amp; techniques show little evidence of exploration. Visual challenges were avoided.</td>
-            <td>____</td>
-          </tr>
-          <tr>
-            <td><strong>Original, Personal &amp; Unique</strong><br/><em>(Always credit your inspirations)</em></td>
-            <td>100% original &amp; highly personal because:<br/><br/></td>
-            <td>Generally personal &amp; unique but inspired by:<br/><br/></td>
-            <td>Topically personalized &amp; based on:<br/><br/></td>
-            <td>Topical &amp; highly derivative of:<br/><br/></td>
-            <td>Copied</td>
-          </tr>
-          <tr>
-            <td colspan="5"><strong>Comments:</strong><br/><br/><br/></td>
-            <td><strong>Grade</strong><br/><br/>____</td>
-          </tr>
-        </tbody>
-      </table>
-      <div class="rubric-footer">Created by www.artedguru.com &amp; www.FirehousePublications.com</div>
-      <div class="rubric-reflection"><strong>If you could do this project again, what might you do differently?</strong></div>
-      <button class="export-btn" onclick="window.print()">🖨️ Print Rubric</button>
-    </div>`;
 }
 
 function copyLesson() {
@@ -916,7 +789,6 @@ function copyLesson() {
     setTimeout(() => b.textContent = orig, 2000);
   });
 }
-
 function exportPlainText() {
   if (!lastLessonText) return;
   const a = document.createElement('a');
@@ -924,9 +796,7 @@ function exportPlainText() {
   a.download = 'artedguru-lesson-plan.txt';
   a.click();
 }
-
 function printLesson() { window.print(); }
-
 function exportGoogleDoc() {
   if (!lastLessonText) return;
   const el = document.getElementById('exportStatus');
