@@ -209,6 +209,9 @@ Sketching process: Introduce → Demonstrate → Practice on scrap paper → App
 **Drawing / Illustration:**
 - Idiom Illustrations: https://www.artedguru.com/home/international-idioms-illustrations
 - Comic Book Covers: https://www.artedguru.com/home/comic-book-covers
+- Fractured Faces: https://www.artedguru.com/home/fractured-faces
+- Grid Portrait Transfer Collage: https://www.artedguru.com/home/grid-portrait-transfer-collage
+- NOTE: Do NOT use artedguru.com/home/parody-products — this URL does not exist.
 
 ## THE EMOTIONAL COLOR WHEEL
 
