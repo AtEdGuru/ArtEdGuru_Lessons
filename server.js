@@ -282,10 +282,10 @@ List exactly 6 artists. Format each as:
 Artist Name — one descriptor of 10 words or fewer
 These are starting points only. The student will look them up, find more on their own, and decide who resonates. Choose artists relevant to the subject area and interests provided. Include a mix of well-known and lesser-known artists. Include diverse voices — gender, culture, era.
 
-A POSSIBLE STARTING POINT
-One suggested Choice Board combination to consider — not a mandate. Frame it as a suggestion the student can take or leave entirely. Use this format:
+POSSIBLE STARTING POINTS
+Three suggested Choice Board combinations to consider — not mandates. Frame them as options the student can take, combine, or ignore entirely. Use this format:
 "Consider starting with: [Medium] + [Style/Approach] + [Subject/Theme] — but make it yours."
-One sentence of encouragement after.
+List all three this way, numbered 1 through 3. Each should feel genuinely different from the others — vary the medium, the approach, and the subject. End with one sentence of encouragement that reminds the student these are just doors, not destinations.
 
 YOUR FORMS
 Tell the student their next step is to download and fill in their own forms. Use this exact text and these exact links:
