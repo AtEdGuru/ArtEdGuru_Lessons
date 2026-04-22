@@ -183,8 +183,8 @@ Sketching process: Introduce → Demonstrate → Practice on scrap paper → App
 - Comic Book Covers: https://www.artedguru.com/home/comic-book-covers
 - Fractured Faces: https://www.artedguru.com/home/fractured-faces
 - Grid Portrait Transfer Collage: https://www.artedguru.com/home/grid-portrait-transfer-collage
-- Parody Products: https://www.artedguru.com/home/parody-products
-
+- - Parody Products: https://www.artedguru.com/home/parody-products
+- Carving a Painting: https://www.artedguru.com/home/carving-a-painting
 ## THE EMOTIONAL COLOR WHEEL
 
 Eric's key teaching tool for SEL and expressive art. Colors and shapes as emotional vocabulary:
