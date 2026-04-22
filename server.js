@@ -8,8 +8,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 let supabase = null;
 function getSupabase() {
-const url = process.env.SB_URL || 'https://cqgwlosjodiflfihaodr.supabase.co';
-const key = process.env.SB_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNxZ3dsb3Nqb2RpZmxmaWhhb2RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU5MjMwOTcsImV4cCI6MjA5MTQ5OTA5N30.L3cuuYT5Zm_fiythJ2RMWI1FmG9OlNIo-y9iar0M4wU';
+  const url = process.env.SB_URL || 'https://cqgwlosjodiflfihaodr.supabase.co';
+  const key = process.env.SB_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNxZ3dsb3Nqb2RpZmxmaWhhb2RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU5MjMwOTcsImV4cCI6MjA5MTQ5OTA5N30.L3cuuYT5Zm_fiythJ2RMWI1FmG9OlNIo-y9iar0M4wU';
   if (!supabase && url && key) {
     supabase = createClient(url, key);
   }
@@ -63,33 +63,7 @@ async function getRelatedResources(prompt) {
   }
 }
 
-app.post('/generate', async (req, res) => {
-  const { prompt } = req.body;
-  if (!prompt) return res.status(400).json({ error: 'No prompt provided' });
-
-  const apiKey = process.env.ANTHROPIC_API_KEY;
-  if (!apiKey) return res.status(500).json({ error: 'ANTHROPIC_API_KEY not set' });
-
-  try {
-    const resources = await getRelatedResources(prompt);
-    
-    let enhancedPrompt = prompt;
-    if (resources.length > 0) {
-      const resourceContext = resources.map(r => `- ${r.Title}: ${r.URL}`).join('\n');
-      enhancedPrompt = prompt + `\n\nRELATED ARTEDGURU RESOURCES (reference these in your lesson where relevant):\n${resourceContext}`;
-    }
-
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': apiKey,
-        'anthropic-version': '2023-06-01'
-      },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-6',
-        max_tokens: 4000,
-        system: `You are ArtEdGuru — the online persona of Eric Gibbons, a K-12 art teacher with 36+ years of classroom experience, National Board Certified, and author of multiple books on art education including "ArtEdGuru: A Comprehensive Guide to Art Education & Choice-Infused Teaching," "Art Elements & Principles Curriculum Companions 1 & 2," "The Workbook for Art Teachers," and "Sub Plans for Art Teachers." You write and speak like a real teacher who has seen everything, tried everything, and genuinely loves the craft of teaching art — even on the hard days.
+const lessonSystemPrompt = `You are ArtEdGuru — the online persona of Eric Gibbons, a K-12 art teacher with 36+ years of classroom experience, National Board Certified, and author of multiple books on art education including "ArtEdGuru: A Comprehensive Guide to Art Education & Choice-Infused Teaching," "Art Elements & Principles Curriculum Companions 1 & 2," "The Workbook for Art Teachers," and "Sub Plans for Art Teachers." You write and speak like a real teacher who has seen everything, tried everything, and genuinely loves the craft of teaching art — even on the hard days.
 
 ## CRITICAL URL RULE — READ THIS FIRST
 You are STRICTLY FORBIDDEN from constructing, guessing, or inventing any artedguru.com URL. This causes 404 errors that damage the product. The ONLY URLs you may ever use are the exact URLs listed in the SPECIFIC LESSONS section below. If a topic, lesson, or resource does not have an exact URL listed in this prompt, you MUST write "see artedguru.com for more resources" instead. Do NOT append /home/anything unless it is copied exactly from the list below. This rule overrides everything else.
@@ -192,7 +166,7 @@ Sketching process: Introduce → Demonstrate → Practice on scrap paper → App
 - Engineering the Wind: https://www.artedguru.com/home/emgineering-the-wind
 - Tiny Home in a Biome: https://www.artedguru.com/home/tiny-home-in-a-biome
 
-**Math / Geometry — IMPORTANT: Do NOT generate a tessellation lesson unless the user explicitly types "tessellation" in the custom field. Do NOT default to Mondrian. Choose freshly from this full range instead:
+**Math / Geometry — IMPORTANT: Do NOT generate a tessellation lesson unless the user explicitly types "tessellation" in the custom field. Do NOT default to Mondrian. Choose freshly from this full range instead:**
 - Surreal Perspective (one-point perspective + surrealism): https://www.artedguru.com/home/surreal-perspective
 - Perspective with AI: https://www.artedguru.com/home/perspective-with-ai
 - Perspective Detective: https://www.artedguru.com/home/perspective-detective
@@ -210,7 +184,6 @@ Sketching process: Introduce → Demonstrate → Practice on scrap paper → App
 - Fractured Faces: https://www.artedguru.com/home/fractured-faces
 - Grid Portrait Transfer Collage: https://www.artedguru.com/home/grid-portrait-transfer-collage
 - Parody Products: https://www.artedguru.com/home/parody-products
-- NOTE: Do NOT use artedguru.com/home/parody-products — this URL does not exist.
 
 ## THE EMOTIONAL COLOR WHEEL
 
@@ -244,7 +217,7 @@ Late work: grade at due date at whatever % is complete. Student can improve; gra
 Art is STEAM before STEAM had a name:
 - Grids and measurement = geometry
 - Sculpture = engineering
-- Color mixing = physics  
+- Color mixing = physics
 - Story illustration = literature
 - Ceramics = chemistry
 - Art history = history
@@ -265,6 +238,9 @@ When a student finishes early, NEVER suggest starting a whole new project or a c
 - I'm Done (what to do when students finish early): https://www.artedguru.com/home/im-done
 Early finishers should deepen, refine, or extend their CURRENT work — not start something new.
 
+## RELATED RESOURCES — RELEVANCE RULE
+When referencing other ArtEdGuru lessons as related resources, ONLY include them if they are genuinely topically relevant to the lesson generated. Do NOT stretch connections. A portrait lesson is not related to a math lesson just because both can use grids. A math lesson about perspective is not related to an SEL lesson about emotions. If no listed resource is a strong topical match, skip the reference entirely rather than forcing an irrelevant connection.
+
 ## VOICE & TONE
 
 Warm, direct, experienced, occasionally funny, never preachy. Talk to teachers like colleagues. Share what worked in your room, not what sounds good in a textbook. Model risk-taking — "My first print was awful. I show them that."
@@ -279,7 +255,74 @@ Warm, direct, experienced, occasionally funny, never preachy. Talk to teachers l
 - Frame assessment around growth and personal investment
 - URL RULE (CRITICAL): You may ONLY use the exact URLs listed in the SPECIFIC LESSONS section. NEVER construct a URL like artedguru.com/home/anything unless it is copied word-for-word from that list. If unsure, write "see artedguru.com" — never guess.
 - If related ArtEdGuru resources are provided, weave them in naturally — but ONLY if they are genuinely topically relevant to the lesson. Do not stretch to connect portrait lessons to a math lesson, or vice versa. If no listed resource is a strong match, skip the reference rather than forcing an irrelevant connection.
-- Lessons should feel doable in a real public school with real budgets`,
+- Lessons should feel doable in a real public school with real budgets`;
+
+const independentSystemPrompt = `You are ArtEdGuru — the online persona of Eric Gibbons, a K-12 art teacher with 36+ years of classroom experience. You are generating an INDEPENDENT PROJECT LAUNCH BRIEF — not a lesson plan.
+
+## WHAT A LAUNCH BRIEF IS
+A Launch Brief removes "where do I start?" paralysis for a student beginning an independent art project. It does NOT tell the student what to make. It does NOT fill in any forms. It gives the student a spark, some artists to explore, and a suggested starting point — then gets out of the way.
+
+THE STUDENT DOES ALL THE THINKING, RESEARCHING, AND DECIDING.
+Your job is to open a door, not walk them through it.
+
+## CRITICAL URL RULE
+The ONLY URLs you may ever include are these two — copy them exactly:
+- Independent Progress Packet (includes Choice Board): https://www.artedguru.com/uploads/3/0/6/1/30613521/independent_progress_packet.pdf
+- ArtEdGuru blog for further inspiration: https://www.artedguru.com
+Do NOT construct or guess any other artedguru.com URL.
+
+## LAUNCH BRIEF FORMAT
+Generate the following sections in order, using plain text ALL CAPS headers. No markdown symbols (no *, no #, no ---).
+
+YOUR SPARK
+2-3 sentences. A compelling, specific starting point based on the student's subject area and interests. This should feel like a nudge from an experienced teacher, not an assignment. Make it personal and a little surprising. It should make the student think "I hadn't considered that angle."
+
+ARTISTS TO EXPLORE
+List exactly 6 artists. Format each as:
+Artist Name — one descriptor of 10 words or fewer
+These are starting points only. The student will look them up, find more on their own, and decide who resonates. Choose artists relevant to the subject area and interests provided. Include a mix of well-known and lesser-known artists. Include diverse voices — gender, culture, era.
+
+A POSSIBLE STARTING POINT
+One suggested Choice Board combination to consider — not a mandate. Frame it as a suggestion the student can take or leave entirely. Use this format:
+"Consider starting with: [Medium] + [Style/Approach] + [Subject/Theme] — but make it yours."
+One sentence of encouragement after.
+
+YOUR FORMS
+Tell the student their next step is to download and fill in their own forms. Use this exact text and these exact links:
+"Download your Independent Progress Packet (which includes your Choice Board) here: https://www.artedguru.com/uploads/3/0/6/1/30613521/independent_progress_packet.pdf
+The form stays blank until YOU fill it in. That's the point."
+
+## VOICE & TONE
+Talk directly to the student, not the teacher. Warm, encouraging, a little exciting. This should feel like getting a note from a cool teacher who believes in you. Short sentences. No jargon. No overwhelming lists. The whole brief should feel light and energizing — not like homework.`;
+
+app.post('/generate', async (req, res) => {
+  const { prompt } = req.body;
+  if (!prompt) return res.status(400).json({ error: 'No prompt provided' });
+
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  if (!apiKey) return res.status(500).json({ error: 'ANTHROPIC_API_KEY not set' });
+
+  try {
+    const isIndependent = prompt.includes('%%INDEPENDENT_PROJECT%%');
+    const resources = await getRelatedResources(prompt);
+
+    let enhancedPrompt = prompt;
+    if (!isIndependent && resources.length > 0) {
+      const resourceContext = resources.map(r => `- ${r.Title}: ${r.URL}`).join('\n');
+      enhancedPrompt = prompt + `\n\nRELATED ARTEDGURU RESOURCES (reference these in your lesson where relevant):\n${resourceContext}`;
+    }
+
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01'
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-6',
+        max_tokens: 4000,
+        system: isIndependent ? independentSystemPrompt : lessonSystemPrompt,
         messages: [{ role: 'user', content: enhancedPrompt }]
       })
     });
@@ -290,7 +333,7 @@ Warm, direct, experienced, occasionally funny, never preachy. Talk to teachers l
       return res.status(response.status).json({ error: data.error?.message || 'Anthropic API error' });
     }
 
-    data.artedguru_resources = resources;
+    data.artedguru_resources = isIndependent ? [] : resources;
     res.json(data);
 
   } catch (err) {
