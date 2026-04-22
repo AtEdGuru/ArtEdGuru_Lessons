@@ -24,7 +24,10 @@ body { font-family: 'Source Sans 3', sans-serif; background-color: #faf9f7; back
 .pill { font-size: 13px; padding: 6px 14px; border-radius: 20px; border: 1px solid #ddd; background: #fff; color: #444; cursor: pointer; transition: all .2s; font-family: 'Source Sans 3', sans-serif; }
 .pill:hover { border-color: #c04a20; color: #c04a20; }
 .pill.active { background: #c04a20; color: #fff; border-color: #c04a20; font-weight: 500; }
-.subject-desc { font-size: 13px; color: #666; margin-top: 8px; padding: 10px 14px; background: #f5f2ee; border-radius: 8px; border-left: 3px solid #c04a20; min-height: 38px; line-height: 1.5; margin-bottom: 1.5rem; }
+.subject-desc { font-size: 13px; color: #666; margin-top: 8px; padding: 10px 14px; background: #f5f2ee; border-radius: 8px; border-left: 3px solid #c04a20; min-height: 38px; line-height: 1.5; margin-bottom: 1rem; }
+
+/* MODE TOGGLE */
+.mode-toggle-wrap { display: flex; justify-content: center; margin-bottom: 1.5rem; margin-top: 0.25rem; }
 
 /* FORM */
 .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
@@ -86,12 +89,17 @@ select:focus, input[type=text]:focus { border-color: #c04a20; box-shadow: 0 0 0 
 .lesson-content a:hover { text-decoration: underline; }
 .lesson-content .eq-box { background: #fdf5f2; border-left: 4px solid #c04a20; padding: 14px 18px; border-radius: 0 8px 8px 0; margin-bottom: 6px; font-size: 15px; font-style: italic; color: #2a2a2a; line-height: 1.7; }
 .lesson-content .lt-box { background: #f0f7ff; border-left: 4px solid #2e7ac4; padding: 14px 18px; border-radius: 0 8px 8px 0; margin-bottom: 6px; font-size: 15px; color: #1a3a5c; line-height: 1.7; }
+.lesson-content .spark-box { background: #fdf5f2; border-left: 4px solid #c04a20; padding: 16px 20px; border-radius: 0 8px 8px 0; margin-bottom: 6px; font-size: 16px; font-style: italic; color: #2a2a2a; line-height: 1.8; }
 .lesson-content .credit-line { font-size: 12px; color: #999; text-align: center; margin-top: 2rem; padding-top: 1rem; border-top: 1px solid #eee; }
 .lesson-content .credit-line a { color: #c04a20; }
 .lesson-content table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13.5px; }
 .lesson-content th { background: #f5f2ee; padding: 9px 12px; text-align: left; font-weight: 600; border: 1px solid #e0dbd4; }
 .lesson-content td { padding: 8px 12px; border: 1px solid #e8e4df; vertical-align: top; }
 .lesson-content tr:nth-child(even) td { background: #faf9f7; }
+
+/* LAUNCH BRIEF STYLES */
+.launch-brief-banner { background: #1a3a5c; color: #fff; border-radius: 8px; padding: 12px 18px; margin-bottom: 1.5rem; font-size: 13px; line-height: 1.6; }
+.launch-brief-banner strong { font-size: 14px; display: block; margin-bottom: 4px; }
 
 /* STATUS */
 .status-msg { font-size: 12px; color: #888; font-style: italic; margin-bottom: 8px; }
@@ -140,30 +148,6 @@ select:focus, input[type=text]:focus { border-color: #c04a20; box-shadow: 0 0 0 
 .suggestion-block strong { font-size: 13px; color: #333; }
 .suggestion-content { font-size: 13px; color: #444; background: #fff; border: 1px solid #ddd; border-radius: 6px; padding: 8px 12px; margin-top: 4px; }
 .printable-form { background: #fff; border: 1px solid #e8e4df; border-radius: 12px; padding: 1.75rem; margin-top: 1.5rem; font-family: Arial, sans-serif; font-size: 13px; }
-.form-header-row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
-.form-main-title { font-size: 20px; font-weight: bold; }
-.form-subtext { font-size: 12px; color: #444; margin-bottom: 10px; }
-.form-field-block { margin-bottom: 8px; }
-.form-line-long { display: inline-block; border-bottom: 1px solid #000; width: 60%; margin-left: 4px; }
-.form-line-med { display: inline-block; border-bottom: 1px solid #000; width: 40%; margin-left: 4px; }
-.form-line-short { display: inline-block; border-bottom: 1px solid #000; width: 60px; margin: 0 4px; }
-.form-divider-line { border: none; border-top: 1px solid #000; margin: 12px 0; }
-.form-two-col { display: flex; gap: 20px; }
-.form-left-col { flex: 1; }
-.form-right-col { width: 200px; }
-.form-numbered { margin-bottom: 8px; }
-.instructor-box { border: 3px solid #000; padding: 8px; }
-.instructor-header { background: #000; color: #fff; text-align: center; font-weight: bold; font-size: 12px; padding: 4px; margin-bottom: 8px; }
-.progress-row { display: flex; align-items: center; gap: 4px; margin-bottom: 4px; font-size: 12px; }
-.form-bottom-row { display: flex; justify-content: space-between; margin-top: 8px; }
-.form-footer-right { text-align: right; font-size: 12px; margin-top: 8px; }
-.rubric-header-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 13px; }
-.rubric-title { text-align: center; font-size: 18px; font-weight: bold; font-style: italic; margin-bottom: 12px; }
-.rubric-table { width: 100%; border-collapse: collapse; font-size: 11px; }
-.rubric-table th, .rubric-table td { border: 1px solid #000; padding: 6px 8px; vertical-align: top; }
-.rubric-table th { background: #f0f0f0; font-weight: bold; }
-.rubric-footer { font-size: 11px; color: #555; margin-top: 8px; }
-.rubric-reflection { font-size: 13px; font-weight: bold; margin-top: 8px; }
 .resources-block { background: #f0f7ff; border: 1px solid #2e7ac4; border-radius: 8px; padding: 12px 16px; margin-top: 1.5rem; font-size: 14px; }
 .resources-block ul { margin: 8px 0 0 1.2rem; }
 .resources-block li { margin-bottom: 6px; }
@@ -206,6 +190,14 @@ select:focus, input[type=text]:focus { border-color: #c04a20; box-shadow: 0 0 0 
   </div>
   <div class="subject-desc" id="subjDesc">Craft a complete visual art lesson built on 40 years of ArtEdGuru classroom experience.</div>
 
+  <!-- MODE TOGGLE -->
+  <div class="mode-toggle-wrap">
+    <div class="seg-group" id="mode-toggle">
+      <button class="seg-btn active" data-mode="lesson" onclick="setMode('lesson',this)">Teacher Lesson Plan</button>
+      <button class="seg-btn" data-mode="independent" onclick="setMode('independent',this)">Independent Project</button>
+    </div>
+  </div>
+
   <!-- FORM -->
   <div class="form-grid">
     <div class="form-group">
@@ -219,7 +211,7 @@ select:focus, input[type=text]:focus { border-color: #c04a20; box-shadow: 0 0 0 
       </select>
     </div>
     <div class="form-group">
-      <label>2. Class Period Length</label>
+      <label id="periodLabel">2. Class Period Length</label>
       <select id="period">
         <option value="40 minutes">40 minutes</option>
         <option value="50 minutes" selected>50 minutes</option>
@@ -247,7 +239,7 @@ select:focus, input[type=text]:focus { border-color: #c04a20; box-shadow: 0 0 0 
     </div>
     <div class="form-group">
       <label>4. Visual Style / Mode</label>
-      <select id="mode">
+      <select id="mode-select">
         <option value="Open to suggestions">Let ArtEdGuru decide — best style for the lesson</option>
         <option value="Realistic">Realistic — highly accurate, like a photo (e.g. Mona Lisa)</option>
         <option value="Abstract">Abstract — expressive but recognizable (e.g. Starry Night)</option>
@@ -289,12 +281,12 @@ select:focus, input[type=text]:focus { border-color: #c04a20; box-shadow: 0 0 0 
     </div>
 
     <div class="form-group full-width">
-      <label>7. Optional: Specific Topic, STEAM Connection, Artist, Theme, Tessellations, or Custom Art History</label>
+      <label id="customLabel">7. Optional: Specific Topic, STEAM Connection, Artist, Theme, Tessellations, or Custom Art History</label>
       <input type="text" id="custom" placeholder="e.g. Frida Kahlo, math/geometry, engineering, ecosystems, self-portrait, Surrealism in Mexico...">
     </div>
 
     <div class="form-group">
-      <label>8. Lesson Duration</label>
+      <label id="durationLabel">8. Lesson Duration</label>
       <select id="duration">
         <option value="single class period">Single class period</option>
         <option value="2-3 class periods">2–3 class periods</option>
@@ -386,6 +378,7 @@ select:focus, input[type=text]:focus { border-color: #c04a20; box-shadow: 0 0 0 
 
 <script>
 let currentSubject = 'art';
+let currentMode = 'lesson';
 let stdMode = 'none';
 let lastLessonText = '';
 
@@ -403,6 +396,20 @@ const subjectData = {
   lang:  { desc: 'Lessons for World Language teachers — art from target-language cultures deepens language acquisition and cultural understanding.', persona: 'You are ArtEdGuru — an expert in integrated World Language curriculum. The PRIMARY teacher is a WORLD LANGUAGE TEACHER. Frame objectives around ACTFL World Language standards.' }
 };
 
+const independentDescs = {
+  art:   'Generate a Launch Brief for a student starting an independent visual art project — a spark, artists to explore, and a suggested starting point. The student does all the thinking.',
+  sci:   'Generate a Launch Brief for a student exploring science through independent art — a spark connecting their scientific interest to visual art, with artists who bridge both worlds.',
+  math:  'Generate a Launch Brief for a student exploring math and geometry through independent art — artists who work with pattern, structure, and mathematical thinking.',
+  hist:  'Generate a Launch Brief for a student exploring history or world cultures through independent art — artists whose work is rooted in specific historical moments or cultural traditions.',
+  lit:   'Generate a Launch Brief for a student responding to literature through independent art — artists who illustrate, interpret, or are inspired by written works.',
+  eng:   'Generate a Launch Brief for a student exploring engineering and design through independent art — artists who think like builders, architects, and problem-solvers.',
+  sel:   'Generate a Launch Brief for a student processing emotions, identity, or big questions through independent art — artists known for deeply personal, expressive, or philosophical work.',
+  music: 'Generate a Launch Brief for a student connecting music or theatre to independent visual art — artists inspired by sound, rhythm, performance, and stagecraft.',
+  media: 'Generate a Launch Brief for a student exploring media arts independently — photographers, digital artists, animators, and visual communicators worth researching.',
+  pe:    'Generate a Launch Brief for a student exploring the human body, movement, or wellness through independent art — artists who depict athleticism, anatomy, or physical experience.',
+  lang:  'Generate a Launch Brief for a student exploring world language and culture through independent art — artists from the target culture whose work reflects language, identity, and place.'
+};
+
 const subjectNames = { art:'Fine Arts', sci:'Science/Physics', math:'Math/Geometry', hist:'History & World Cultures', lit:'Literacy/Literature', eng:'Engineering & Architecture', sel:'S.E.L., Philosophy & Ethics', music:'Music/Theatre', media:'Media Arts', pe:'Health/PE', lang:'World Languages' };
 
 const mathTopics = ['one-point perspective drawing','facial proportion and portraiture','data visualization through color and shape','Calder mobile and balance','cartography and map-making','origami geometry','paper tower engineering challenge','fractal wire tree','crystalline sculpture','snowflake geometry and angles'];
@@ -411,14 +418,59 @@ function setSubject(key, el) {
   currentSubject = key;
   document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
   el.classList.add('active');
-  document.getElementById('subjDesc').textContent = subjectData[key].desc;
-  if (key === 'math') {
+  updateSubjectDesc();
+  if (key === 'math' && currentMode === 'lesson') {
     const customField = document.getElementById('custom');
     if (!customField.value.trim()) {
       customField.placeholder = 'e.g. ' + mathTopics[Math.floor(Math.random() * mathTopics.length)] + ' (or type your own, including Tessellations)';
     }
   }
 }
+
+function setMode(mode, btn) {
+  currentMode = mode;
+  document.querySelectorAll('#mode-toggle .seg-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  updateSubjectDesc();
+  updateFormLabels();
+  updateGenerateButton();
+}
+
+function updateSubjectDesc() {
+  const descEl = document.getElementById('subjDesc');
+  if (currentMode === 'independent') {
+    descEl.textContent = independentDescs[currentSubject] || independentDescs.art;
+  } else {
+    descEl.textContent = subjectData[currentSubject].desc;
+  }
+}
+
+function updateFormLabels() {
+  const periodLabel = document.getElementById('periodLabel');
+  const durationLabel = document.getElementById('durationLabel');
+  const customLabel = document.getElementById('customLabel');
+  if (currentMode === 'independent') {
+    periodLabel.textContent = '2. Time Available';
+    durationLabel.textContent = '8. Project Timeline';
+    customLabel.textContent = '7. What are you interested in exploring?';
+    document.getElementById('custom').placeholder = 'e.g. identity, nature, music, architecture, a specific emotion or idea...';
+  } else {
+    periodLabel.textContent = '2. Class Period Length';
+    durationLabel.textContent = '8. Lesson Duration';
+    customLabel.textContent = '7. Optional: Specific Topic, STEAM Connection, Artist, Theme, Tessellations, or Custom Art History';
+    document.getElementById('custom').placeholder = 'e.g. Frida Kahlo, math/geometry, engineering, ecosystems, self-portrait, Surrealism in Mexico...';
+  }
+}
+
+function updateGenerateButton() {
+  const btn = document.getElementById('genBtn');
+  if (currentMode === 'independent') {
+    btn.textContent = 'Generate my launch brief';
+  } else {
+    btn.textContent = 'Generate my lesson plan';
+  }
+}
+
 function setStd(btn) {
   document.querySelectorAll('#std-toggle .seg-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
@@ -431,7 +483,6 @@ function closeTerms() { document.getElementById('termsModal').classList.remove('
 function openFeedback() { document.getElementById('feedbackModal').classList.add('open'); }
 function closeFeedback() { document.getElementById('feedbackModal').classList.remove('open'); document.getElementById('fbStatus').textContent = ''; }
 
-// Close modals on overlay click
 document.addEventListener('click', function(e) {
   if (e.target.id === 'termsModal') closeTerms();
   if (e.target.id === 'feedbackModal') closeFeedback();
@@ -442,9 +493,7 @@ async function submitFeedback() {
   const message = document.getElementById('fbMessage').value.trim();
   const status = document.getElementById('fbStatus');
   if (!message) { status.textContent = 'Please enter a message before sending.'; return; }
-
   status.textContent = 'Sending...';
-
   try {
     const res = await fetch('https://formspree.io/f/xojynwbj', {
       method: 'POST',
@@ -502,17 +551,77 @@ async function generateLesson() {
   const grade    = document.getElementById('grade').value;
   const period   = document.getElementById('period').value;
   const duration = document.getElementById('duration').value;
-  const media   = document.getElementById('media').value;
-  const mode    = document.getElementById('mode').value;
-  const purpose = document.getElementById('purpose').value;
-  const culture = document.getElementById('culture').value;
-  const custom  = document.getElementById('custom').value.trim();
-  const btn     = document.getElementById('genBtn');
-  const output  = document.getElementById('output');
-  const addons  = [...document.querySelectorAll('#addon-checks input:checked')].map(c => c.value);
-  const subj    = subjectData[currentSubject];
-  const sName   = subjectNames[currentSubject];
+  const media    = document.getElementById('media').value;
+  const mode     = document.getElementById('mode-select').value;
+  const purpose  = document.getElementById('purpose').value;
+  const culture  = document.getElementById('culture').value;
+  const custom   = document.getElementById('custom').value.trim();
+  const btn      = document.getElementById('genBtn');
+  const output   = document.getElementById('output');
+  const addons   = [...document.querySelectorAll('#addon-checks input:checked')].map(c => c.value);
+  const subj     = subjectData[currentSubject];
+  const sName    = subjectNames[currentSubject];
 
+  btn.disabled = true;
+  btn.textContent = 'Working on it...';
+  lastLessonText = '';
+
+  // ── INDEPENDENT PROJECT MODE ──────────────────────────────────────────────
+  if (currentMode === 'independent') {
+    const interestLine = custom ? `Student interest / focus: ${custom}` : '';
+    const prompt = `%%INDEPENDENT_PROJECT%%
+
+Generate a Launch Brief for an independent art project.
+
+Subject Area: ${sName}
+Grade Level: ${grade}
+Time Available: ${period}
+Project Timeline: ${duration}
+${interestLine}
+
+Write the Launch Brief now. Use plain text ALL CAPS section headers. No markdown.`;
+
+    output.innerHTML = `
+      <div class="loading-card">
+        <span class="loading-brush">🎨</span>
+        <div class="loading-title">Pulling together your launch brief<span class="loading-dots"></span></div>
+        <div class="loading-sub">This will just take a moment.</div>
+      </div>`;
+
+    try {
+      const res = await fetch('/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt })
+      });
+      const data = await res.json();
+      if (!res.ok || data.error) throw new Error(data.error || 'API error');
+      lastLessonText = (data.content || []).map(b => b.text || '').join('');
+      if (!lastLessonText) throw new Error('No content returned from API');
+
+      const formattedHTML = formatLaunchBrief(lastLessonText);
+      output.innerHTML = `
+        <div class="output-card">
+          <div class="output-toolbar">
+            <span class="output-title">Your launch brief</span>
+            <div class="export-row">
+              <button class="export-btn" onclick="exportPlainText()">Plain text</button>
+              <button class="export-btn" onclick="printLesson()">Print</button>
+              <button class="export-btn primary" onclick="copyLesson()">Copy text</button>
+            </div>
+          </div>
+          <div class="lesson-content">${formattedHTML}</div>
+        </div>`;
+    } catch(e) {
+      output.innerHTML = `<div class="output-card"><div class="error-msg">Something went wrong: ${e.message}. Please try again in a moment.</div></div>`;
+    }
+
+    btn.disabled = false;
+    btn.textContent = 'Generate my launch brief';
+    return;
+  }
+
+  // ── TEACHER LESSON PLAN MODE ──────────────────────────────────────────────
   const mediaLine    = media === 'Open to suggestions'
     ? 'Art Media: Choose the most appropriate media for the grade, subject, and topic — briefly explain your choice in the Overview.'
     : `Art Media: ${media}`;
@@ -524,9 +633,8 @@ async function generateLesson() {
       ? 'Art History / Cultural Connection: Use the custom topic/artist below if it contains a cultural connection; otherwise choose an appropriate historical connection for the grade and subject.'
       : 'Art History / Cultural Connection: Choose an appropriate art history connection for the grade level and subject area and include it as a named section in the lesson.';
   const customLine   = custom ? `Custom Topic / STEAM Connection: ${custom}` : '';
-
-  const stdBlock    = buildStandardsBlock(grade);
-  const addonsBlock = buildAddonsBlock(addons, period);
+  const stdBlock     = buildStandardsBlock(grade);
+  const addonsBlock  = buildAddonsBlock(addons, period);
 
   const paramLines = [
     `Subject Area: ${sName}`,
@@ -574,10 +682,6 @@ A 4-column rubric. Categories: Project Requirements, Craftsmanship, Originality,
 
 Generated with ArtEdGuru — artedguru.com | FirehousePublications.com`;
 
-  btn.disabled = true;
-  btn.textContent = 'Working on it...';
-  lastLessonText = '';
-
   output.innerHTML = `
     <div class="loading-card">
       <span class="loading-brush">🎨</span>
@@ -591,16 +695,10 @@ Generated with ArtEdGuru — artedguru.com | FirehousePublications.com`;
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ prompt })
     });
-
     const data = await res.json();
-
-    if (!res.ok || data.error) {
-      throw new Error(data.error || 'API error');
-    }
-
+    if (!res.ok || data.error) throw new Error(data.error || 'API error');
     lastLessonText = (data.content || []).map(b => b.text || '').join('');
     const resources = data.artedguru_resources || [];
-
     if (!lastLessonText) throw new Error('No content returned from API');
 
     const formattedHTML = formatLesson(lastLessonText);
@@ -620,18 +718,71 @@ Generated with ArtEdGuru — artedguru.com | FirehousePublications.com`;
         <div id="exportStatus"></div>
         <div class="lesson-content">${formattedHTML}${resourcesHTML}</div>
       </div>`;
-
   } catch(e) {
     output.innerHTML = `<div class="output-card"><div class="error-msg">Something went wrong: ${e.message}. Please try again in a moment.</div></div>`;
-    console.error(e);
   }
 
   btn.disabled = false;
   btn.textContent = 'Generate my lesson plan';
 }
 
-// ─── FORMATTER ────────────────────────────────────────────────────────────────
+// ─── LAUNCH BRIEF FORMATTER ───────────────────────────────────────────────────
+function formatLaunchBrief(text) {
+  const sections = ['YOUR SPARK', 'ARTISTS TO EXPLORE', 'A POSSIBLE STARTING POINT', 'YOUR FORMS'];
+  const icons = {
+    'YOUR SPARK': '✨',
+    'ARTISTS TO EXPLORE': '🎨',
+    'A POSSIBLE STARTING POINT': '🧭',
+    'YOUR FORMS': '📋'
+  };
 
+  let lines = text.split('\n');
+  let html = '<div class="launch-brief-banner"><strong>🚀 Your Independent Project Launch Brief</strong>This is your starting point — not your destination. The thinking, researching, and deciding is all yours.</div>';
+  let currentSection = '';
+  let sectionContent = [];
+
+  function renderBriefSection(header, contentLines) {
+    const body = contentLines.join('\n').trim();
+    if (!body && !header) return '';
+    const icon = icons[header] || '';
+    let out = '<div class="section-block">';
+    if (header) {
+      out += `<div class="section-header"><span class="section-icon">${icon}</span>${toTitleCase(header)}</div>`;
+    }
+    if (header === 'YOUR SPARK') {
+      out += `<div class="spark-box">${escHtml(body)}</div>`;
+    } else if (header === 'YOUR FORMS') {
+      out += renderBody(body);
+      out += `<div style="text-align:center; margin-top:1rem;"><a href="https://www.artedguru.com/uploads/3/0/6/1/30613521/independent_progress_packet.pdf" target="_blank" style="display:inline-block; background:#c04a20; color:#fff; padding:12px 24px; border-radius:8px; font-weight:600; text-decoration:none; font-size:15px;">Download Independent Progress Packet →</a></div>`;
+    } else {
+      out += renderBody(body);
+    }
+    out += '</div>';
+    return out;
+  }
+
+  function flushBriefSection() {
+    html += renderBriefSection(currentSection, sectionContent);
+    sectionContent = [];
+  }
+
+  lines.forEach(line => {
+    const trimmed = line.trim().toUpperCase();
+    const matched = sections.find(h => trimmed === h || trimmed === h + ':');
+    if (matched) {
+      flushBriefSection();
+      currentSection = matched;
+    } else {
+      sectionContent.push(line);
+    }
+  });
+  flushBriefSection();
+
+  html += `<div class="credit-line">Generated with <a href="https://artedguru.com" target="_blank">ArtEdGuru</a> — <a href="https://artedguru.com" target="_blank">artedguru.com</a></div>`;
+  return html;
+}
+
+// ─── LESSON FORMATTER ─────────────────────────────────────────────────────────
 function formatLesson(text) {
   const sectionHeaders = [
     'ESSENTIAL QUESTION', 'LEARNING TARGET', 'LESSON TITLE', 'OVERVIEW',
@@ -723,37 +874,6 @@ function formatLesson(text) {
     return renderBody(body);
   }
 
-  function renderBody(body) {
-    let out = '';
-    const paras = body.split(/\n\n+/);
-    paras.forEach(para => {
-      para = para.trim();
-      if (!para) return;
-      if (para.startsWith('Generated with ArtEdGuru')) return;
-      const paraLines = para.split('\n');
-      const isNumbered = paraLines.every(l => !l.trim() || /^\d+[\.\)]\s/.test(l.trim()));
-      const isBullet   = paraLines.every(l => !l.trim() || /^[-•*]\s/.test(l.trim()));
-      if ((isNumbered || isBullet) && paraLines.filter(l => l.trim()).length > 1) {
-        out += isNumbered ? '<ol>' : '<ul>';
-        paraLines.forEach(l => {
-          l = l.trim();
-          if (!l) return;
-          const content = l.replace(/^\d+[\.\)]\s/, '').replace(/^[-•*]\s/, '');
-          out += `<li>${linkify(escHtml(content))}</li>`;
-        });
-        out += isNumbered ? '</ol>' : '</ul>';
-      } else {
-        paraLines.forEach(l => {
-          l = l.trim();
-          if (!l) return;
-          if (l.startsWith('Generated with ArtEdGuru')) return;
-          out += `<p>${linkify(escHtml(l))}</p>`;
-        });
-      }
-    });
-    return out;
-  }
-
   function flushSection() {
     html += renderSection(currentSection, sectionContent);
     sectionContent = [];
@@ -773,8 +893,38 @@ function formatLesson(text) {
   flushSection();
 
   html += `<div class="forms-links"><strong>📋 Printable ArtEdGuru Forms:</strong> <a href="https://www.artedguru.com/uploads/3/0/6/1/30613521/project_progress_document.pdf" target="_blank">Project Progress Document &amp; Universal Rubric — Free Download</a></div><div class="credit-line">Generated with <a href="https://artedguru.com" target="_blank">ArtEdGuru</a> — <a href="https://artedguru.com" target="_blank">artedguru.com</a> | <a href="https://firehousepublications.com" target="_blank">FirehousePublications.com</a></div>`;
-
   return html;
+}
+
+function renderBody(body) {
+  let out = '';
+  const paras = body.split(/\n\n+/);
+  paras.forEach(para => {
+    para = para.trim();
+    if (!para) return;
+    if (para.startsWith('Generated with ArtEdGuru')) return;
+    const paraLines = para.split('\n');
+    const isNumbered = paraLines.every(l => !l.trim() || /^\d+[\.\)]\s/.test(l.trim()));
+    const isBullet   = paraLines.every(l => !l.trim() || /^[-•*]\s/.test(l.trim()));
+    if ((isNumbered || isBullet) && paraLines.filter(l => l.trim()).length > 1) {
+      out += isNumbered ? '<ol>' : '<ul>';
+      paraLines.forEach(l => {
+        l = l.trim();
+        if (!l) return;
+        const content = l.replace(/^\d+[\.\)]\s/, '').replace(/^[-•*]\s/, '');
+        out += `<li>${linkify(escHtml(content))}</li>`;
+      });
+      out += isNumbered ? '</ol>' : '</ul>';
+    } else {
+      paraLines.forEach(l => {
+        l = l.trim();
+        if (!l) return;
+        if (l.startsWith('Generated with ArtEdGuru')) return;
+        out += `<p>${linkify(escHtml(l))}</p>`;
+      });
+    }
+  });
+  return out;
 }
 
 function toTitleCase(str) {
