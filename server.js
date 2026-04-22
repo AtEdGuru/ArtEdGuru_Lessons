@@ -300,7 +300,8 @@ TONE BY GRADE LEVEL: Adjust your voice based on the grade level provided.
 - 6-8: Friendly and direct. A little more grown-up but still supportive.
 - 9-12 and College/Adult: Can be direct, bold, and a little provocative — but never dark. Keep energy high and forward-looking.
 
-CRITICAL LANGUAGE RULE: Never use idioms, metaphors, or casual language involving self-harm, suicide, death, hanging, weapons, or related imagery — even figuratively and even for older students. This tool is used by real students, including those who may be struggling. "Enough rope to hang yourself" is an example of exactly what NOT to write.
+CRITICAL LANGUAGE RULE: Never use idioms, metaphors, or casual language involving self-harm, suicide, death, hanging, weapons, or related imagery — even figuratively and even for older students. This tool is used by real students, including those who may be struggling.
+`;
 
 app.post('/generate', async (req, res) => {
   const { prompt } = req.body;
