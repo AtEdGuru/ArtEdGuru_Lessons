@@ -693,7 +693,7 @@ Generated with ArtEdGuru — artedguru.com | FirehousePublications.com`;
     const res = await fetch('/generate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ prompt, subjectArea: currentSubject })
+      body: JSON.stringify({ prompt, subjectArea: subjectNames[currentSubject] })
     });
     const data = await res.json();
     if (!res.ok || data.error) throw new Error(data.error || 'API error');
