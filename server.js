@@ -47,7 +47,23 @@ async function getRelatedResources(prompt, subjectArea) {
       .eq('doc_type', 'RESOURCE');
 
     if (subjectArea) {
-  const simplifiedSubject = subjectArea.split('/')[0].split('&')[0].trim();
+  const subjectMap = {
+    'S.E.L.': 'SEL',
+    'S.E.L': 'SEL',
+    'Fine Arts': 'Art',
+    'Visual Art': 'Art'
+  };
+
+  let simplifiedSubject = subjectArea
+    .split('/')[0]
+    .split('&')[0]
+    .split(',')[0]
+    .trim()
+    .replace(/\./g, '');
+
+  simplifiedSubject = subjectMap[simplifiedSubject] || simplifiedSubject;
+
+  console.log('Resource lookup subject:', simplifiedSubject);
   query = query.ilike('subjects', `%${simplifiedSubject}%`);
 }
 
