@@ -75,9 +75,8 @@ async function getRelatedResources(prompt, subjectArea) {
 
     scored.sort((a, b) => b.score - a.score);
     const top3 = scored
-      .filter(item => item.score > 0)
-      .slice(0, 3)
-      .map(({ score, Tags, full_text, subjects, doc_type, Type, ...rest }) => rest);
+  .slice(0, 3)
+  .map(({ score, Tags, full_text, subjects, doc_type, Type, ...rest }) => rest);
 
     console.log('Supabase found:', top3.length, 'relevant resources');
     return top3;
