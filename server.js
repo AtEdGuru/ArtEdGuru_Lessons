@@ -16,28 +16,41 @@ function getSupabase() {
   return supabase;
 }
 
-async function getRelatedResources(prompt) {
+// SYSTEM DOC CACHE — loaded once at startup, injected into every lesson
+let systemDocsCache = null;
+async function loadSystemDocs() {
+  try {
+    const db = getSupabase();
+    if (!db) return '';
+    const { data, error } = await db
+      .from('resources')
+      .select('full_text')
+      .in('doc_type', ['SYSTEM', 'CLASSROOM_SYSTEM']);
+    if (error || !data) return '';
+    systemDocsCache = data.map(r => r.full_text).join('\n\n---\n\n');
+    console.log(`Loaded ${data.length} SYSTEM docs into cache`);
+    return systemDocsCache;
+  } catch(e) {
+    console.error('Failed to load SYSTEM docs:', e.message);
+    return '';
+  }
+}
+
+async function getRelatedResources(prompt, subjectArea) {
   try {
     const db = getSupabase();
     if (!db) return [];
 
-    const mediaTerms = prompt.toLowerCase().match(/drawing|painting|sculpture|printmaking|collage|watercolor|acrylic|clay|photography|mosaic|fiber|portrait|landscape|color|ceramic|mural|textile|charcoal|pastel|ink|oil|pencil|marker|chalk|tempera|gouache|monotype|etching|lithograph|relief|screen|weaving|knitting|wire|plaster|papier.mache|origami|collograph/g) || [];
-    const subjectTerms = prompt.toLowerCase().match(/self.portrait|still.life|abstract|expressionism|cubism|surrealism|impressionism|pop.art|dada|renaissance|baroque|identity|culture|nature|figure|animal|architecture|landscape|seascape|cityscape|fantasy|pattern|design/g) || [];
-    const pedagogyTerms = prompt.toLowerCase().match(/choice|sel|social.emotional|steam|stem|cross.curricular|literacy|math|science|history|engineering|community|mural|collaboration|independent/g) || [];
-
-    const allTerms = [...new Set([...mediaTerms, ...subjectTerms, ...pedagogyTerms])];
-    const searchTerms = allTerms.slice(0, 5);
-    if (!searchTerms.length) return [];
-
-    const tagConditions = searchTerms.map(k => `Tags.ilike.%${k}%`).join(',');
-    const titleConditions = searchTerms.map(k => `Title.ilike.%${k}%`).join(',');
-    const allConditions = `${tagConditions},${titleConditions}`;
-
-    const { data, error } = await db
+    let query = db
       .from('resources')
-      .select('Title, URL, Type, Tags')
-      .or(allConditions)
-      .limit(10);
+      .select('"Title", "URL", "Tags", subjects, full_text')
+      .eq('doc_type', 'RESOURCE');
+
+    if (subjectArea) {
+      query = query.ilike('subjects', `%${subjectArea}%`);
+    }
+
+    const { data, error } = await query.limit(20);
 
     if (error) {
       console.error('Supabase query error:', error.message);
@@ -46,16 +59,26 @@ async function getRelatedResources(prompt) {
 
     if (!data || data.length === 0) return [];
 
+    const searchText = prompt.toLowerCase();
     const scored = data.map(item => {
-      const combined = ((item.Tags || '') + ' ' + (item.Title || '')).toLowerCase();
-      const score = searchTerms.filter(term => combined.includes(term)).length;
+      const combined = (
+        (item.Tags || '') + ' ' +
+        (item.Title || '') + ' ' +
+        (item.full_text || '') +
+        (item.subjects || '')
+      ).toLowerCase();
+      const words = searchText.split(/\s+/).filter(w => w.length > 3);
+      const score = words.filter(word => combined.includes(word)).length;
       return { ...item, score };
     });
 
     scored.sort((a, b) => b.score - a.score);
-    const top3 = scored.slice(0, 3).map(({ score, Tags, ...rest }) => rest);
+    const top3 = scored
+      .filter(item => item.score > 0)
+      .slice(0, 3)
+      .map(({ score, Tags, full_text, subjects, ...rest }) => rest);
 
-    console.log('Supabase found:', top3.length, 'relevant resources for terms:', searchTerms);
+    console.log('Supabase found:', top3.length, 'relevant resources');
     return top3;
   } catch(e) {
     console.error('Supabase error:', e.message);
@@ -183,8 +206,9 @@ Sketching process: Introduce → Demonstrate → Practice on scrap paper → App
 - Comic Book Covers: https://www.artedguru.com/home/comic-book-covers
 - Fractured Faces: https://www.artedguru.com/home/fractured-faces
 - Grid Portrait Transfer Collage: https://www.artedguru.com/home/grid-portrait-transfer-collage
-- - Parody Products: https://www.artedguru.com/home/parody-products
+- Parody Products: https://www.artedguru.com/home/parody-products
 - Carving a Painting: https://www.artedguru.com/home/carving-a-painting
+
 ## THE EMOTIONAL COLOR WHEEL
 
 Eric's key teaching tool for SEL and expressive art. Colors and shapes as emotional vocabulary:
@@ -304,7 +328,7 @@ CRITICAL LANGUAGE RULE: Never use idioms, metaphors, or casual language involvin
 `;
 
 app.post('/generate', async (req, res) => {
-  const { prompt } = req.body;
+  const { prompt, subjectArea } = req.body;
   if (!prompt) return res.status(400).json({ error: 'No prompt provided' });
 
   const apiKey = process.env.ANTHROPIC_API_KEY;
@@ -312,13 +336,18 @@ app.post('/generate', async (req, res) => {
 
   try {
     const isIndependent = prompt.includes('%%INDEPENDENT_PROJECT%%');
-    const resources = await getRelatedResources(prompt);
+    const resources = await getRelatedResources(prompt, subjectArea);
 
     let enhancedPrompt = prompt;
     if (!isIndependent && resources.length > 0) {
       const resourceContext = resources.map(r => `- ${r.Title}: ${r.URL}`).join('\n');
       enhancedPrompt = prompt + `\n\nRELATED ARTEDGURU RESOURCES (reference these in your lesson where relevant):\n${resourceContext}`;
     }
+
+    const systemDocs = systemDocsCache || '';
+    const fullSystemPrompt = isIndependent
+      ? independentSystemPrompt
+      : lessonSystemPrompt + (systemDocs ? `\n\n## ADDITIONAL CONTEXT FROM ERIC\'S TEACHING LIBRARY\n${systemDocs}` : '');
 
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
@@ -330,7 +359,7 @@ app.post('/generate', async (req, res) => {
       body: JSON.stringify({
         model: 'claude-sonnet-4-6',
         max_tokens: 4000,
-        system: isIndependent ? independentSystemPrompt : lessonSystemPrompt,
+        system: fullSystemPrompt,
         messages: [{ role: 'user', content: enhancedPrompt }]
       })
     });
@@ -351,4 +380,7 @@ app.post('/generate', async (req, res) => {
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`ArtEdGuru server running on port ${PORT}`));
+app.listen(PORT, () => {
+  console.log(`ArtEdGuru server running on port ${PORT}`);
+  loadSystemDocs();
+});
