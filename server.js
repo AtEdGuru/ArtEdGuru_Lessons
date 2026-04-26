@@ -47,8 +47,9 @@ async function getRelatedResources(prompt, subjectArea) {
       .eq('doc_type', 'RESOURCE');
 
     if (subjectArea) {
-      query = query.ilike('subjects', `%${subjectArea}%`);
-    }
+  const simplifiedSubject = subjectArea.split('/')[0].split('&')[0].trim();
+  query = query.ilike('subjects', `%${simplifiedSubject}%`);
+}
 
     const { data, error } = await query.limit(20);
 
