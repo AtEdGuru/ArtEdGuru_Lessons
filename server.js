@@ -47,25 +47,25 @@ async function getRelatedResources(prompt, subjectArea) {
       .eq('doc_type', 'RESOURCE');
 
     if (subjectArea) {
-  const subjectMap = {
-    'S.E.L.': 'SEL',
-    'S.E.L': 'SEL',
-    'Fine Arts': 'Art',
-    'Visual Art': 'Art'
-  };
+      const subjectMap = {
+        'S.E.L.': 'SEL',
+        'S.E.L': 'SEL',
+        'Fine Arts': 'Art',
+        'Visual Art': 'Art'
+      };
 
-  let simplifiedSubject = subjectArea
-    .split('/')[0]
-    .split('&')[0]
-    .split(',')[0]
-    .trim()
-    .replace(/\./g, '');
+      let simplifiedSubject = subjectArea
+        .split('/')[0]
+        .split('&')[0]
+        .split(',')[0]
+        .trim()
+        .replace(/\./g, '');
 
-  simplifiedSubject = subjectMap[simplifiedSubject] || simplifiedSubject;
+      simplifiedSubject = subjectMap[simplifiedSubject] || simplifiedSubject;
 
-  console.log('Resource lookup subject:', simplifiedSubject);
-  query = query.ilike('subjects', `%${simplifiedSubject}%`);
-}
+      console.log('Resource lookup subject:', simplifiedSubject);
+      query = query.ilike('subjects', `%${simplifiedSubject}%`);
+    }
 
     const { data, error } = await query.limit(20);
 
@@ -91,8 +91,8 @@ async function getRelatedResources(prompt, subjectArea) {
 
     scored.sort((a, b) => b.score - a.score);
     const top3 = scored
-  .slice(0, 3)
-  .map(({ score, Tags, full_text, subjects, doc_type, Type, ...rest }) => rest);
+      .slice(0, 3)
+      .map(({ score, Tags, full_text, subjects, doc_type, Type, ...rest }) => rest);
 
     console.log('Supabase found:', top3.length, 'relevant resources');
     return top3;
@@ -209,7 +209,7 @@ Sketching process: Introduce → Demonstrate → Practice on scrap paper → App
 - Surreal Perspective (one-point perspective + surrealism): https://www.artedguru.com/home/surreal-perspective
 - Perspective with AI: https://www.artedguru.com/home/perspective-with-ai
 - Perspective Detective: https://www.artedguru.com/home/perspective-detective
-- Polyhedra Piñatas: https://www.artedguru.com/home/polyhedra-pinatas-and-more
+- Polyhedra Pinatas: https://www.artedguru.com/home/polyhedra-pinatas-and-more
 - Tessellations (ONLY if user explicitly requests it): https://www.artedguru.com/home/tessellations-without-the-grid
 - Other math-connected approaches (no specific URL — reference artedguru.com): Mondrian-style data painting, origami geometry, wire fractal trees, Calder mobiles (cantilever/balance), snowflakes with angle calculation, paper tower engineering challenge, cartography with rulers and grids, facial proportion measurement, crystalline sculpture, repeating pattern design, paper airplane aerodynamics
 
@@ -234,7 +234,7 @@ SHAPES: Triangles = aggressive, dangerous, sharp | Circles = soft, playful, safe
 COLORS: Red = aggression, danger, blood | Orange = high energy, potential danger | Yellow = playful, warm, childlike | Green = growth, nurturing | Blue = vast, calm, life-giving | Purple = royalty, quiet, tranquil | Black = mystery, unknown | White = spiritual, innocent | Brown = earth, potential
 
 "It's like a secret language, a code that is very easy to understand once you know how."
-"Instead of saying they are angry, they could use red or a triangular shape — without relying on a cliché heart or smiley face."
+"Instead of saying they are angry, they could use red or a triangular shape — without relying on a cliche heart or smiley face."
 
 ## ASSESSMENT
 
@@ -342,9 +342,11 @@ TONE BY GRADE LEVEL: Adjust your voice based on the grade level provided.
 
 CRITICAL LANGUAGE RULE: Never use idioms, metaphors, or casual language involving self-harm, suicide, death, hanging, weapons, or related imagery — even figuratively and even for older students. This tool is used by real students, including those who may be struggling.
 `;
+
 app.get('/portal', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'portal.html'));
 });
+
 app.post('/generate', async (req, res) => {
   const { prompt, subjectArea } = req.body;
   if (!prompt) return res.status(400).json({ error: 'No prompt provided' });
@@ -365,7 +367,7 @@ app.post('/generate', async (req, res) => {
     const systemDocs = systemDocsCache || '';
     const fullSystemPrompt = isIndependent
       ? independentSystemPrompt
-      : lessonSystemPrompt + (systemDocs ? `\n\n## ADDITIONAL CONTEXT FROM ERIC\'S TEACHING LIBRARY\n${systemDocs}` : '');
+      : lessonSystemPrompt + (systemDocs ? `\n\n## ADDITIONAL CONTEXT FROM ERIC'S TEACHING LIBRARY\n${systemDocs}` : '');
 
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
