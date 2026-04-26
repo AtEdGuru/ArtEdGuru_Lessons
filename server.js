@@ -43,7 +43,7 @@ async function getRelatedResources(prompt, subjectArea) {
 
     let query = db
       .from('resources')
-      .select('"Title", "URL", "Tags", subjects, full_text')
+      .select('Title, URL, Tags, subjects, full_text')
       .eq('doc_type', 'RESOURCE');
 
     if (subjectArea) {
