@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ArtEdGuru — Lesson Portal</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Source+Sans+3:wght@400;500;600&display=swap');
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ink: #1a1a2e;
+      --warm: #f5f0e8;
+      --accent: #c0392b;
+      --accent-dark: #962d22;
+      --muted: #6b6b7b;
+      --border: #ddd8ce;
+      --success: #27ae60;
+      --warning: #e67e22;
+      --card: #ffffff;
+      --shadow: 0 2px 12px rgba(0,0,0,0.08);
+    }
+
+    body {
+      font-family: 'Source Sans 3', sans-serif;
+      background: var(--warm);
+      color: var(--ink);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem 1rem;
+    }
+
+    /* ── LOGIN SCREEN ── */
+    #login-screen {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 80vh;
+      width: 100%;
+    }
+
+    .login-box {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 2.5rem 2rem;
+      width: 100%;
+      max-width: 380px;
+      box-shadow: var(--shadow);
+      text-align: center;
+    }
+
+    .login-box h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.6rem;
+      color: var(--ink);
+      margin-bottom: 0.25rem;
+    }
+
+    .login-box p {
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-bottom: 1.75rem;
+    }
+
+    .login-box input[type="password"] {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      font-size: 1rem;
+      font-family: inherit;
+      margin-bottom: 1rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .login-box input[type="password"]:focus {
+      border-color: var(--accent);
+    }
+
+    .login-box button {
+      width: 100%;
+      padding: 0.75rem;
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-family: inherit;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .login-box button:hover { background: var(--accent-dark); }
+
+    #login-error {
+      color: var(--accent);
+      font-size: 0.875rem;
+      margin-top: 0.75rem;
+      min-height: 1.2em;
+    }
+
+    /* ── PORTAL SCREEN ── */
+    #portal-screen { display: none; width: 100%; max-width: 780px; }
+
+    .portal-header {
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid var(--border);
+    }
+
+    .portal-header h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem;
+      color: var(--ink);
+    }
+
+    .portal-header p {
+      color: var(--muted);
+      font-size: 0.925rem;
+      margin-top: 0.25rem;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.75rem;
+      margin-bottom: 1.25rem;
+      box-shadow: var(--shadow);
+    }
+
+    .card h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+      margin-bottom: 1.25rem;
+      color: var(--ink);
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .field { margin-bottom: 1.25rem; }
+    .field:last-child { margin-bottom: 0; }
+
+    label {
+      display: block;
+      font-weight: 600;
+      font-size: 0.875rem;
+      color: var(--ink);
+      margin-bottom: 0.4rem;
+    }
+
+    label .hint {
+      font-weight: 400;
+      color: var(--muted);
+      font-size: 0.8rem;
+    }
+
+    input[type="text"],
+    input[type="url"],
+    textarea,
+    select {
+      width: 100%;
+      padding: 0.65rem 0.875rem;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-family: inherit;
+      color: var(--ink);
+      background: #fafaf8;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    input:focus, textarea:focus, select:focus { border-color: var(--accent); background: white; }
+
+    textarea { resize: vertical; line-height: 1.6; }
+
+    /* Subject checkboxes */
+    .subject-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 0.5rem;
+    }
+
+    .subject-option {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 0.75rem;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.875rem;
+      transition: all 0.15s;
+      user-select: none;
+      background: #fafaf8;
+    }
+
+    .subject-option:hover { border-color: var(--accent); background: white; }
+    .subject-option input { accent-color: var(--accent); }
+    .subject-option.checked { border-color: var(--accent); background: #fdf0ee; font-weight: 600; }
+
+    /* Grade band checkboxes */
+    .grade-grid {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .grade-option {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.45rem 0.875rem;
+      border: 1.5px solid var(--border);
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 0.875rem;
+      transition: all 0.15s;
+      user-select: none;
+      background: #fafaf8;
+    }
+
+    .grade-option:hover { border-color: var(--accent); background: white; }
+    .grade-option input { accent-color: var(--accent); }
+    .grade-option.checked { border-color: var(--accent); background: #fdf0ee; font-weight: 600; }
+
+    /* Doc type toggle */
+    .doc-type-toggle {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .doc-type-btn {
+      flex: 1;
+      padding: 0.65rem;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      background: #fafaf8;
+      font-family: inherit;
+      font-size: 0.95rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s;
+      text-align: center;
+    }
+
+    .doc-type-btn:hover { border-color: var(--accent); }
+    .doc-type-btn.active { background: var(--accent); color: white; border-color: var(--accent); font-weight: 600; }
+
+    /* URL field */
+    #url-field { transition: opacity 0.2s; }
+    #url-field.hidden { opacity: 0.35; pointer-events: none; }
+
+    #url-status {
+      font-size: 0.8rem;
+      margin-top: 0.35rem;
+      min-height: 1.1em;
+    }
+
+    .status-ok { color: var(--success); }
+    .status-warn { color: var(--warning); }
+    .status-err { color: var(--accent); }
+
+    /* Action buttons */
+    .actions {
+      display: flex;
+      gap: 0.75rem;
+      margin-top: 1.5rem;
+    }
+
+    .btn {
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-primary { background: var(--accent); color: white; flex: 1; }
+    .btn-primary:hover { background: var(--accent-dark); }
+    .btn-primary:disabled { background: #ccc; cursor: not-allowed; }
+
+    .btn-secondary {
+      background: white;
+      color: var(--ink);
+      border: 1.5px solid var(--border);
+    }
+    .btn-secondary:hover { border-color: var(--ink); }
+
+    /* Preview */
+    #preview-section { display: none; }
+
+    #preview-box {
+      background: #fafaf8;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      padding: 1.25rem;
+      font-family: 'Courier New', monospace;
+      font-size: 0.82rem;
+      line-height: 1.7;
+      white-space: pre-wrap;
+      word-break: break-word;
+      max-height: 400px;
+      overflow-y: auto;
+      color: var(--ink);
+    }
+
+    /* Save status */
+    #save-status {
+      margin-top: 1rem;
+      padding: 0.875rem 1rem;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      display: none;
+    }
+
+    #save-status.success { background: #eafaf1; color: var(--success); border: 1px solid #a9dfbf; display: block; }
+    #save-status.error { background: #fdedec; color: var(--accent); border: 1px solid #f5b7b1; display: block; }
+
+    .required { color: var(--accent); }
+
+    /* Reset link */
+    .reset-link {
+      text-align: center;
+      margin-top: 2rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .reset-link button {
+      background: none;
+      border: none;
+      color: var(--muted);
+      font-size: 0.85rem;
+      cursor: pointer;
+      font-family: inherit;
+      text-decoration: underline;
+    }
+
+    .reset-link button:hover { color: var(--ink); }
+  </style>
+</head>
+<body>
+
+<!-- ── LOGIN ── -->
+<div id="login-screen">
+  <div class="login-box">
+    <h1>ArtEdGuru Portal</h1>
+    <p>Lesson input — Eric only</p>
+    <input type="password" id="password-input" placeholder="Password" autocomplete="current-password" />
+    <button onclick="checkPassword()">Enter</button>
+    <div id="login-error"></div>
+  </div>
+</div>
+
+<!-- ── PORTAL ── -->
+<div id="portal-screen">
+
+  <div class="portal-header">
+    <h1>Lesson Input Portal</h1>
+    <p>Add a new lesson or resource directly to the ArtEdGuru RAG library.</p>
+  </div>
+
+  <!-- BASIC INFO -->
+  <div class="card">
+    <h2>Basic Information</h2>
+
+    <div class="field">
+      <label>Title <span class="required">*</span></label>
+      <input type="text" id="field-title" placeholder="e.g. Contour Line Self-Portrait" />
+    </div>
+
+    <div class="field">
+      <label>Doc Type <span class="required">*</span> <span class="hint">— RESOURCE has a live URL and shows as a link. LESSON is background content only.</span></label>
+      <div class="doc-type-toggle">
+        <button class="doc-type-btn active" onclick="setDocType('RESOURCE')">RESOURCE<br><span style="font-weight:400;font-size:0.8rem;">Has a live URL · shows as a link</span></button>
+        <button class="doc-type-btn" onclick="setDocType('LESSON')">LESSON<br><span style="font-weight:400;font-size:0.8rem;">Background content · no URL needed</span></button>
+      </div>
+    </div>
+
+    <div class="field" id="url-field">
+      <label>URL <span class="required">*</span> <span class="hint">— must be a live artedguru.com page</span></label>
+      <input type="url" id="field-url" placeholder="https://www.artedguru.com/home/lesson-name" oninput="clearUrlStatus()" />
+      <div id="url-status"></div>
+    </div>
+  </div>
+
+  <!-- SUBJECTS & GRADES -->
+  <div class="card">
+    <h2>Subject Areas &amp; Grade Bands</h2>
+
+    <div class="field">
+      <label>Subject Areas <span class="required">*</span> <span class="hint">— select all that apply (exact labels only)</span></label>
+      <div class="subject-grid" id="subject-grid">
+        <!-- populated by JS -->
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Grade Bands <span class="required">*</span> <span class="hint">— select all that apply</span></label>
+      <div class="grade-grid" id="grade-grid">
+        <!-- populated by JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="card">
+    <h2>Lesson Content</h2>
+
+    <div class="field">
+      <label>Tags <span class="required">*</span> <span class="hint">— 5–10 keywords, comma-separated, lowercase</span></label>
+      <input type="text" id="field-tags" placeholder="e.g. contour line, self-portrait, drawing, identity, observation" />
+    </div>
+
+    <div class="field">
+      <label>Summary <span class="hint">— 1–2 sentences describing the lesson</span></label>
+      <textarea id="field-summary" rows="3" placeholder="e.g. Students draw expressive self-portraits using contour line technique, connecting observational drawing to personal identity."></textarea>
+    </div>
+
+    <div class="field">
+      <label>Full Lesson Content <span class="required">*</span> <span class="hint">— paste the complete lesson description, process, materials, and any other details</span></label>
+      <textarea id="field-fulltext" rows="12" placeholder="Include: lesson overview, materials needed, step-by-step process, floor (minimum for 90%), ceiling (extension), any differentiation notes..."></textarea>
+    </div>
+  </div>
+
+  <!-- ACTIONS -->
+  <div class="actions">
+    <button class="btn btn-secondary" onclick="showPreview()">Preview</button>
+    <button class="btn btn-primary" id="save-btn" onclick="saveLesson()">Save to ArtEdGuru Library</button>
+  </div>
+
+  <!-- PREVIEW -->
+  <div id="preview-section" class="card" style="margin-top:1.25rem;">
+    <h2>Preview — RAG File Format</h2>
+    <div id="preview-box"></div>
+  </div>
+
+  <div id="save-status"></div>
+
+  <div class="reset-link">
+    <button onclick="resetForm()">Clear form and start over</button>
+  </div>
+
+</div>
+
+<script>
+  // ── CONFIG ──
+  const PORTAL_PASSWORD = 'Swanson001';
+  const SUPABASE_URL = 'https://cqgwlosjodiflfihaodr.supabase.co';
+  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNxZ3dsb3Nqb2RpZmxmaWhhb2RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU5MjMwOTcsImV4cCI6MjA5MTQ5OTA5N30.L3cuuYT5Zm_fiythJ2RMWI1FmG9OlNIo-y9iar0M4wU';
+
+  const SUBJECTS = ['Art','Science','Math','History','Literacy','Engineering','SEL','Music','Media Arts','World Cultures','World Languages'];
+  const GRADES   = ['K-2','3-5','6-8','9-12'];
+
+  let currentDocType = 'RESOURCE';
+
+  // ── BUILD SUBJECT GRID ──
+  const subjectGrid = document.getElementById('subject-grid');
+  SUBJECTS.forEach(s => {
+    const label = document.createElement('label');
+    label.className = 'subject-option';
+    label.innerHTML = `<input type="checkbox" value="${s}" onchange="toggleClass(this,'subject-option','checked')"> ${s}`;
+    subjectGrid.appendChild(label);
+  });
+
+  // ── BUILD GRADE GRID ──
+  const gradeGrid = document.getElementById('grade-grid');
+  GRADES.forEach(g => {
+    const label = document.createElement('label');
+    label.className = 'grade-option';
+    label.innerHTML = `<input type="checkbox" value="${g}" onchange="toggleClass(this,'grade-option','checked')"> ${g}`;
+    gradeGrid.appendChild(label);
+  });
+
+  function toggleClass(input, parentClass, cls) {
+    const parent = input.closest('.' + parentClass);
+    input.checked ? parent.classList.add(cls) : parent.classList.remove(cls);
+  }
+
+  // ── LOGIN ──
+  document.getElementById('password-input').addEventListener('keydown', e => {
+    if (e.key === 'Enter') checkPassword();
+  });
+
+  function checkPassword() {
+    const val = document.getElementById('password-input').value;
+    if (val === PORTAL_PASSWORD) {
+      document.getElementById('login-screen').style.display = 'none';
+      document.getElementById('portal-screen').style.display = 'block';
+    } else {
+      document.getElementById('login-error').textContent = 'Incorrect password. Try again.';
+      document.getElementById('password-input').value = '';
+      document.getElementById('password-input').focus();
+    }
+  }
+
+  // ── DOC TYPE ──
+  function setDocType(type) {
+    currentDocType = type;
+    document.querySelectorAll('.doc-type-btn').forEach(b => b.classList.remove('active'));
+    event.currentTarget.classList.add('active');
+    const urlField = document.getElementById('url-field');
+    if (type === 'LESSON') {
+      urlField.classList.add('hidden');
+    } else {
+      urlField.classList.remove('hidden');
+    }
+  }
+
+  // ── URL STATUS ──
+  function clearUrlStatus() {
+    document.getElementById('url-status').textContent = '';
+    document.getElementById('url-status').className = '';
+  }
+
+  // ── COLLECT FORM DATA ──
+  function getFormData() {
+    const subjects = [...document.querySelectorAll('#subject-grid input:checked')].map(i => i.value);
+    const grades   = [...document.querySelectorAll('#grade-grid input:checked')].map(i => i.value);
+    return {
+      title:    document.getElementById('field-title').value.trim(),
+      docType:  currentDocType,
+      url:      document.getElementById('field-url').value.trim(),
+      subjects: subjects,
+      grades:   grades,
+      tags:     document.getElementById('field-tags').value.trim(),
+      summary:  document.getElementById('field-summary').value.trim(),
+      fullText: document.getElementById('field-fulltext').value.trim(),
+    };
+  }
+
+  // ── VALIDATE ──
+  function validate(data) {
+    const errors = [];
+    if (!data.title)            errors.push('Title is required.');
+    if (!data.subjects.length)  errors.push('Select at least one subject area.');
+    if (!data.grades.length)    errors.push('Select at least one grade band.');
+    if (!data.tags)             errors.push('Tags are required.');
+    if (!data.fullText)         errors.push('Full lesson content is required.');
+    if (data.docType === 'RESOURCE' && !data.url) errors.push('A URL is required for RESOURCE type.');
+    return errors;
+  }
+
+  // ── BUILD RAG FILE TEXT ──
+  function buildFileText(data) {
+    const lines = [
+      `TYPE: ${data.docType}`,
+      `TITLE: ${data.title}`,
+      `SUBJECTS: ${data.subjects.join(', ')}`,
+      `GRADE_BANDS: ${data.grades.join(', ')}`,
+      `TAGS: ${data.tags}`,
+      `SOURCE: Eric's Portal Entry`,
+    ];
+    if (data.url) lines.push(`URL: ${data.url}`);
+    if (data.summary) lines.push(`SUMMARY: ${data.summary}`);
+    lines.push('');
+    lines.push(data.fullText);
+    return lines.join('\n');
+  }
+
+  // ── PREVIEW ──
+  function showPreview() {
+    const data = getFormData();
+    const errors = validate(data);
+    if (errors.length) {
+      alert('Please fix these before previewing:\n\n' + errors.join('\n'));
+      return;
+    }
+    document.getElementById('preview-box').textContent = buildFileText(data);
+    document.getElementById('preview-section').style.display = 'block';
+    document.getElementById('preview-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  // ── SAVE TO SUPABASE ──
+  async function saveLesson() {
+    const data = getFormData();
+    const errors = validate(data);
+    if (errors.length) {
+      alert('Please fix these before saving:\n\n' + errors.join('\n'));
+      return;
+    }
+
+    // URL check for RESOURCE type
+    if (data.docType === 'RESOURCE' && data.url) {
+      const statusEl = document.getElementById('url-status');
+      statusEl.textContent = 'Checking URL…';
+      statusEl.className = '';
+
+      try {
+        const probe = await fetch(data.url, { method: 'HEAD', mode: 'no-cors' });
+        // no-cors always "succeeds" opaquely — at minimum it didn't throw, which means the domain resolved
+        statusEl.textContent = '✓ URL appears reachable';
+        statusEl.className = 'status-ok';
+      } catch (e) {
+        statusEl.textContent = '⚠ Could not reach this URL. Double-check it before saving. Saving as LESSON instead to be safe.';
+        statusEl.className = 'status-warn';
+        data.docType = 'LESSON';
+      }
+    }
+
+    const saveBtn = document.getElementById('save-btn');
+    saveBtn.disabled = true;
+    saveBtn.textContent = 'Saving…';
+
+    const fileText = buildFileText(data);
+
+    const row = {
+      Title:     data.title,
+      URL:       data.url || null,
+      doc_type:  data.docType,
+      full_text: fileText,
+      summary:   data.summary || null,
+      subjects:  data.subjects.join(', '),
+      grade_bands: data.grades.join(', '),
+      Tags:      data.tags,
+    };
+
+    try {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/resources`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': SUPABASE_KEY,
+          'Authorization': `Bearer ${SUPABASE_KEY}`,
+          'Prefer': 'return=minimal'
+        },
+        body: JSON.stringify(row)
+      });
+
+      const statusEl = document.getElementById('save-status');
+
+      if (res.ok) {
+        statusEl.className = 'success';
+        statusEl.textContent = `✓ "${data.title}" saved successfully to the ArtEdGuru library. It will appear in RAG results immediately.`;
+        saveBtn.textContent = 'Saved ✓';
+        document.getElementById('preview-section').style.display = 'none';
+      } else {
+        const err = await res.text();
+        statusEl.className = 'error';
+        statusEl.textContent = `Something went wrong: ${err}`;
+        saveBtn.disabled = false;
+        saveBtn.textContent = 'Save to ArtEdGuru Library';
+      }
+    } catch (e) {
+      const statusEl = document.getElementById('save-status');
+      statusEl.className = 'error';
+      statusEl.textContent = `Network error: ${e.message}`;
+      saveBtn.disabled = false;
+      saveBtn.textContent = 'Save to ArtEdGuru Library';
+    }
+  }
+
+  // ── RESET ──
+  function resetForm() {
+    if (!confirm('Clear everything and start a new entry?')) return;
+    document.getElementById('field-title').value = '';
+    document.getElementById('field-url').value = '';
+    document.getElementById('field-tags').value = '';
+    document.getElementById('field-summary').value = '';
+    document.getElementById('field-fulltext').value = '';
+    document.querySelectorAll('#subject-grid input').forEach(i => { i.checked = false; i.closest('.subject-option').classList.remove('checked'); });
+    document.querySelectorAll('#grade-grid input').forEach(i => { i.checked = false; i.closest('.grade-option').classList.remove('checked'); });
+    setDocType('RESOURCE');
+    document.querySelectorAll('.doc-type-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.doc-type-btn')[0].classList.add('active');
+    document.getElementById('url-field').classList.remove('hidden');
+    document.getElementById('url-status').textContent = '';
+    document.getElementById('preview-section').style.display = 'none';
+    document.getElementById('save-status').className = '';
+    document.getElementById('save-status').textContent = '';
+    document.getElementById('save-btn').disabled = false;
+    document.getElementById('save-btn').textContent = 'Save to ArtEdGuru Library';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+</script>
+</body>
+</html>
