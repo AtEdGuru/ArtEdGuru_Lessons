@@ -342,7 +342,9 @@ TONE BY GRADE LEVEL: Adjust your voice based on the grade level provided.
 
 CRITICAL LANGUAGE RULE: Never use idioms, metaphors, or casual language involving self-harm, suicide, death, hanging, weapons, or related imagery — even figuratively and even for older students. This tool is used by real students, including those who may be struggling.
 `;
-
+app.get('/portal', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'portal.html'));
+});
 app.post('/generate', async (req, res) => {
   const { prompt, subjectArea } = req.body;
   if (!prompt) return res.status(400).json({ error: 'No prompt provided' });
