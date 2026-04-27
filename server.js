@@ -419,9 +419,7 @@ async function fetchNCStandards(subjectArea, gradeBand) {
       }
 
       const section = text.substring(startIndex, endIndex).trim().substring(0, 1200);
-      extracted += section + '
-
-';
+      extracted += section + '\n\n';
     }
 
     return extracted.trim() || null;
