@@ -396,8 +396,9 @@ async function fetchNCStandards(subjectArea, gradeBand) {
     // Strip HTML tags to get plain text
     const text = html.replace(/<[^>]+>/g, ' ').replace(/&amp;/g, '&').replace(/&nbsp;/g, ' ').replace(/\s+/g, ' ');
 
-    // Find the grade band markers for the selected band
-    const markers = GRADE_BAND_MARKERS[gradeBand] || GRADE_BAND_MARKERS['6-8'];
+    // Use only the MIDDLE grade of the band to keep prompt size small
+    const allMarkers = GRADE_BAND_MARKERS[gradeBand] || GRADE_BAND_MARKERS['6-8'];
+    const markers = [allMarkers[Math.floor(allMarkers.length / 2)]];
 
     // Extract the sections matching the grade band
     let extracted = '';
@@ -417,7 +418,7 @@ async function fetchNCStandards(subjectArea, gradeBand) {
         if (ni !== -1 && ni < endIndex) endIndex = ni;
       }
 
-      const section = text.substring(startIndex, endIndex).trim().substring(0, 3000);
+      const section = text.substring(startIndex, endIndex).trim().substring(0, 1200);
       extracted += section + '
 
 ';
