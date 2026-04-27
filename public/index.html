@@ -50,6 +50,12 @@ select:focus, input[type=text]:focus { border-color: #c04a20; box-shadow: 0 0 0 
 .seg-btn.active { background: #c04a20; color: #fff; font-weight: 500; }
 .seg-btn:hover:not(.active) { background: #f5f2ee; }
 
+/* STATE STANDARDS ROW */
+#state-standards-row { display: none; margin-top: 8px; align-items: center; gap: 10px; }
+#state-standards-row.visible { display: flex; }
+#state-standards-row label { font-size: 12px; font-weight: 600; color: #777; letter-spacing: 0.05em; text-transform: uppercase; white-space: nowrap; }
+#state-select { width: auto; min-width: 120px; }
+
 /* GENERATE BUTTON */
 @keyframes gentle-pulse { 0%, 100% { box-shadow: 0 4px 20px rgba(192,74,32,0.4); } 50% { box-shadow: 0 6px 32px rgba(192,74,32,0.7); } }
 .generate-btn { width: 100%; padding: 20px; font-size: 22px; font-weight: 700; border-radius: 12px; cursor: pointer; margin-top: 10px; border: none; background: #c04a20; color: #fff; font-family: 'Source Sans 3', sans-serif; letter-spacing: 0.03em; transition: all .2s; animation: gentle-pulse 2.5s ease-in-out infinite; text-transform: uppercase; }
@@ -297,11 +303,18 @@ select:focus, input[type=text]:focus { border-color: #c04a20; box-shadow: 0 0 0 
     </div>
 
     <div class="form-group">
-      <label>9. National Standards Display</label>
+      <label>9. Standards Display</label>
       <div class="seg-group" id="std-toggle">
-        <button class="seg-btn" data-val="full" onclick="setStd(this)">Full text</button>
-        <button class="seg-btn" data-val="codes" onclick="setStd(this)">Codes only</button>
         <button class="seg-btn active" data-val="none" onclick="setStd(this)">Hide</button>
+        <button class="seg-btn" data-val="national" onclick="setStd(this)">National</button>
+        <button class="seg-btn" data-val="state" onclick="setStd(this)">State</button>
+      </div>
+      <!-- State selector — only visible when State is chosen -->
+      <div id="state-standards-row">
+        <label>State:</label>
+        <select id="state-select">
+          <option value="NC">North Carolina (2024)</option>
+        </select>
       </div>
     </div>
 
@@ -475,6 +488,13 @@ function setStd(btn) {
   document.querySelectorAll('#std-toggle .seg-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   stdMode = btn.dataset.val;
+  // Show/hide state selector
+  const stateRow = document.getElementById('state-standards-row');
+  if (stdMode === 'state') {
+    stateRow.classList.add('visible');
+  } else {
+    stateRow.classList.remove('visible');
+  }
 }
 
 // ─── MODALS ────────────────────────────────────────────────────────────────────
@@ -512,29 +532,6 @@ async function submitFeedback() {
   }
 }
 
-function buildStandardsBlock(grade) {
-  if (stdMode === 'none') return '';
-  const sName = subjectNames[currentSubject];
-  const standardsMap = {
-    'Fine Arts': 'National Core Arts Standards for Visual Arts (VA:Cr, VA:Pr, VA:Re, VA:Cn)',
-    'Math/Geometry': 'Common Core State Standards for Mathematics (CCSS.MATH)',
-    'Science/Physics': 'Next Generation Science Standards (NGSS)',
-    'History & World Cultures': 'C3 Framework for Social Studies State Standards',
-    'Literacy/Literature': 'Common Core ELA Standards (CCSS.ELA-LITERACY)',
-    'Engineering & Architecture': 'NGSS Engineering Design Standards',
-    'S.E.L., Philosophy & Ethics': 'CASEL Social-Emotional Learning Competency Framework',
-    'Music/Theatre': 'National Core Arts Standards for Music and Theatre',
-    'Media Arts': 'National Core Arts Standards for Media Arts',
-    'Health/PE': 'SHAPE America National Health and Physical Education Standards',
-    'World Languages': 'ACTFL World-Readiness Standards for Learning Languages'
-  };
-  const stdName = standardsMap[sName] || 'National Core Arts Standards for Visual Arts';
-  if (stdMode === 'codes') {
-    return `\n\nNATIONAL STANDARDS\nList only the relevant ${stdName} codes for grade band ${grade}. Present as a compact grouped list. No explanations needed.`;
-  }
-  return `\n\nNATIONAL STANDARDS\nList 3 relevant ${stdName} for grade band ${grade}. For each standard include the code and one sentence explaining specifically how this lesson meets it.`;
-}
-
 function buildAddonsBlock(addons, period) {
   if (!addons.length) return '';
   let out = '\n\nADDITIONAL SECTIONS — include each of these after the Assessment rubric:\n';
@@ -561,6 +558,7 @@ async function generateLesson() {
   const addons   = [...document.querySelectorAll('#addon-checks input:checked')].map(c => c.value);
   const subj     = subjectData[currentSubject];
   const sName    = subjectNames[currentSubject];
+  const stateVal = document.getElementById('state-select').value;
 
   btn.disabled = true;
   btn.textContent = 'Working on it...';
@@ -592,7 +590,12 @@ Write the Launch Brief now. Use plain text ALL CAPS section headers. No markdown
       const res = await fetch('/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prompt })
+        body: JSON.stringify({
+          prompt,
+          standardsDisplay: stdMode,
+          standardsState: stateVal,
+          gradeBand: grade
+        })
       });
       const data = await res.json();
       if (!res.ok || data.error) throw new Error(data.error || 'API error');
@@ -633,7 +636,6 @@ Write the Launch Brief now. Use plain text ALL CAPS section headers. No markdown
       ? 'Art History / Cultural Connection: Use the custom topic/artist below if it contains a cultural connection; otherwise choose an appropriate historical connection for the grade and subject.'
       : 'Art History / Cultural Connection: Choose an appropriate art history connection for the grade level and subject area and include it as a named section in the lesson.';
   const customLine   = custom ? `Custom Topic / STEAM Connection: ${custom}` : '';
-  const stdBlock     = buildStandardsBlock(grade);
   const addonsBlock  = buildAddonsBlock(addons, period);
 
   const paramLines = [
@@ -678,7 +680,7 @@ LESSON PROCEDURE
 ${period === '90 minutes (block)' ? '8–10' : '5–7'} numbered steps that guide the teacher through the full class period.
 
 ASSESSMENT
-A 4-column rubric. Categories: Project Requirements, Craftsmanship, Originality, Material Care, Time Management. Score levels: 4 = Exceeds, 3 = Meets, 2 = Approaching, 1 = Beginning. Write as a simple table.${stdBlock}${addonsBlock}
+A 4-column rubric. Categories: Project Requirements, Craftsmanship, Originality, Material Care, Time Management. Score levels: 4 = Exceeds, 3 = Meets, 2 = Approaching, 1 = Beginning. Write as a simple table.${addonsBlock}
 
 Generated with ArtEdGuru — artedguru.com | FirehousePublications.com`;
 
@@ -693,7 +695,13 @@ Generated with ArtEdGuru — artedguru.com | FirehousePublications.com`;
     const res = await fetch('/generate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ prompt, subjectArea: subjectNames[currentSubject] })
+      body: JSON.stringify({
+        prompt,
+        subjectArea: subjectNames[currentSubject],
+        standardsDisplay: stdMode,
+        standardsState: stateVal,
+        gradeBand: grade
+      })
     });
     const data = await res.json();
     if (!res.ok || data.error) throw new Error(data.error || 'API error');
@@ -788,6 +796,7 @@ function formatLesson(text) {
     'ESSENTIAL QUESTION', 'LEARNING TARGET', 'LESSON TITLE', 'OVERVIEW',
     'ART HISTORY / CULTURAL CONNECTION', 'ART HISTORY/CULTURAL CONNECTION',
     'LEARNING OBJECTIVES', 'NATIONAL STANDARDS', 'NATIONAL STANDARDS ALIGNMENT',
+    'STATE STANDARDS', 'STATE STANDARDS ALIGNMENT', 'NC STATE STANDARDS',
     'MATERIALS NEEDED', 'MATERIALS', 'VOCABULARY', 'CROSS-CURRICULAR CONNECTIONS',
     'LESSON PROCEDURE', 'ASSESSMENT', 'EXTENSIONS & DIFFERENTIATION', 'RESOURCES',
     'PACING GUIDE', 'ESTIMATED MATERIALS COST', 'SUBSTITUTE TEACHER VERSION',
@@ -800,6 +809,7 @@ function formatLesson(text) {
     'ESSENTIAL QUESTION': '❓', 'LEARNING TARGET': '🎯', 'LESSON TITLE': '🎨',
     'OVERVIEW': '📌', 'ART HISTORY / CULTURAL CONNECTION': '🖼️', 'ART HISTORY/CULTURAL CONNECTION': '🖼️',
     'LEARNING OBJECTIVES': '📋', 'NATIONAL STANDARDS': '📐', 'NATIONAL STANDARDS ALIGNMENT': '📐',
+    'STATE STANDARDS': '📐', 'STATE STANDARDS ALIGNMENT': '📐', 'NC STATE STANDARDS': '📐',
     'MATERIALS NEEDED': '🛠️', 'MATERIALS': '🛠️', 'VOCABULARY': '📚',
     'CROSS-CURRICULAR CONNECTIONS': '🔬', 'LESSON PROCEDURE': '📋', 'ASSESSMENT': '✅',
     'EXTENSIONS & DIFFERENTIATION': '💡', 'RESOURCES': '🌐', 'PACING GUIDE': '⏱️',
