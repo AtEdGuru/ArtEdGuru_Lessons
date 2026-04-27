@@ -449,10 +449,7 @@ app.post('/generate', async (req, res) => {
       const resourceContext = resources.map(r => `- ${r.Title}: ${r.URL}`).join('\n');
       enhancedPrompt = prompt + `\n\nRELATED ARTEDGURU RESOURCES (reference these in your lesson where relevant):\n${resourceContext}`;
     }
-    // Append standards instruction to the prompt if requested
-    if (standardsPromptAddition) {
-      enhancedPrompt += standardsPromptAddition;
-    }
+
 
     const systemDocs = systemDocsCache || '';
 
@@ -465,6 +462,11 @@ app.post('/generate', async (req, res) => {
       }
     } else if (standardsDisplay === 'national') {
       standardsPromptAddition = `\n\nAfter the ASSESSMENT section, add one more section with this exact header: NATIONAL STANDARDS\nSelect 2-3 NAEA National Visual Arts Standards this lesson addresses. Format each as: [Anchor Standard] — [Standard text]. Only include standards the lesson genuinely addresses.`;
+    }
+
+    // Append standards instruction to the prompt if requested
+    if (standardsPromptAddition) {
+      enhancedPrompt += standardsPromptAddition;
     }
 
     const fullSystemPrompt = isIndependent
