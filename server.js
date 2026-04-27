@@ -357,12 +357,85 @@ TONE BY GRADE LEVEL: Adjust your voice based on the grade level provided.
 CRITICAL LANGUAGE RULE: Never use idioms, metaphors, or casual language involving self-harm, suicide, death, hanging, weapons, or related imagery — even figuratively and even for older students. This tool is used by real students, including those who may be struggling.
 `;
 
+
+// ── NC STANDARDS FETCHER ──
+// Maps subject area to the correct artedguru.com standards page
+const NC_STANDARDS_URLS = {
+  'Art':           'https://www.artedguru.com/NCVA.html',
+  'Visual Art':    'https://www.artedguru.com/NCVA.html',
+  'Media Arts':    'https://www.artedguru.com/NCVA.html',
+  'Music':         'https://www.artedguru.com/NCM.html',
+  'Music/Theatre': 'https://www.artedguru.com/NCM.html',
+  'Theatre':       'https://www.artedguru.com/NCT.html',
+  'Dance':         'https://www.artedguru.com/NCD.html',
+};
+
+// Maps app grade band to the section header text found in the standards pages
+const GRADE_BAND_MARKERS = {
+  'K-2':  ['Kindergarten', 'First Grade', 'Second Grade'],
+  '3-5':  ['Third Grade', 'Fourth Grade', 'Fifth Grade'],
+  '6-8':  ['Sixth Grade', 'Seventh Grade', 'Eighth Grade'],
+  '9-12': ['Beginning', 'Intermediate', 'Accomplished', 'Advanced'],
+};
+
+async function fetchNCStandards(subjectArea, gradeBand) {
+  try {
+    // Normalize subject to find the right URL
+    let normalizedSubject = subjectArea
+      .split('/')[0]
+      .split('&')[0]
+      .split(',')[0]
+      .trim();
+
+    const url = NC_STANDARDS_URLS[normalizedSubject] || NC_STANDARDS_URLS['Art'];
+
+    const res = await fetch(url);
+    if (!res.ok) return null;
+    const html = await res.text();
+
+    // Strip HTML tags to get plain text
+    const text = html.replace(/<[^>]+>/g, ' ').replace(/&amp;/g, '&').replace(/&nbsp;/g, ' ').replace(/\s+/g, ' ');
+
+    // Find the grade band markers for the selected band
+    const markers = GRADE_BAND_MARKERS[gradeBand] || GRADE_BAND_MARKERS['6-8'];
+
+    // Extract the sections matching the grade band
+    let extracted = '';
+    for (const marker of markers) {
+      const markerIndex = text.indexOf(marker + ' Visual Arts');
+      const altIndex = text.indexOf(marker + ' General Music');
+      const altIndex2 = text.indexOf(marker + ' Theatre Arts');
+      const altIndex3 = text.indexOf(marker + ' Dance');
+      const startIndex = Math.max(markerIndex, altIndex, altIndex2, altIndex3);
+      if (startIndex === -1) continue;
+
+      // Find the next grade section to know where to stop
+      const nextMarkers = ['Kindergarten', 'First Grade', 'Second Grade', 'Third Grade', 'Fourth Grade', 'Fifth Grade', 'Sixth Grade', 'Seventh Grade', 'Eighth Grade', 'Beginning Visual', 'Intermediate Visual', 'Accomplished Visual', 'Advanced Visual', 'Beginning General', 'Accomplished General', 'Novice Vocal', 'Developing Vocal', 'Intermediate Vocal', 'Accomplished Vocal', 'Advanced Vocal', 'Beginning Theatre', 'Intermediate Theatre', 'Accomplished Theatre', 'Advanced Theatre', 'Beginning Dance', 'Intermediate Dance', 'Accomplished Dance', 'Advanced Dance', 'Beginning Technical'];
+      let endIndex = text.length;
+      for (const nm of nextMarkers) {
+        const ni = text.indexOf(nm, startIndex + 100);
+        if (ni !== -1 && ni < endIndex) endIndex = ni;
+      }
+
+      const section = text.substring(startIndex, endIndex).trim().substring(0, 3000);
+      extracted += section + '
+
+';
+    }
+
+    return extracted.trim() || null;
+  } catch(e) {
+    console.error('NC Standards fetch error:', e.message);
+    return null;
+  }
+}
+
 app.get('/portal', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'portal.html'));
 });
 
 app.post('/generate', async (req, res) => {
-  const { prompt, subjectArea } = req.body;
+  const { prompt, subjectArea, standardsDisplay, standardsState, gradeBand } = req.body;
   if (!prompt) return res.status(400).json({ error: 'No prompt provided' });
 
   const apiKey = process.env.ANTHROPIC_API_KEY;
@@ -379,9 +452,21 @@ app.post('/generate', async (req, res) => {
     }
 
     const systemDocs = systemDocsCache || '';
+
+    // Fetch state standards if requested
+    let standardsContext = '';
+    if (standardsDisplay === 'state' && standardsState === 'NC' && gradeBand) {
+      const ncStandards = await fetchNCStandards(subjectArea || 'Art', gradeBand);
+      if (ncStandards) {
+        standardsContext = `\n\n## NC STATE STANDARDS (2024) — FOR THIS LESSON\nThe teacher has requested NC state standards alignment. Based on the lesson you generate, select and include 2-3 of the most relevant standards from the grade band below. Format each as: [CODE] — [Full objective text]. Only include standards that the lesson genuinely addresses — do not force connections.\n\n${ncStandards}`;
+      }
+    } else if (standardsDisplay === 'national') {
+      standardsContext = `\n\n## NATIONAL STANDARDS ALIGNMENT\nThe teacher has requested national standards alignment. Based on the lesson you generate, select and include 2-3 of the most relevant NAEA National Visual Arts Standards that this lesson addresses. Format each as: [Anchor Standard #] — [Process: Creating/Presenting/Responding/Connecting] — [Standard text]. Only include standards the lesson genuinely addresses.`;
+    }
+
     const fullSystemPrompt = isIndependent
-      ? independentSystemPrompt
-      : lessonSystemPrompt + (systemDocs ? `\n\n## ADDITIONAL CONTEXT FROM ERIC'S TEACHING LIBRARY\n${systemDocs}` : '');
+      ? independentSystemPrompt + standardsContext
+      : lessonSystemPrompt + (systemDocs ? `\n\n## ADDITIONAL CONTEXT FROM ERIC'S TEACHING LIBRARY\n${systemDocs}` : '') + standardsContext;
 
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
