@@ -54,6 +54,14 @@ async function getRelatedResources(prompt, subjectArea) {
         'Visual Art': 'Art'
       };
 
+      // Map from app pill name to all subject tags that should match
+      const subjectAliases = {
+        'Music': ['Music', 'Music/Theatre'],
+        'Theatre': ['Theatre', 'Music/Theatre'],
+        'Health': ['Health/PE'],
+        'PE': ['Health/PE'],
+      };
+
       let simplifiedSubject = subjectArea
         .split('/')[0]
         .split('&')[0]
@@ -64,7 +72,13 @@ async function getRelatedResources(prompt, subjectArea) {
       simplifiedSubject = subjectMap[simplifiedSubject] || simplifiedSubject;
 
       console.log('Resource lookup subject:', simplifiedSubject);
-      query = query.ilike('subjects', `%${simplifiedSubject}%`);
+
+      const aliases = subjectAliases[simplifiedSubject];
+      if (aliases) {
+        query = query.or(aliases.map(a => `subjects.ilike.%${a}%`).join(','));
+      } else {
+        query = query.ilike('subjects', `%${simplifiedSubject}%`);
+      }
     }
 
     const { data, error } = await query.limit(20);
