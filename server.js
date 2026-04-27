@@ -449,23 +449,27 @@ app.post('/generate', async (req, res) => {
       const resourceContext = resources.map(r => `- ${r.Title}: ${r.URL}`).join('\n');
       enhancedPrompt = prompt + `\n\nRELATED ARTEDGURU RESOURCES (reference these in your lesson where relevant):\n${resourceContext}`;
     }
+    // Append standards instruction to the prompt if requested
+    if (standardsPromptAddition) {
+      enhancedPrompt += standardsPromptAddition;
+    }
 
     const systemDocs = systemDocsCache || '';
 
-    // Fetch state standards if requested
-    let standardsContext = '';
+    // Fetch state standards if requested — injected into the prompt so Claude outputs them as a section
+    let standardsPromptAddition = '';
     if (standardsDisplay === 'state' && standardsState === 'NC' && gradeBand) {
       const ncStandards = await fetchNCStandards(subjectArea || 'Art', gradeBand);
       if (ncStandards) {
-        standardsContext = `\n\n## NC STATE STANDARDS (2024) — FOR THIS LESSON\nThe teacher has requested NC state standards alignment. Based on the lesson you generate, select and include 2-3 of the most relevant standards from the grade band below. Format each as: [CODE] — [Full objective text]. Only include standards that the lesson genuinely addresses — do not force connections.\n\n${ncStandards}`;
+        standardsPromptAddition = `\n\nAfter the ASSESSMENT section, add one more section with this exact header: NC STATE STANDARDS\nSelect 2-3 standards from the list below that this lesson most directly addresses. Format each on its own line as: [CODE] — [Full objective text]. Only include standards the lesson genuinely addresses.\n\n${ncStandards}`;
       }
     } else if (standardsDisplay === 'national') {
-      standardsContext = `\n\n## NATIONAL STANDARDS ALIGNMENT\nThe teacher has requested national standards alignment. Based on the lesson you generate, select and include 2-3 of the most relevant NAEA National Visual Arts Standards that this lesson addresses. Format each as: [Anchor Standard #] — [Process: Creating/Presenting/Responding/Connecting] — [Standard text]. Only include standards the lesson genuinely addresses.`;
+      standardsPromptAddition = `\n\nAfter the ASSESSMENT section, add one more section with this exact header: NATIONAL STANDARDS\nSelect 2-3 NAEA National Visual Arts Standards this lesson addresses. Format each as: [Anchor Standard] — [Standard text]. Only include standards the lesson genuinely addresses.`;
     }
 
     const fullSystemPrompt = isIndependent
-      ? independentSystemPrompt + standardsContext
-      : lessonSystemPrompt + (systemDocs ? `\n\n## ADDITIONAL CONTEXT FROM ERIC'S TEACHING LIBRARY\n${systemDocs}` : '') + standardsContext;
+      ? independentSystemPrompt
+      : lessonSystemPrompt + (systemDocs ? `\n\n## ADDITIONAL CONTEXT FROM ERIC'S TEACHING LIBRARY\n${systemDocs}` : '');
 
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
