@@ -345,17 +345,20 @@ select:focus, input[type=text]:focus { border-color: #c04a20; box-shadow: 0 0 0 
 
     <div class="form-group">
       <label>9. Standards Display</label>
-      <div class="seg-group" id="std-toggle">
-        <button class="seg-btn active" data-val="none" onclick="setStd(this)">Hide</button>
-        <button class="seg-btn" data-val="national" onclick="setStd(this)">National</button>
-        <button class="seg-btn" data-val="state" onclick="setStd(this)">State</button>
-      </div>
-      <!-- State selector — only visible when State is chosen -->
-      <div id="state-standards-row">
-        <label>State:</label>
-        <select id="state-select">
-          <option value="NC">North Carolina (2024)</option>
-        </select>
+      <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+        <!-- National standards toggle — Hide / Display -->
+        <div class="seg-group" id="std-toggle">
+          <button class="seg-btn active" data-val="none" onclick="setStd(this)">Hide</button>
+          <button class="seg-btn" data-val="national" onclick="setStd(this)">National</button>
+        </div>
+        <!-- NC Arts Standards — only shown for arts subjects -->
+        <button
+          id="nc-arts-btn"
+          onclick="toggleNcArts()"
+          title="NC 2024 Arts Standards (Visual Arts, Music, Theatre, Dance)"
+          style="display:none; align-items:center; gap:6px; padding:7px 13px; border-radius:8px; border:1px solid #ddd; background:#fff; color:#555; font-size:13px; font-family:'Source Sans 3',sans-serif; cursor:pointer; transition:all .15s; white-space:nowrap;">
+          🎨 NC Arts Standards
+        </button>
       </div>
     </div>
 
@@ -451,7 +454,11 @@ select:focus, input[type=text]:focus { border-color: #c04a20; box-shadow: 0 0 0 
 let currentSubject = 'art';
 let currentMode = 'lesson';
 let stdMode = 'none';
+let ncArtsMode = false;   // independent of national standards toggle
 let lastLessonText = '';
+
+// Arts subjects that qualify for NC Arts Standards button
+const NC_ARTS_SUBJECTS = new Set(['art','music','media']);
 
 const subjectData = {
   art:   { desc: 'Craft a complete visual art lesson built on 40 years of ArtEdGuru classroom experience.', persona: 'You are ArtEdGuru — an expert art educator with 40 years of experience teaching K–12 visual art. The PRIMARY teacher is an ART TEACHER. The lesson is driven by visual art — media, technique, art history, and creative process are central. Write in a warm, teacher-friendly voice.' },
@@ -506,8 +513,6 @@ const BLOCKLIST_EXACT = [
   'gore','gory','mutilat','decapitat','behead','dismember',
   'snuff','necrophil','cannibal',
   // Drugs
-   // General profanity
-'fuck','shit','bitch','bastard','asshole','crap','damn','piss','dick','cock','cunt',
   'cocaine','heroin','meth','methamphetamine','fentanyl','opioid',
   'weed','marijuana','cannabis','molly','ecstasy','lsd','acid',
   'crack','xanax','adderall abuse',
@@ -578,6 +583,7 @@ function setSubject(key, el) {
   document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
   el.classList.add('active');
   updateSubjectDesc();
+  updateNcArtsButton();
   if (key === 'math' && currentMode === 'lesson') {
     const customField = document.getElementById('custom');
     if (!customField.value.trim()) {
@@ -634,11 +640,35 @@ function setStd(btn) {
   document.querySelectorAll('#std-toggle .seg-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   stdMode = btn.dataset.val;
-  const stateRow = document.getElementById('state-standards-row');
-  if (stdMode === 'state') {
-    stateRow.classList.add('visible');
+}
+
+function toggleNcArts() {
+  ncArtsMode = !ncArtsMode;
+  const btn = document.getElementById('nc-arts-btn');
+  if (ncArtsMode) {
+    btn.style.background = '#c04a20';
+    btn.style.color = '#fff';
+    btn.style.borderColor = '#c04a20';
+    btn.style.fontWeight = '500';
   } else {
-    stateRow.classList.remove('visible');
+    btn.style.background = '#fff';
+    btn.style.color = '#555';
+    btn.style.borderColor = '#ddd';
+    btn.style.fontWeight = 'normal';
+  }
+}
+
+function updateNcArtsButton() {
+  const btn = document.getElementById('nc-arts-btn');
+  const isArtsSubject = NC_ARTS_SUBJECTS.has(currentSubject);
+  btn.style.display = isArtsSubject ? 'inline-flex' : 'none';
+  // Reset state when hiding
+  if (!isArtsSubject && ncArtsMode) {
+    ncArtsMode = false;
+    btn.style.background = '#fff';
+    btn.style.color = '#555';
+    btn.style.borderColor = '#ddd';
+    btn.style.fontWeight = 'normal';
   }
 }
 
@@ -653,6 +683,9 @@ document.addEventListener('click', function(e) {
   if (e.target.id === 'feedbackModal') closeFeedback();
   // guardrailModal intentionally NOT dismissible by clicking overlay
 });
+
+// Show NC Arts button on initial load (Fine Arts is default subject)
+document.addEventListener('DOMContentLoaded', updateNcArtsButton);
 
 async function submitFeedback() {
   const name = document.getElementById('fbName').value.trim();
@@ -747,7 +780,7 @@ Write the Launch Brief now. Use plain text ALL CAPS section headers. No markdown
         body: JSON.stringify({
           prompt,
           standardsDisplay: stdMode,
-          standardsState: stateVal,
+          ncArts: ncArtsMode,
           gradeBand: grade
         })
       });
@@ -853,7 +886,7 @@ Generated with ArtEdGuru — artedguru.com | FirehousePublications.com`;
         prompt,
         subjectArea: subjectNames[currentSubject],
         standardsDisplay: stdMode,
-        standardsState: stateVal,
+        ncArts: ncArtsMode,
         gradeBand: grade
       })
     });
