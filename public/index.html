@@ -745,8 +745,6 @@ async function generateLesson() {
   const addons   = [...document.querySelectorAll('#addon-checks input:checked')].map(c => c.value);
   const subj     = subjectData[currentSubject];
   const sName    = subjectNames[currentSubject];
-  const stateVal = document.getElementById('state-select').value;
-
   btn.disabled = true;
   btn.textContent = 'Working on it...';
   lastLessonText = '';
