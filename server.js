@@ -461,7 +461,7 @@ app.get('/portal', (req, res) => {
 });
 
 app.post('/generate', async (req, res) => {
-  const { prompt, subjectArea, standardsDisplay, standardsState, gradeBand } = req.body;
+  const { prompt, subjectArea, standardsDisplay, ncArts, gradeBand } = req.body;
   if (!prompt) return res.status(400).json({ error: 'No prompt provided' });
 
   const apiKey = process.env.ANTHROPIC_API_KEY;
@@ -480,9 +480,9 @@ app.post('/generate', async (req, res) => {
 
     const systemDocs = systemDocsCache || '';
 
-    // Fetch state standards if requested — injected into the prompt so Claude outputs them as a section
+    // Fetch NC Arts standards if requested
     let standardsPromptAddition = '';
-    if (standardsDisplay === 'state' && standardsState === 'NC' && gradeBand) {
+    if (ncArts && gradeBand) {
       const ncStandards = await fetchNCStandards(subjectArea || 'Art', gradeBand);
       if (ncStandards) {
         standardsPromptAddition = `\n\nAfter the ASSESSMENT section, add one more section with this exact header: NC STATE STANDARDS\nSelect 2-3 standards from the list below that this lesson most directly addresses. Format each on its own line as: [CODE] — [Full objective text]. Only include standards the lesson genuinely addresses.\n\n${ncStandards}`;
