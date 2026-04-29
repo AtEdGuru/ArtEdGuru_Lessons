@@ -752,6 +752,18 @@ async function generateLesson() {
   // ── INDEPENDENT PROJECT MODE ──────────────────────────────────────────────
   if (currentMode === 'independent') {
     const interestLine = custom ? `Student interest / focus: ${custom}` : '';
+  // Build independent-appropriate addons
+  // (sub teacher version and estimated costs don't apply to independent mode)
+  const independentAddons = addons.filter(a => ['pacing','midcrit','finalcrit','iep'].includes(a));
+  let independentAddonsBlock = '';
+  if (independentAddons.length) {
+    independentAddonsBlock = '\n\nADDITIONAL SECTIONS — include each of these after YOUR FORMS:\n';
+    if (independentAddons.includes('pacing')) independentAddonsBlock += '\nPACING GUIDE: Write a simple day-by-day or week-by-week suggested schedule for the student based on the project timeline. Keep it flexible — this is a guide, not a rule.\n';
+    if (independentAddons.includes('midcrit')) independentAddonsBlock += '\nMID-PROJECT CHECK-IN QUESTIONS: Provide 4 questions the student can ask themselves at the halfway point to evaluate their progress and direction.\n';
+    if (independentAddons.includes('finalcrit')) independentAddonsBlock += '\nFINAL REFLECTION QUESTIONS: Provide 4 questions for the student to reflect on after completing their project — about process, growth, and what they would do differently.\n';
+    if (independentAddons.includes('iep')) independentAddonsBlock += '\nACCOMMODATIONS: Suggest ways a student with fine motor challenges, visual impairments, or processing differences might adapt this independent project to their needs.\n';
+  }
+
     const prompt = `%%INDEPENDENT_PROJECT%%
 
 Generate a Launch Brief for an independent art project.
@@ -762,7 +774,7 @@ Time Available: ${period}
 Project Timeline: ${duration}
 ${interestLine}
 
-Write the Launch Brief now. Use plain text ALL CAPS section headers. No markdown.`;
+Write the Launch Brief now. Use plain text ALL CAPS section headers. No markdown.${independentAddonsBlock}`;
 
     output.innerHTML = `
       <div class="loading-card">
