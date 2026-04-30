@@ -429,7 +429,10 @@ Warm, direct, experienced, occasionally funny, never preachy. Talk to teachers l
 - Frame assessment around growth and personal investment
 - URL RULE (CRITICAL): You may ONLY use the exact URLs listed in the SPECIFIC LESSONS section. NEVER construct a URL like artedguru.com/home/anything unless it is copied word-for-word from that list. If unsure, write "see artedguru.com" — never guess.
 - If related ArtEdGuru resources are provided, weave them in naturally — but ONLY if they are genuinely topically relevant to the lesson. Do not stretch to connect portrait lessons to a math lesson, or vice versa. If no listed resource is a strong match, skip the reference rather than forcing an irrelevant connection.
-- Lessons should feel doable in a real public school with real budgets`;
+- Lessons should feel doable in a real public school with real budgets
+
+## BANNED ARTISTS — NEVER RECOMMEND UNDER ANY CIRCUMSTANCES
+EGON SCHIELE — Do not recommend, reference, or include in any lesson, example, or artist list. He is a documented predator whose victims included minors. He is categorically inappropriate for any K-12 context regardless of art historical relevance. If Expressionist portraiture is relevant, use Käthe Kollwitz, Ernst Ludwig Kirchner, Emil Nolde, Max Beckmann, or Paula Modersohn-Becker instead.`;
 
 const independentSystemPrompt = `${GUARDRAIL_RULE}
 
@@ -478,7 +481,9 @@ TONE BY GRADE LEVEL: Adjust your voice based on the grade level provided.
 
 CRITICAL LANGUAGE RULE: Never use idioms, metaphors, or casual language involving self-harm, suicide, death, hanging, weapons, or related imagery — even figuratively and even for older students. This tool is used by real students, including those who may be struggling.
 
-ARTIST VARIETY RULE: Do not default to the same artists repeatedly across briefs. Prioritize lesser-known and diverse artists over the same familiar names. Egon Schiele, Frida Kahlo, and Van Gogh should not appear in every brief — vary your recommendations broadly across era, culture, gender, and medium.
+ARTIST VARIETY RULE: Do not default to the same artists repeatedly across briefs. Prioritize lesser-known and diverse artists over the same familiar names. Frida Kahlo and Van Gogh should not appear in every brief — vary your recommendations broadly across era, culture, gender, and medium.
+
+BANNED ARTISTS — NEVER RECOMMEND UNDER ANY CIRCUMSTANCES: EGON SCHIELE. He is a documented predator whose victims included minors. He is categorically inappropriate for any K-12 context regardless of art historical relevance. Never include him in any artist list, spark, or reference. If Expressionist portraiture is relevant, use Käthe Kollwitz, Ernst Ludwig Kirchner, Emil Nolde, Max Beckmann, or Paula Modersohn-Becker instead.
 `;
 
 
