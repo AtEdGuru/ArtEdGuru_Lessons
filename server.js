@@ -54,7 +54,6 @@ async function getRelatedResources(prompt, subjectArea) {
         'Visual Art': 'Art'
       };
 
-      // Map from app pill name to all subject tags that should match
       const subjectAliases = {
         'Music': ['Music', 'Music/Theatre'],
         'Theatre': ['Theatre', 'Music/Theatre'],
@@ -116,10 +115,106 @@ async function getRelatedResources(prompt, subjectArea) {
   }
 }
 
+// ── LESSON RETRIEVAL — Option B: Top-N scored matches ────────────────────────
+// Fetches LESSON rows from Supabase, scores them against the current request
+// by subject, grade band, and prompt keywords, then returns the top 4 summaries
+// for injection into the system prompt as context.
+async function getRelatedLessons(prompt, subjectArea, gradeBand) {
+  try {
+    const db = getSupabase();
+    if (!db) return '';
+
+    const subjectMap = {
+      'S.E.L.': 'SEL',
+      'S.E.L': 'SEL',
+      'Fine Arts': 'Art',
+      'Visual Art': 'Art'
+    };
+
+    const subjectAliases = {
+      'Music': ['Music', 'Music/Theatre'],
+      'Theatre': ['Theatre', 'Music/Theatre'],
+      'Health': ['Health/PE'],
+      'PE': ['Health/PE'],
+    };
+
+    let simplifiedSubject = (subjectArea || 'Art')
+      .split('/')[0]
+      .split('&')[0]
+      .split(',')[0]
+      .trim()
+      .replace(/\./g, '');
+
+    simplifiedSubject = subjectMap[simplifiedSubject] || simplifiedSubject;
+
+    // Fetch LESSON rows matching the subject
+    let query = db
+      .from('resources')
+      .select('Title, summary, subjects, grade_bands, Tags')
+      .eq('doc_type', 'LESSON');
+
+    const aliases = subjectAliases[simplifiedSubject];
+    if (aliases) {
+      query = query.or(aliases.map(a => `subjects.ilike.%${a}%`).join(','));
+    } else {
+      query = query.ilike('subjects', `%${simplifiedSubject}%`);
+    }
+
+    const { data, error } = await query.limit(40);
+
+    if (error) {
+      console.error('LESSON query error:', error.message);
+      return '';
+    }
+
+    if (!data || data.length === 0) {
+      console.log('No LESSON rows found for subject:', simplifiedSubject);
+      return '';
+    }
+
+    const searchText = prompt.toLowerCase();
+
+    const scored = data.map(item => {
+      const combined = (
+        (item.Tags || '') + ' ' +
+        (item.Title || '') + ' ' +
+        (item.summary || '') + ' ' +
+        (item.subjects || '') + ' ' +
+        (item.grade_bands || '')
+      ).toLowerCase();
+
+      // Keyword score — how many prompt words appear in this lesson
+      const words = searchText.split(/\s+/).filter(w => w.length > 3);
+      let score = words.filter(word => combined.includes(word)).length;
+
+      // Grade band bonus — boost lessons that match the requested grade band
+      if (gradeBand && item.grade_bands && item.grade_bands.includes(gradeBand)) {
+        score += 2;
+      }
+
+      return { ...item, score };
+    });
+
+    scored.sort((a, b) => b.score - a.score);
+    const top4 = scored.slice(0, 4);
+
+    if (top4.length === 0) return '';
+
+    // Format as a compact context block for injection into the system prompt
+    const lessonContext = top4
+      .map(l => `LESSON: ${l.Title}\n${l.summary || ''}`)
+      .join('\n\n');
+
+    console.log(`Injecting ${top4.length} related LESSON summaries for subject: ${simplifiedSubject}`);
+    return lessonContext;
+
+  } catch(e) {
+    console.error('getRelatedLessons error:', e.message);
+    return '';
+  }
+}
+
 // ── GUARDRAIL RULE (Layer 2) ──────────────────────────────────────────────────
-// This block is injected at the top of both system prompts.
-// It instructs Claude to decline gracefully if input is school-inappropriate,
-// while explicitly protecting legitimate difficult themes (grief, identity, trauma, etc.)
 const GUARDRAIL_RULE = `## CONTENT GUARDRAIL — READ THIS FIRST
 
 This tool is used in K-12 school settings. If a student or teacher's input contains content that is clearly school-inappropriate — meaning sexual content, glorification of violence, references to illegal substances or drug use, self-harm instructions, or targeted hate speech — do NOT generate the requested lesson or brief.
@@ -388,7 +483,6 @@ ARTIST VARIETY RULE: Do not default to the same artists repeatedly across briefs
 
 
 // ── NC STANDARDS FETCHER ──
-// Maps subject area to the correct artedguru.com standards page
 const NC_STANDARDS_URLS = {
   'Art':           'https://www.artedguru.com/NCVA.html',
   'Visual Art':    'https://www.artedguru.com/NCVA.html',
@@ -399,7 +493,6 @@ const NC_STANDARDS_URLS = {
   'Dance':         'https://www.artedguru.com/NCD.html',
 };
 
-// Maps app grade band to the section header text found in the standards pages
 const GRADE_BAND_MARKERS = {
   'K-2':  ['Kindergarten', 'First Grade', 'Second Grade'],
   '3-5':  ['Third Grade', 'Fourth Grade', 'Fifth Grade'],
@@ -409,7 +502,6 @@ const GRADE_BAND_MARKERS = {
 
 async function fetchNCStandards(subjectArea, gradeBand) {
   try {
-    // Normalize subject to find the right URL
     let normalizedSubject = subjectArea
       .split('/')[0]
       .split('&')[0]
@@ -422,14 +514,11 @@ async function fetchNCStandards(subjectArea, gradeBand) {
     if (!res.ok) return null;
     const html = await res.text();
 
-    // Strip HTML tags to get plain text
     const text = html.replace(/<[^>]+>/g, ' ').replace(/&amp;/g, '&').replace(/&nbsp;/g, ' ').replace(/\s+/g, ' ');
 
-    // Use only the MIDDLE grade of the band to keep prompt size small
     const allMarkers = GRADE_BAND_MARKERS[gradeBand] || GRADE_BAND_MARKERS['6-8'];
     const markers = [allMarkers[Math.floor(allMarkers.length / 2)]];
 
-    // Extract the sections matching the grade band
     let extracted = '';
     for (const marker of markers) {
       const markerIndex = text.indexOf(marker + ' Visual Arts');
@@ -439,7 +528,6 @@ async function fetchNCStandards(subjectArea, gradeBand) {
       const startIndex = Math.max(markerIndex, altIndex, altIndex2, altIndex3);
       if (startIndex === -1) continue;
 
-      // Find the next grade section to know where to stop
       const nextMarkers = ['Kindergarten', 'First Grade', 'Second Grade', 'Third Grade', 'Fourth Grade', 'Fifth Grade', 'Sixth Grade', 'Seventh Grade', 'Eighth Grade', 'Beginning Visual', 'Intermediate Visual', 'Accomplished Visual', 'Advanced Visual', 'Beginning General', 'Accomplished General', 'Novice Vocal', 'Developing Vocal', 'Intermediate Vocal', 'Accomplished Vocal', 'Advanced Vocal', 'Beginning Theatre', 'Intermediate Theatre', 'Accomplished Theatre', 'Advanced Theatre', 'Beginning Dance', 'Intermediate Dance', 'Accomplished Dance', 'Advanced Dance', 'Beginning Technical'];
       let endIndex = text.length;
       for (const nm of nextMarkers) {
@@ -479,7 +567,6 @@ app.post('/generate', async (req, res) => {
       enhancedPrompt = prompt + `\n\nRELATED ARTEDGURU RESOURCES (reference these in your lesson where relevant):\n${resourceContext}`;
     }
 
-
     const systemDocs = systemDocsCache || '';
 
     // Fetch NC Arts standards if requested
@@ -493,14 +580,24 @@ app.post('/generate', async (req, res) => {
       standardsPromptAddition = `\n\nAfter the ASSESSMENT section, add one more section with this exact header: NATIONAL STANDARDS\nSelect 2-3 NAEA National Visual Arts Standards this lesson addresses. Format each as: [Anchor Standard] — [Standard text]. Only include standards the lesson genuinely addresses.`;
     }
 
-    // Append standards instruction to the prompt if requested
     if (standardsPromptAddition) {
       enhancedPrompt += standardsPromptAddition;
     }
 
+    // ── LESSON INJECTION ──────────────────────────────────────────────────────
+    // For teacher lesson plans only: fetch top-4 relevant LESSON summaries from
+    // Supabase and inject them into the system prompt as Eric's actual lesson
+    // examples. This grounds generation in his real work rather than inference.
+    let lessonContext = '';
+    if (!isIndependent) {
+      lessonContext = await getRelatedLessons(prompt, subjectArea, gradeBand);
+    }
+
     const fullSystemPrompt = isIndependent
       ? independentSystemPrompt
-      : lessonSystemPrompt + (systemDocs ? `\n\n## ADDITIONAL CONTEXT FROM ERIC'S TEACHING LIBRARY\n${systemDocs}` : '');
+      : lessonSystemPrompt +
+        (systemDocs ? `\n\n## ERIC'S TEACHING PHILOSOPHY & CONTEXT\n${systemDocs}` : '') +
+        (lessonContext ? `\n\n## ERIC'S ACTUAL LESSONS — USE THESE AS STYLE AND CONTENT REFERENCE\nThe following are real lessons Eric has written and taught. Use them to inform the voice, structure, project design, and level of specificity in the lesson you generate. Do not copy them — draw from them.\n\n${lessonContext}` : '');
 
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
