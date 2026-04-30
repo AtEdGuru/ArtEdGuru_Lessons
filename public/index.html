@@ -37,6 +37,10 @@ select, input[type=text] { width: 100%; font-size: 14px; padding: 9px 12px; bord
 select:focus, input[type=text]:focus { border-color: #c04a20; box-shadow: 0 0 0 3px rgba(192,74,32,0.08); }
 .full-width { grid-column: 1 / -1; }
 
+/* TEACHER-ONLY FIELDS — hidden in Independent Project mode */
+.teacher-only { display: flex; }
+.independent-mode .teacher-only { display: none; }
+
 /* CHECKBOXES */
 .checkbox-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 4px; }
 .checkbox-item { display: flex; align-items: center; gap: 8px; font-size: 13px; color: #333; cursor: pointer; padding: 6px 10px; border: 1px solid #eee; border-radius: 6px; background: #fff; transition: all .15s; }
@@ -134,9 +138,7 @@ select:focus, input[type=text]:focus { border-color: #c04a20; box-shadow: 0 0 0 
 .modal-close { position: absolute; top: 1rem; right: 1rem; background: none; border: none; font-size: 22px; cursor: pointer; color: #888; }
 .modal-close:hover { color: #1a1a1a; }
 
-/* ── GUARDRAIL WARNING MODAL ─────────────────────────────────────────────────
-   Separate styling so it can be visually distinct from info modals.
-   Uses a warning amber tone rather than the standard brand red.          */
+/* GUARDRAIL WARNING MODAL */
 .guardrail-modal-box {
   background: #fff;
   border-radius: 12px;
@@ -246,7 +248,7 @@ select:focus, input[type=text]:focus { border-color: #c04a20; box-shadow: 0 0 0 
   </div>
 
   <!-- FORM -->
-  <div class="form-grid">
+  <div class="form-grid" id="main-form-grid">
     <div class="form-group">
       <label>1. Grade Level</label>
       <select id="grade">
@@ -293,7 +295,9 @@ select:focus, input[type=text]:focus { border-color: #c04a20; box-shadow: 0 0 0 
         <option value="Non-Objective">Non-Objective — not recognizable (e.g. Pollock's splatters)</option>
       </select>
     </div>
-    <div class="form-group">
+
+    <!-- FIELD 5 — teacher only, hidden in Independent Project mode -->
+    <div class="form-group teacher-only">
       <label>5. Mode of Purpose</label>
       <select id="purpose">
         <option value="none">None / Teacher's choice</option>
@@ -305,7 +309,9 @@ select:focus, input[type=text]:focus { border-color: #c04a20; box-shadow: 0 0 0 
         <option value="Studio Experience (fine arts skills)">Studio Experience — fine arts skills</option>
       </select>
     </div>
-    <div class="form-group">
+
+    <!-- FIELD 6 — teacher only, hidden in Independent Project mode -->
+    <div class="form-group teacher-only">
       <label>6. Art History / Cultural Connection</label>
       <select id="culture">
         <option value="none">None — use optional field below for custom</option>
@@ -346,12 +352,10 @@ select:focus, input[type=text]:focus { border-color: #c04a20; box-shadow: 0 0 0 
     <div class="form-group">
       <label>9. Standards Display</label>
       <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
-        <!-- National standards toggle — Hide / Display -->
         <div class="seg-group" id="std-toggle">
           <button class="seg-btn active" data-val="none" onclick="setStd(this)">Hide</button>
           <button class="seg-btn" data-val="national" onclick="setStd(this)">National</button>
         </div>
-        <!-- NC Arts Standards — only shown for arts subjects -->
         <button
           id="nc-arts-btn"
           onclick="toggleNcArts()"
@@ -433,10 +437,7 @@ select:focus, input[type=text]:focus { border-color: #c04a20; box-shadow: 0 0 0 
   </div>
 </div>
 
-<!-- ── GUARDRAIL WARNING MODAL ────────────────────────────────────────────────
-     Shown when the client-side blocklist catches an inappropriate input.
-     Dismissible only via the button — clicking the overlay does NOT close it,
-     so the student has to read the message.                                  -->
+<!-- GUARDRAIL WARNING MODAL -->
 <div class="modal-overlay" id="guardrailModal">
   <div class="guardrail-modal-box">
     <span class="guardrail-icon">🚫</span>
@@ -454,10 +455,9 @@ select:focus, input[type=text]:focus { border-color: #c04a20; box-shadow: 0 0 0 
 let currentSubject = 'art';
 let currentMode = 'lesson';
 let stdMode = 'none';
-let ncArtsMode = false;   // independent of national standards toggle
+let ncArtsMode = false;
 let lastLessonText = '';
 
-// Arts subjects that qualify for NC Arts Standards button
 const NC_ARTS_SUBJECTS = new Set(['art','music','media']);
 
 const subjectData = {
@@ -492,45 +492,27 @@ const subjectNames = { art:'Fine Arts', sci:'Science/Physics', math:'Math/Geomet
 
 const mathTopics = ['one-point perspective drawing','facial proportion and portraiture','data visualization through color and shape','Calder mobile and balance','cartography and map-making','origami geometry','paper tower engineering challenge','fractal wire tree','crystalline sculpture','snowflake geometry and angles'];
 
-// ── LAYER 1 GUARDRAIL — CLIENT-SIDE BLOCKLIST ─────────────────────────────────
-// Base: Google's profanity word list (widely used, well-maintained standard).
-// Custom additions: school-specific harmful phrases not covered by general profanity lists.
-// Philosophy: block HARMFUL not DARK. Grief, war, identity, trauma = allowed.
-// Only obvious violations that have no place in any school context.
-//
-// Matching is whole-word aware for short terms to reduce false positives,
-// and substring for multi-word phrases which are inherently more specific.
-
+// LAYER 1 GUARDRAIL — CLIENT-SIDE BLOCKLIST
 const BLOCKLIST_EXACT = [
-  // Sexual content
   'porn','pornography','xxx','sex','sexy','sexual','sexuality',
   'genitals','genitalia','penis','vagina','vulva','anus','rectum',
   'breasts','nipples','buttocks','naked','nudity',
   'masturbat','orgasm','erection','ejacul',
   'blowjob','handjob','fingering','dildo','vibrator',
   'prostitut','escort','stripper','onlyfans',
-  // Violence glorification (not war/conflict — those are allowed)
   'gore','gory','mutilat','decapitat','behead','dismember',
   'snuff','necrophil','cannibal',
-  // Drugs
   'cocaine','heroin','meth','methamphetamine','fentanyl','opioid',
   'weed','marijuana','cannabis','molly','ecstasy','lsd','acid',
   'crack','xanax','adderall abuse',
-  // Hate speech — slurs listed by category description only in comments;
-  // actual slur strings are stored encoded below to avoid displaying them in source.
-  // Decoded at runtime. This prevents the source file itself from being offensive.
-  // Racial, homophobic, and ethnic slurs: see BLOCKLIST_SLURS below.
 ];
 
-// Slurs stored as base64 to keep source readable; decoded at init time.
-// Add new entries here as base64-encoded lowercase strings.
 const BLOCKLIST_SLURS_B64 = [
   'bmln Z2Vy','ZmFnZ290','ZmFn','Y3VudA==','a2lrZQ==',
   'c3BpYw==','Y2hpbms=','Z29vaw==','d2V0YmFjaw==','Y29vbg==',
   'cmV0YXJk','dHJhbm55','c2hFbWFs ZQ=='
 ].map(s => { try { return atob(s.replace(/ /g,'')); } catch(e) { return ''; } }).filter(Boolean);
 
-// Multi-word phrases — checked as substrings (already specific enough)
 const BLOCKLIST_PHRASES = [
   'kill myself','killing myself','want to die','want to kill',
   'cut myself','cutting myself','hurt myself','harm myself',
@@ -548,35 +530,23 @@ const BLOCKLIST_ALL = [...BLOCKLIST_EXACT, ...BLOCKLIST_SLURS_B64];
 function checkInput(text) {
   if (!text) return false;
   const lower = text.toLowerCase();
-
-  // Phrase check — substring match (phrases are specific enough)
   for (const phrase of BLOCKLIST_PHRASES) {
     if (lower.includes(phrase)) return true;
   }
-
-  // Word check — whole-word boundary match to reduce false positives
-  // e.g. "sex" should not block "sextant" or "sexuality" (sexuality is in exact list separately)
   for (const word of BLOCKLIST_ALL) {
-    // Use word boundary regex for single words; substring for stems ending in non-alpha (e.g. "masturbat")
     const endsInAlpha = /[a-z]$/.test(word);
     if (endsInAlpha) {
       const re = new RegExp('\\b' + word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b', 'i');
       if (re.test(lower)) return true;
     } else {
-      // Stem match (e.g. "masturbat" catches masturbate, masturbation, etc.)
       if (lower.includes(word)) return true;
     }
   }
   return false;
 }
 
-function openGuardrail() {
-  document.getElementById('guardrailModal').classList.add('open');
-}
-function closeGuardrail() {
-  document.getElementById('guardrailModal').classList.remove('open');
-}
-// Guardrail modal: clicking the overlay does NOT close it (intentional — student must read it)
+function openGuardrail() { document.getElementById('guardrailModal').classList.add('open'); }
+function closeGuardrail() { document.getElementById('guardrailModal').classList.remove('open'); }
 
 function setSubject(key, el) {
   currentSubject = key;
@@ -596,6 +566,13 @@ function setMode(mode, btn) {
   currentMode = mode;
   document.querySelectorAll('#mode-toggle .seg-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
+  // Toggle independent-mode class to show/hide teacher-only fields (5 and 6)
+  const grid = document.getElementById('main-form-grid');
+  if (mode === 'independent') {
+    grid.classList.add('independent-mode');
+  } else {
+    grid.classList.remove('independent-mode');
+  }
   updateSubjectDesc();
   updateFormLabels();
   updateGenerateButton();
@@ -662,7 +639,6 @@ function updateNcArtsButton() {
   const btn = document.getElementById('nc-arts-btn');
   const isArtsSubject = NC_ARTS_SUBJECTS.has(currentSubject);
   btn.style.display = isArtsSubject ? 'inline-flex' : 'none';
-  // Reset state when hiding
   if (!isArtsSubject && ncArtsMode) {
     ncArtsMode = false;
     btn.style.background = '#fff';
@@ -672,7 +648,7 @@ function updateNcArtsButton() {
   }
 }
 
-// ─── MODALS ────────────────────────────────────────────────────────────────────
+// MODALS
 function openTerms() { document.getElementById('termsModal').classList.add('open'); }
 function closeTerms() { document.getElementById('termsModal').classList.remove('open'); }
 function openFeedback() { document.getElementById('feedbackModal').classList.add('open'); }
@@ -684,7 +660,6 @@ document.addEventListener('click', function(e) {
   // guardrailModal intentionally NOT dismissible by clicking overlay
 });
 
-// Show NC Arts button on initial load (Fine Arts is default subject)
 document.addEventListener('DOMContentLoaded', updateNcArtsButton);
 
 async function submitFeedback() {
@@ -724,12 +699,10 @@ function buildAddonsBlock(addons, period) {
 }
 
 async function generateLesson() {
-  // ── LAYER 1 GUARDRAIL CHECK ───────────────────────────────────────────────
-  // Runs before anything is sent to the server.
   const customVal = document.getElementById('custom').value.trim();
   if (checkInput(customVal)) {
     openGuardrail();
-    return; // Hard stop — nothing sent to server
+    return;
   }
 
   const grade    = document.getElementById('grade').value;
@@ -749,20 +722,18 @@ async function generateLesson() {
   btn.textContent = 'Working on it...';
   lastLessonText = '';
 
-  // ── INDEPENDENT PROJECT MODE ──────────────────────────────────────────────
+  // INDEPENDENT PROJECT MODE
   if (currentMode === 'independent') {
     const interestLine = custom ? `Student interest / focus: ${custom}` : '';
-  // Build independent-appropriate addons
-  // (sub teacher version and estimated costs don't apply to independent mode)
-  const independentAddons = addons.filter(a => ['pacing','midcrit','finalcrit','iep'].includes(a));
-  let independentAddonsBlock = '';
-  if (independentAddons.length) {
-    independentAddonsBlock = '\n\nADDITIONAL SECTIONS — include each of these after YOUR FORMS:\n';
-    if (independentAddons.includes('pacing')) independentAddonsBlock += '\nPACING GUIDE: Write a simple day-by-day or week-by-week suggested schedule for the student based on the project timeline. Keep it flexible — this is a guide, not a rule.\n';
-    if (independentAddons.includes('midcrit')) independentAddonsBlock += '\nMID-PROJECT CHECK-IN QUESTIONS: Provide 4 questions the student can ask themselves at the halfway point to evaluate their progress and direction.\n';
-    if (independentAddons.includes('finalcrit')) independentAddonsBlock += '\nFINAL REFLECTION QUESTIONS: Provide 4 questions for the student to reflect on after completing their project — about process, growth, and what they would do differently.\n';
-    if (independentAddons.includes('iep')) independentAddonsBlock += '\nACCOMMODATIONS: Suggest ways a student with fine motor challenges, visual impairments, or processing differences might adapt this independent project to their needs.\n';
-  }
+    const independentAddons = addons.filter(a => ['pacing','midcrit','finalcrit','iep'].includes(a));
+    let independentAddonsBlock = '';
+    if (independentAddons.length) {
+      independentAddonsBlock = '\n\nADDITIONAL SECTIONS — include each of these after YOUR FORMS:\n';
+      if (independentAddons.includes('pacing')) independentAddonsBlock += '\nPACING GUIDE: Write a simple day-by-day or week-by-week suggested schedule for the student based on the project timeline. Keep it flexible — this is a guide, not a rule.\n';
+      if (independentAddons.includes('midcrit')) independentAddonsBlock += '\nMID-PROJECT CHECK-IN QUESTIONS: Provide 4 questions the student can ask themselves at the halfway point to evaluate their progress and direction.\n';
+      if (independentAddons.includes('finalcrit')) independentAddonsBlock += '\nFINAL REFLECTION QUESTIONS: Provide 4 questions for the student to reflect on after completing their project — about process, growth, and what they would do differently.\n';
+      if (independentAddons.includes('iep')) independentAddonsBlock += '\nACCOMMODATIONS: Suggest ways a student with fine motor challenges, visual impairments, or processing differences might adapt this independent project to their needs.\n';
+    }
 
     const prompt = `%%INDEPENDENT_PROJECT%%
 
@@ -821,7 +792,7 @@ Write the Launch Brief now. Use plain text ALL CAPS section headers. No markdown
     return;
   }
 
-  // ── TEACHER LESSON PLAN MODE ──────────────────────────────────────────────
+  // TEACHER LESSON PLAN MODE
   const mediaLine    = media === 'Open to suggestions'
     ? 'Art Media: Choose the most appropriate media for the grade, subject, and topic — briefly explain your choice in the Overview.'
     : `Art Media: ${media}`;
@@ -931,9 +902,9 @@ Generated with ArtEdGuru — artedguru.com | FirehousePublications.com`;
   btn.textContent = 'Generate my lesson plan';
 }
 
-// ─── LAUNCH BRIEF FORMATTER ───────────────────────────────────────────────────
+// LAUNCH BRIEF FORMATTER
 function formatLaunchBrief(text) {
- const sections = ['YOUR SPARK', 'ARTISTS TO EXPLORE', 'POSSIBLE STARTING POINTS', 'YOUR FORMS'];
+  const sections = ['YOUR SPARK', 'ARTISTS TO EXPLORE', 'POSSIBLE STARTING POINTS', 'YOUR FORMS'];
   const icons = {
     'YOUR SPARK': '✨',
     'ARTISTS TO EXPLORE': '🎨',
@@ -987,7 +958,7 @@ function formatLaunchBrief(text) {
   return html;
 }
 
-// ─── LESSON FORMATTER ─────────────────────────────────────────────────────────
+// LESSON FORMATTER
 function formatLesson(text) {
   const sectionHeaders = [
     'ESSENTIAL QUESTION', 'LEARNING TARGET', 'LESSON TITLE', 'OVERVIEW',
