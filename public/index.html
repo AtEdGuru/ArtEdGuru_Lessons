@@ -1133,10 +1133,10 @@ function exportPlainText() {
   a.click();
 }
 function printLesson() { window.print(); }
-function exportGoogleDoc() {
+
+  function exportGoogleDoc() {
   if (!lastLessonText) return;
-  const el = document.getElementById('exportStatus');
-  if (el) el.innerHTML = '<p class="status-msg">Opening Google Docs — paste your lesson with Ctrl+V (or Cmd+V on Mac)</p>';
+  alert('Your lesson has been copied!\n\nWhen Google Docs opens, press Ctrl+V (Windows) or Cmd+V (Mac) to paste it in.');
   navigator.clipboard.writeText(lastLessonText).then(() => {
     window.open('https://docs.google.com/document/create?title=ArtEdGuru+Lesson+Plan', '_blank');
   });
