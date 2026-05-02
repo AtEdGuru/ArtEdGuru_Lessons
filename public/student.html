@@ -55,7 +55,7 @@ body { font-family: 'Nunito', sans-serif; background: var(--bg); color: var(--te
 /* The stroke draws left to right under the brush */
 .stroke-svg { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 220px; height: 28px; overflow: visible; }
 .stroke-path {
-  stroke: #1a3a5c;
+  stroke: #5f758d;
   stroke-width: 14;
   stroke-linecap: round;
   fill: none;
@@ -643,19 +643,26 @@ function renderArtists(body) {
   return out;
 }
 function renderStartingPoints(body) {
+  // Try numbered items first (e.g. "1. Consider...")
   let items=[], trailer='';
   body.split('\n').forEach(line => {
     const t=line.trim();
-    if (/^[123][\.\)]\s/.test(t)||/^Consider starting with/i.test(t)) items.push(t.replace(/^[123][\.\)]\s/,''));
+    if (/^[123][.)]\s/.test(t)||/^Consider starting with/i.test(t)) items.push(t.replace(/^[123][.)]\s/,''));
     else if (t && items.length>=3) trailer=t;
   });
-  if (items.length) {
+  if (items.length>=2) {
     let out='';
     items.slice(0,3).forEach((item,i) => out+=`<div class="starting-point"><strong>Option ${i+1}:</strong> ${esc(item)}</div>`);
     if (trailer) out+=`<p class="generic-p" style="color:var(--muted);font-size:14px;margin-top:8px;">${esc(trailer)}</p>`;
     return out;
   }
-  return renderBody(body);
+  // Fallback: split on double newlines and render each paragraph as a numbered option box
+  const paras = body.split(/\n\n+/).map(p=>p.replace(/\n/g,' ').trim()).filter(Boolean);
+  if (paras.length>=2) {
+    return paras.slice(0,3).map((p,i)=>`<div class="starting-point"><strong>Option ${i+1}:</strong> ${esc(p)}</div>`).join('');
+  }
+  // Single block — one styled box
+  return `<div class="starting-point">${esc(body.trim())}</div>`;
 }
 function renderBody(body) {
   let out='';
