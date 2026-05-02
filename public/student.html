@@ -11,9 +11,6 @@
   --red-dark: #a33d18;
   --blue: #1a3a5c;
   --yellow: #f5c842;
-  --green: #2a9d6e;
-  --purple: #7b4fa6;
-  --teal: #1e8fa0;
   --bg: #faf8f5;
   --white: #ffffff;
   --text: #1a1a1a;
@@ -21,368 +18,153 @@
   --border: #e0dbd4;
   --card-shadow: 0 2px 12px rgba(0,0,0,0.08);
 }
-
 * { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Nunito', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
 
-body {
-  font-family: 'Nunito', sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  min-height: 100vh;
-}
-
-/* ── PASSWORD GATE ── */
-#password-gate {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-  padding: 2rem;
-  background: linear-gradient(135deg, #1a3a5c 0%, #c04a20 100%);
-}
-.gate-box {
-  background: #fff;
-  border-radius: 20px;
-  padding: 2.5rem 2rem;
-  max-width: 420px;
-  width: 100%;
-  text-align: center;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-}
-.gate-logo {
-  font-family: 'Playfair Display', serif;
-  font-size: 26px;
-  color: var(--text);
-  margin-bottom: 4px;
-}
+/* PASSWORD GATE */
+#password-gate { display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 2rem; background: linear-gradient(135deg, #1a3a5c 0%, #c04a20 100%); }
+.gate-box { background: #fff; border-radius: 20px; padding: 2.5rem 2rem; max-width: 420px; width: 100%; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+.gate-logo { font-family: 'Playfair Display', serif; font-size: 26px; color: var(--text); margin-bottom: 4px; }
 .gate-logo span { color: var(--red); }
 .gate-sub { font-size: 12px; color: #aaa; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 1.5rem; }
 .gate-emoji { font-size: 48px; margin-bottom: 1rem; display: block; }
 .gate-box h2 { font-size: 22px; font-weight: 800; margin-bottom: 8px; }
 .gate-box p { font-size: 14px; color: var(--muted); margin-bottom: 1.5rem; line-height: 1.6; }
-.gate-input {
-  width: 100%;
-  font-size: 16px;
-  padding: 12px 16px;
-  border: 2px solid var(--border);
-  border-radius: 12px;
-  font-family: 'Nunito', sans-serif;
-  outline: none;
-  margin-bottom: 12px;
-  transition: border-color .2s;
-  text-align: center;
-  letter-spacing: 0.05em;
-}
+.gate-input { width: 100%; font-size: 16px; padding: 12px 16px; border: 2px solid var(--border); border-radius: 12px; font-family: 'Nunito', sans-serif; outline: none; margin-bottom: 12px; transition: border-color .2s; text-align: center; letter-spacing: 0.05em; }
 .gate-input:focus { border-color: var(--red); }
-.gate-btn {
-  width: 100%;
-  padding: 14px;
-  background: var(--red);
-  color: #fff;
-  border: none;
-  border-radius: 12px;
-  font-size: 16px;
-  font-weight: 800;
-  font-family: 'Nunito', sans-serif;
-  cursor: pointer;
-  transition: background .2s, transform .15s;
-}
+.gate-btn { width: 100%; padding: 14px; background: var(--red); color: #fff; border: none; border-radius: 12px; font-size: 16px; font-weight: 800; font-family: 'Nunito', sans-serif; cursor: pointer; transition: background .2s, transform .15s; }
 .gate-btn:hover { background: var(--red-dark); transform: translateY(-1px); }
 .gate-error { color: var(--red); font-size: 13px; margin-top: 10px; display: none; }
 
-/* ── MAIN APP ── */
+/* MAIN APP */
 #app { display: none; }
-
-.app-header {
-  background: var(--blue);
-  color: #fff;
-  padding: 1.25rem 1.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-.header-logo {
-  font-family: 'Playfair Display', serif;
-  font-size: 22px;
-  color: #fff;
-}
+.app-header { background: var(--blue); color: #fff; padding: 1.25rem 1.5rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+.header-logo { font-family: 'Playfair Display', serif; font-size: 22px; color: #fff; }
 .header-logo span { color: var(--yellow); }
-.header-badge {
-  font-size: 12px;
-  background: rgba(255,255,255,0.15);
-  padding: 4px 12px;
-  border-radius: 20px;
-  letter-spacing: 0.05em;
-}
-
+.header-badge { font-size: 12px; background: rgba(255,255,255,0.15); padding: 4px 12px; border-radius: 20px; letter-spacing: 0.05em; }
 .main { max-width: 900px; margin: 0 auto; padding: 2rem 1rem 4rem; }
 
-/* ── HERO ── */
-.hero {
-  text-align: center;
-  margin-bottom: 2.5rem;
-  padding: 2rem 1rem;
-}
-.hero-emoji { font-size: 52px; display: block; margin-bottom: 0.75rem; animation: float 3s ease-in-out infinite; }
-@keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+/* HERO + PAINTBRUSH */
+.hero { text-align: center; margin-bottom: 2.5rem; padding: 2rem 1rem; }
 .hero h1 { font-size: 32px; font-weight: 900; line-height: 1.2; margin-bottom: 10px; }
 .hero h1 em { font-style: normal; color: var(--red); }
 .hero p { font-size: 16px; color: var(--muted); max-width: 520px; margin: 0 auto; line-height: 1.7; }
 
-/* ── SECTION CARD ── */
-.section-card {
-  background: var(--white);
-  border-radius: 16px;
-  padding: 1.5rem;
-  margin-bottom: 1.25rem;
-  box-shadow: var(--card-shadow);
-  border: 1px solid var(--border);
+.brush-wrap { display: flex; justify-content: center; align-items: flex-end; margin-bottom: 1.25rem; height: 90px; position: relative; }
+
+/* The stroke draws left to right under the brush */
+.stroke-svg { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 220px; height: 28px; overflow: visible; }
+.stroke-path {
+  stroke: #1a3a5c;
+  stroke-width: 14;
+  stroke-linecap: round;
+  fill: none;
+  opacity: 0.85;
+  stroke-dasharray: 200;
+  stroke-dashoffset: 200;
+  animation: draw-stroke 2.8s ease-in-out infinite;
 }
-.section-title {
-  font-size: 13px;
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin-bottom: 1rem;
-  display: flex;
-  align-items: center;
-  gap: 8px;
+@keyframes draw-stroke {
+  0%      { stroke-dashoffset: 200; opacity: 0; }
+  15%     { opacity: 0.85; }
+  55%     { stroke-dashoffset: 0; opacity: 0.85; }
+  80%     { stroke-dashoffset: 0; opacity: 0.3; }
+  100%    { stroke-dashoffset: 0; opacity: 0; }
 }
+
+/* The brush SVG travels with the stroke */
+.brush-svg {
+  position: absolute;
+  bottom: 8px;
+  width: 54px;
+  height: 70px;
+  animation: brush-travel 2.8s ease-in-out infinite;
+}
+@keyframes brush-travel {
+  0%    { left: calc(50% - 110px); transform: rotate(-12deg); }
+  55%   { left: calc(50% + 56px);  transform: rotate(-8deg); }
+  80%   { left: calc(50% + 56px);  transform: rotate(-8deg); }
+  100%  { left: calc(50% - 110px); transform: rotate(-12deg); }
+}
+
+/* SECTION CARD */
+.section-card { background: var(--white); border-radius: 16px; padding: 1.5rem; margin-bottom: 1.25rem; box-shadow: var(--card-shadow); border: 1px solid var(--border); }
+.section-title { font-size: 13px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 1rem; display: flex; align-items: center; gap: 8px; }
 .section-title-icon { font-size: 16px; }
 
-/* ── SETUP FIELDS ── */
-.setup-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
-}
+/* SETUP FIELDS */
+.setup-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
 .field-group { display: flex; flex-direction: column; gap: 6px; }
 .field-group label { font-size: 12px; font-weight: 700; color: #777; letter-spacing: 0.05em; text-transform: uppercase; }
-select {
-  font-size: 14px;
-  padding: 9px 12px;
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  background: var(--bg);
-  color: var(--text);
-  font-family: 'Nunito', sans-serif;
-  outline: none;
-  transition: border-color .2s;
-  cursor: pointer;
-}
+select { font-size: 14px; padding: 9px 12px; border: 1px solid var(--border); border-radius: 10px; background: var(--bg); color: var(--text); font-family: 'Nunito', sans-serif; outline: none; transition: border-color .2s; cursor: pointer; }
 select:focus { border-color: var(--red); box-shadow: 0 0 0 3px rgba(192,74,32,0.1); }
 
-/* ── CHOICE BOARD ── */
-.board-wrap {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 12px;
-}
-.board-col {}
-.board-col-header {
-  font-size: 12px;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  padding: 8px 12px;
-  border-radius: 8px 8px 0 0;
-  margin-bottom: 6px;
-  text-align: center;
-}
+/* CHOICE BOARD */
+.board-wrap { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+.board-col-header { font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; padding: 8px 12px; border-radius: 8px 8px 0 0; margin-bottom: 6px; text-align: center; }
 .col-a .board-col-header { background: #fff3e0; color: #c04a20; }
 .col-b .board-col-header { background: #e3f2fd; color: #1565c0; }
 .col-c .board-col-header { background: #f3e5f5; color: #6a1b9a; }
 .col-d .board-col-header { background: #e8f5e9; color: #1b5e20; }
-
-.choice-btn {
-  display: block;
-  width: 100%;
-  padding: 9px 10px;
-  margin-bottom: 5px;
-  border: 2px solid var(--border);
-  border-radius: 10px;
-  background: var(--white);
-  font-family: 'Nunito', sans-serif;
-  font-size: 13px;
-  font-weight: 600;
-  color: #444;
-  cursor: pointer;
-  text-align: left;
-  transition: all .15s;
-  line-height: 1.3;
-}
+.choice-btn { display: block; width: 100%; padding: 9px 10px; margin-bottom: 5px; border: 2px solid var(--border); border-radius: 10px; background: var(--white); font-family: 'Nunito', sans-serif; font-size: 13px; font-weight: 600; color: #444; cursor: pointer; text-align: left; transition: all .15s; line-height: 1.3; }
 .choice-btn:hover { border-color: #bbb; background: #f5f5f5; transform: translateX(2px); }
-
 .col-a .choice-btn.selected { background: #fff3e0; border-color: #c04a20; color: #c04a20; }
 .col-b .choice-btn.selected { background: #e3f2fd; border-color: #1565c0; color: #1565c0; }
 .col-c .choice-btn.selected { background: #f3e5f5; border-color: #6a1b9a; color: #6a1b9a; }
 .col-d .choice-btn.selected { background: #e8f5e9; border-color: #1b5e20; color: #1b5e20; }
 
-/* ── SELECTION SUMMARY ── */
-.selection-summary {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 8px;
-  margin-top: 1rem;
-  padding-top: 1rem;
-  border-top: 1px solid var(--border);
-}
-.summary-pill {
-  background: var(--bg);
-  border: 1px dashed var(--border);
-  border-radius: 8px;
-  padding: 8px 10px;
-  font-size: 12px;
-  color: #aaa;
-  text-align: center;
-  line-height: 1.4;
-  min-height: 52px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all .2s;
-}
-.summary-pill.filled {
-  background: var(--white);
-  border-style: solid;
-  color: var(--text);
-  font-weight: 700;
-}
+/* SELECTION SUMMARY */
+.selection-summary { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border); }
+.summary-pill { background: var(--bg); border: 1px dashed var(--border); border-radius: 8px; padding: 8px 10px; font-size: 12px; color: #aaa; text-align: center; line-height: 1.4; min-height: 52px; display: flex; align-items: center; justify-content: center; transition: all .2s; }
+.summary-pill.filled { background: var(--white); border-style: solid; color: var(--text); font-weight: 700; }
 .summary-pill.filled.col-a { border-color: #c04a20; }
 .summary-pill.filled.col-b { border-color: #1565c0; }
 .summary-pill.filled.col-c { border-color: #6a1b9a; }
 .summary-pill.filled.col-d { border-color: #1b5e20; }
 
-/* ── INTEREST FIELD ── */
-.interest-wrap { position: relative; }
-.interest-input {
-  width: 100%;
-  font-size: 15px;
-  padding: 14px 16px;
-  border: 2px solid var(--border);
-  border-radius: 12px;
-  font-family: 'Nunito', sans-serif;
-  outline: none;
-  transition: border-color .2s;
-  background: var(--bg);
-  color: var(--text);
-}
-.interest-input:focus { border-color: var(--red); box-shadow: 0 0 0 3px rgba(192,74,32,0.1); background: var(--white); }
-
-/* ── ADD-ONS ── */
-.addon-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 8px;
-}
-.addon-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 14px;
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  background: var(--bg);
-  cursor: pointer;
-  font-size: 13px;
-  font-weight: 600;
-  color: #444;
-  transition: all .15s;
-  user-select: none;
-}
-.addon-item:hover { border-color: #bbb; background: #f0ece8; }
-.addon-item input { accent-color: var(--red); width: 15px; height: 15px; cursor: pointer; }
-.addon-item.checked { background: #fdf5f2; border-color: var(--red); color: var(--red); }
-
-/* ── GENERATE BUTTON ── */
-@keyframes pulse-glow {
-  0%,100% { box-shadow: 0 4px 24px rgba(192,74,32,0.4); }
-  50% { box-shadow: 0 8px 40px rgba(192,74,32,0.7); }
-}
-.generate-btn {
-  width: 100%;
-  padding: 22px;
-  font-size: 20px;
-  font-weight: 900;
-  font-family: 'Nunito', sans-serif;
-  background: var(--red);
-  color: #fff;
-  border: none;
-  border-radius: 16px;
-  cursor: pointer;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  transition: all .2s;
-  animation: pulse-glow 2.5s ease-in-out infinite;
-  margin-top: 0.5rem;
-}
-.generate-btn:hover:not(:disabled) {
-  background: var(--red-dark);
-  transform: translateY(-2px);
-  box-shadow: 0 10px 32px rgba(192,74,32,0.5);
-  animation: none;
-}
-.generate-btn:disabled { opacity: 0.6; cursor: not-allowed; animation: none; transform: none; }
-
-/* ── PROGRESS BAR ── */
+/* PROGRESS */
 .progress-wrap { margin-bottom: 1.25rem; }
 .progress-label { font-size: 13px; font-weight: 700; color: var(--muted); margin-bottom: 6px; display: flex; justify-content: space-between; }
 .progress-track { background: var(--border); border-radius: 8px; height: 10px; overflow: hidden; }
 .progress-fill { height: 100%; border-radius: 8px; background: linear-gradient(90deg, var(--red), #e87843); transition: width .3s ease; }
 
-/* ── LOADING ── */
-.loading-card {
-  background: var(--white);
-  border-radius: 16px;
-  padding: 3rem 2rem;
-  text-align: center;
-  border: 1px solid var(--border);
-  box-shadow: var(--card-shadow);
-  margin-top: 1.25rem;
-}
+/* INTEREST */
+.interest-input { width: 100%; font-size: 15px; padding: 14px 16px; border: 2px solid var(--border); border-radius: 12px; font-family: 'Nunito', sans-serif; outline: none; transition: border-color .2s; background: var(--bg); color: var(--text); }
+.interest-input:focus { border-color: var(--red); box-shadow: 0 0 0 3px rgba(192,74,32,0.1); background: var(--white); }
+
+/* ADD-ONS */
+.addon-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+.addon-item { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border: 1px solid var(--border); border-radius: 10px; background: var(--bg); cursor: pointer; font-size: 13px; font-weight: 600; color: #444; transition: all .15s; user-select: none; }
+.addon-item:hover { border-color: #bbb; background: #f0ece8; }
+.addon-item input { accent-color: var(--red); width: 15px; height: 15px; cursor: pointer; }
+.addon-item.checked { background: #fdf5f2; border-color: var(--red); color: var(--red); }
+
+/* GENERATE BUTTON */
+@keyframes pulse-glow { 0%,100% { box-shadow: 0 4px 24px rgba(192,74,32,0.4); } 50% { box-shadow: 0 8px 40px rgba(192,74,32,0.7); } }
+.generate-btn { width: 100%; padding: 22px; font-size: 20px; font-weight: 900; font-family: 'Nunito', sans-serif; background: var(--red); color: #fff; border: none; border-radius: 16px; cursor: pointer; letter-spacing: 0.04em; text-transform: uppercase; transition: all .2s; animation: pulse-glow 2.5s ease-in-out infinite; margin-top: 0.5rem; }
+.generate-btn:hover:not(:disabled) { background: var(--red-dark); transform: translateY(-2px); animation: none; }
+.generate-btn:disabled { opacity: 0.6; cursor: not-allowed; animation: none; transform: none; }
+
+/* FEEDBACK BANNER */
+.feedback-banner { background: var(--red); border-radius: 10px; padding: 14px 20px; margin-top: 1.5rem; font-size: 15px; font-weight: 600; color: #fff; text-align: center; }
+.feedback-banner a { color: #fff; font-weight: 700; text-decoration: underline; cursor: pointer; }
+.feedback-banner a:hover { opacity: 0.85; }
+
+/* LOADING */
+.loading-card { background: var(--white); border-radius: 16px; padding: 3rem 2rem; text-align: center; border: 1px solid var(--border); box-shadow: var(--card-shadow); margin-top: 1.25rem; }
 .loading-spinner { font-size: 48px; display: block; margin-bottom: 1rem; animation: spin-wobble 1.5s ease-in-out infinite; }
 @keyframes spin-wobble { 0%,100% { transform: rotate(-10deg) scale(1); } 50% { transform: rotate(10deg) scale(1.1); } }
 .loading-card h3 { font-size: 20px; font-weight: 800; margin-bottom: 8px; }
 .loading-card p { font-size: 14px; color: var(--muted); }
-.loading-dots::after { content: ''; animation: dots 1.5s steps(4, end) infinite; }
-@keyframes dots { 0%,20% { content: ''; } 40% { content: '.'; } 60% { content: '..'; } 80%,100% { content: '...'; } }
+.loading-dots::after { content: ''; animation: dots 1.5s steps(4,end) infinite; }
+@keyframes dots { 0%,20%{content:'';} 40%{content:'.';} 60%{content:'..';} 80%,100%{content:'...';} }
 
-/* ── OUTPUT ── */
-.output-card {
-  background: var(--white);
-  border-radius: 16px;
-  padding: 1.75rem;
-  margin-top: 1.25rem;
-  border: 1px solid var(--border);
-  box-shadow: var(--card-shadow);
-}
-.output-toolbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 1.25rem;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid var(--border);
-  flex-wrap: wrap;
-  gap: 8px;
-}
+/* OUTPUT */
+.output-card { background: var(--white); border-radius: 16px; padding: 1.75rem; margin-top: 1.25rem; border: 1px solid var(--border); box-shadow: var(--card-shadow); }
+.output-toolbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border); flex-wrap: wrap; gap: 8px; }
 .output-title { font-family: 'Playfair Display', serif; font-size: 20px; }
 .export-row { display: flex; gap: 6px; flex-wrap: wrap; }
-.export-btn {
-  font-size: 12px;
-  font-family: 'Nunito', sans-serif;
-  padding: 7px 14px;
-  border-radius: 8px;
-  border: 1px solid var(--border);
-  background: var(--bg);
-  color: #444;
-  cursor: pointer;
-  font-weight: 700;
-  transition: all .15s;
-}
+.export-btn { font-size: 12px; font-family: 'Nunito', sans-serif; padding: 7px 14px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg); color: #444; cursor: pointer; font-weight: 700; transition: all .15s; }
 .export-btn:hover { background: #ede8e2; border-color: #ccc; }
 .export-btn.primary { background: var(--red); color: #fff; border-color: var(--red); }
 .export-btn.primary:hover { background: var(--red-dark); }
@@ -390,66 +172,41 @@ select:focus { border-color: var(--red); box-shadow: 0 0 0 3px rgba(192,74,32,0.
 /* BRIEF CONTENT */
 .brief-content { font-size: 15px; line-height: 1.8; color: #222; }
 .brief-section { margin-bottom: 2rem; }
-.brief-header {
-  font-family: 'Playfair Display', serif;
-  font-size: 19px;
-  color: var(--text);
-  margin-bottom: 10px;
-  padding-bottom: 8px;
-  border-bottom: 2px solid var(--border);
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.spark-box {
-  background: linear-gradient(135deg, #fff8f0, #fff3e0);
-  border-left: 5px solid var(--red);
-  padding: 18px 22px;
-  border-radius: 0 12px 12px 0;
-  font-size: 16px;
-  font-style: italic;
-  color: #2a2a2a;
-  line-height: 1.8;
-}
+.brief-header { font-family: 'Playfair Display', serif; font-size: 19px; color: var(--text); margin-bottom: 10px; padding-bottom: 8px; border-bottom: 2px solid var(--border); display: flex; align-items: center; gap: 10px; }
+.spark-box { background: linear-gradient(135deg, #fff8f0, #fff3e0); border-left: 5px solid var(--red); padding: 18px 22px; border-radius: 0 12px 12px 0; font-size: 16px; font-style: italic; color: #2a2a2a; line-height: 1.8; }
 .artist-item { padding: 10px 0; border-bottom: 1px solid #f0ece6; font-size: 14.5px; }
 .artist-item:last-child { border-bottom: none; }
 .artist-name { font-weight: 800; color: var(--text); }
 .artist-desc { color: var(--muted); }
 .starting-point { background: var(--bg); border-radius: 10px; padding: 12px 16px; margin-bottom: 8px; font-size: 14px; line-height: 1.6; }
 .starting-point strong { color: var(--blue); }
-
-.forms-cta {
-  background: linear-gradient(135deg, var(--blue), #2a5a8c);
-  color: #fff;
-  border-radius: 14px;
-  padding: 1.5rem;
-  text-align: center;
-  margin-top: 1.5rem;
-}
+.forms-cta { background: linear-gradient(135deg, var(--blue), #2a5a8c); color: #fff; border-radius: 14px; padding: 1.5rem; text-align: center; margin-top: 1.5rem; }
 .forms-cta p { font-size: 14px; margin-bottom: 1rem; opacity: 0.9; line-height: 1.6; }
-.forms-cta a {
-  display: inline-block;
-  background: var(--yellow);
-  color: var(--blue);
-  font-weight: 900;
-  font-size: 15px;
-  padding: 14px 28px;
-  border-radius: 10px;
-  text-decoration: none;
-  transition: all .15s;
-}
+.forms-cta a { display: inline-block; background: var(--yellow); color: var(--blue); font-weight: 900; font-size: 15px; padding: 14px 28px; border-radius: 10px; text-decoration: none; transition: all .15s; }
 .forms-cta a:hover { background: #f0bc30; transform: translateY(-1px); }
-
 .generic-p { margin-bottom: 10px; }
 .generic-ul { margin: 8px 0 12px 1.5rem; }
 .generic-ul li { margin-bottom: 5px; }
 .generic-ol { margin: 8px 0 12px 1.5rem; }
 .generic-ol li { margin-bottom: 5px; }
-
 .credit-line { font-size: 12px; color: #bbb; text-align: center; margin-top: 2rem; padding-top: 1rem; border-top: 1px solid #eee; }
-.credit-line a { color: #c04a20; text-decoration: none; }
-
+.credit-line a { color: var(--red); text-decoration: none; }
 .error-msg { color: #c0392b; font-size: 14px; padding: 1rem 1.25rem; background: #fdf2f2; border-radius: 10px; border: 1px solid #f5c6c6; margin-top: 1rem; }
+
+/* MODAL */
+.modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center; }
+.modal-overlay.open { display: flex; }
+.modal-box { background: #fff; border-radius: 16px; padding: 2rem; max-width: 520px; width: 90%; max-height: 85vh; overflow-y: auto; position: relative; }
+.modal-box h2 { font-family: 'Playfair Display', serif; font-size: 22px; margin-bottom: 1rem; }
+.modal-close { position: absolute; top: 1rem; right: 1rem; background: none; border: none; font-size: 24px; cursor: pointer; color: #888; line-height: 1; }
+.modal-close:hover { color: var(--text); }
+.modal-input { width: 100%; font-size: 14px; padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px; font-family: 'Nunito', sans-serif; margin-bottom: 10px; outline: none; }
+.modal-input:focus { border-color: var(--red); }
+.modal-textarea { width: 100%; font-size: 14px; padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px; font-family: 'Nunito', sans-serif; resize: vertical; outline: none; }
+.modal-textarea:focus { border-color: var(--red); }
+.modal-send-btn { width: 100%; margin-top: 12px; padding: 14px; background: var(--red); color: #fff; border: none; border-radius: 10px; font-size: 15px; font-weight: 800; font-family: 'Nunito', sans-serif; cursor: pointer; transition: background .15s; }
+.modal-send-btn:hover { background: var(--red-dark); }
+.modal-status { font-size: 13px; color: #888; text-align: center; margin-top: 8px; }
 
 @media (max-width: 700px) {
   .board-wrap { grid-template-columns: 1fr 1fr; }
@@ -460,7 +217,6 @@ select:focus { border-color: var(--red); box-shadow: 0 0 0 3px rgba(192,74,32,0.
 }
 @media (max-width: 480px) {
   .board-wrap { grid-template-columns: 1fr; }
-  .selection-summary { grid-template-columns: 1fr 1fr; }
 }
 </style>
 </head>
@@ -489,9 +245,27 @@ select:focus { border-color: var(--red); box-shadow: 0 0 0 3px rgba(192,74,32,0.
 
   <div class="main">
 
-    <!-- HERO -->
+    <!-- HERO with animated paintbrush -->
     <div class="hero">
-      <span class="hero-emoji">🚀</span>
+      <div class="brush-wrap">
+        <!-- Paint stroke drawn on the surface -->
+        <svg class="stroke-svg" viewBox="0 0 200 20" xmlns="http://www.w3.org/2000/svg">
+          <path class="stroke-path" d="M 5 12 Q 50 6 100 12 Q 150 18 195 10"/>
+        </svg>
+        <!-- Paintbrush that travels across -->
+        <svg class="brush-svg" viewBox="0 0 54 90" xmlns="http://www.w3.org/2000/svg">
+          <!-- Handle -->
+          <rect x="22" y="0" width="10" height="52" rx="4" fill="#8B5E3C"/>
+          <rect x="23" y="2" width="4" height="48" rx="2" fill="#a8784f" opacity="0.5"/>
+          <!-- Ferrule (metal band) -->
+          <rect x="19" y="48" width="16" height="10" rx="2" fill="#aaa"/>
+          <rect x="19" y="51" width="16" height="2" fill="#888"/>
+          <!-- Bristles -->
+          <path d="M 19 58 Q 14 72 17 82 Q 22 90 27 88 Q 32 90 37 82 Q 40 72 35 58 Z" fill="#c04a20"/>
+          <path d="M 22 58 Q 20 70 21 80 Q 24 87 27 86" stroke="#e87843" stroke-width="1.5" fill="none" opacity="0.6"/>
+          <path d="M 30 58 Q 33 70 32 80" stroke="#a33d18" stroke-width="1" fill="none" opacity="0.4"/>
+        </svg>
+      </div>
       <h1>What will <em>you</em> make?</h1>
       <p>Answer a few questions, pick your path on the Choice Board, and we'll build you a personalized project launch brief.</p>
     </div>
@@ -507,7 +281,7 @@ select:focus { border-color: var(--red); box-shadow: 0 0 0 3px rgba(192,74,32,0.
       </div>
     </div>
 
-    <!-- STEP 1: SETUP -->
+    <!-- STEP 1 -->
     <div class="section-card">
       <div class="section-title"><span class="section-title-icon">⚙️</span> Step 1 — A little about you</div>
       <div class="setup-grid">
@@ -545,67 +319,57 @@ select:focus { border-color: var(--red); box-shadow: 0 0 0 3px rgba(192,74,32,0.
 
     <!-- STEP 2: CHOICE BOARD -->
     <div class="section-card">
-      <div class="section-title"><span class="section-title-icon">🎯</span> Step 2 — Build your Choice Board <span style="font-size:11px; font-weight:400; color:#aaa;">(pick ONE from each column)</span></div>
-
+      <div class="section-title"><span class="section-title-icon">🎯</span> Step 2 — Build your Choice Board <span style="font-size:11px;font-weight:400;color:#aaa;">(pick ONE from each column)</span></div>
       <div class="board-wrap">
-        <!-- Column A: Subject Focus -->
         <div class="board-col col-a">
           <div class="board-col-header">Subject Focus</div>
-          <button class="choice-btn" data-col="a" onclick="pick('a', 'Fine & Digital Arts', this)">Fine & Digital Arts</button>
-          <button class="choice-btn" data-col="a" onclick="pick('a', 'Science', this)">Science</button>
-          <button class="choice-btn" data-col="a" onclick="pick('a', 'Math & Geometry', this)">Math & Geometry</button>
-          <button class="choice-btn" data-col="a" onclick="pick('a', 'History & World Cultures', this)">History & World Cultures</button>
-          <button class="choice-btn" data-col="a" onclick="pick('a', 'Literacy & Literature', this)">Literacy & Literature</button>
-          <button class="choice-btn" data-col="a" onclick="pick('a', 'Places & Spaces', this)">Places & Spaces</button>
-          <button class="choice-btn" data-col="a" onclick="pick('a', 'World Languages', this)">World Languages</button>
-          <button class="choice-btn" data-col="a" onclick="pick('a', 'Theatre & Music', this)">Theatre & Music</button>
-          <button class="choice-btn" data-col="a" onclick="pick('a', 'Health & PE', this)">Health & PE</button>
+          <button class="choice-btn" data-col="a" onclick="pick('a','Fine & Digital Arts',this)">Fine & Digital Arts</button>
+          <button class="choice-btn" data-col="a" onclick="pick('a','Science',this)">Science</button>
+          <button class="choice-btn" data-col="a" onclick="pick('a','Math & Geometry',this)">Math & Geometry</button>
+          <button class="choice-btn" data-col="a" onclick="pick('a','History & World Cultures',this)">History & World Cultures</button>
+          <button class="choice-btn" data-col="a" onclick="pick('a','Literacy & Literature',this)">Literacy & Literature</button>
+          <button class="choice-btn" data-col="a" onclick="pick('a','Places & Spaces',this)">Places & Spaces</button>
+          <button class="choice-btn" data-col="a" onclick="pick('a','World Languages',this)">World Languages</button>
+          <button class="choice-btn" data-col="a" onclick="pick('a','Theatre & Music',this)">Theatre & Music</button>
+          <button class="choice-btn" data-col="a" onclick="pick('a','Health & PE',this)">Health & PE</button>
         </div>
-
-        <!-- Column B: Pathways -->
         <div class="board-col col-b">
           <div class="board-col-header">Pathway</div>
-          <button class="choice-btn" data-col="b" onclick="pick('b', 'Architecture', this)">1. Architecture</button>
-          <button class="choice-btn" data-col="b" onclick="pick('b', 'Design & Engineering', this)">2. Design & Engineering</button>
-          <button class="choice-btn" data-col="b" onclick="pick('b', 'Landscape & Nature', this)">3. Landscape & Nature</button>
-          <button class="choice-btn" data-col="b" onclick="pick('b', 'Portrait & Figure', this)">4. Portrait & Figure</button>
-          <button class="choice-btn" data-col="b" onclick="pick('b', 'Imagination & Play', this)">5. Imagination & Play</button>
-          <button class="choice-btn" data-col="b" onclick="pick('b', 'Emulation (Cultures/Crafts/Styles)', this)">6. Emulation</button>
-          <button class="choice-btn" data-col="b" onclick="pick('b', 'Observational', this)">7. Observational</button>
-          <button class="choice-btn" data-col="b" onclick="pick('b', 'Conceptual', this)">8. Conceptual</button>
-          <button class="choice-btn" data-col="b" onclick="pick('b', 'Illustration', this)">9. Illustration</button>
+          <button class="choice-btn" data-col="b" onclick="pick('b','Architecture',this)">1. Architecture</button>
+          <button class="choice-btn" data-col="b" onclick="pick('b','Design & Engineering',this)">2. Design & Engineering</button>
+          <button class="choice-btn" data-col="b" onclick="pick('b','Landscape & Nature',this)">3. Landscape & Nature</button>
+          <button class="choice-btn" data-col="b" onclick="pick('b','Portrait & Figure',this)">4. Portrait & Figure</button>
+          <button class="choice-btn" data-col="b" onclick="pick('b','Imagination & Play',this)">5. Imagination & Play</button>
+          <button class="choice-btn" data-col="b" onclick="pick('b','Emulation (Cultures/Crafts/Styles)',this)">6. Emulation</button>
+          <button class="choice-btn" data-col="b" onclick="pick('b','Observational',this)">7. Observational</button>
+          <button class="choice-btn" data-col="b" onclick="pick('b','Conceptual',this)">8. Conceptual</button>
+          <button class="choice-btn" data-col="b" onclick="pick('b','Illustration',this)">9. Illustration</button>
         </div>
-
-        <!-- Column C: Media -->
         <div class="board-col col-c">
           <div class="board-col-header">Media</div>
-          <button class="choice-btn" data-col="c" onclick="pick('c', 'Paint', this)">I. Paint</button>
-          <button class="choice-btn" data-col="c" onclick="pick('c', 'Draw', this)">II. Draw</button>
-          <button class="choice-btn" data-col="c" onclick="pick('c', 'Sculpt', this)">III. Sculpt</button>
-          <button class="choice-btn" data-col="c" onclick="pick('c', 'Print', this)">IV. Print</button>
-          <button class="choice-btn" data-col="c" onclick="pick('c', 'Collage', this)">V. Collage</button>
-          <button class="choice-btn" data-col="c" onclick="pick('c', 'Photography', this)">VI. Photography</button>
-          <button class="choice-btn" data-col="c" onclick="pick('c', 'Mixed Media', this)">VII. Mixed Media</button>
-          <button class="choice-btn" data-col="c" onclick="pick('c', 'Digital', this)">VIII. Digital</button>
-          <button class="choice-btn" data-col="c" onclick="pick('c', 'Video/Animation', this)">IX. Video/Animation</button>
+          <button class="choice-btn" data-col="c" onclick="pick('c','Paint',this)">I. Paint</button>
+          <button class="choice-btn" data-col="c" onclick="pick('c','Draw',this)">II. Draw</button>
+          <button class="choice-btn" data-col="c" onclick="pick('c','Sculpt',this)">III. Sculpt</button>
+          <button class="choice-btn" data-col="c" onclick="pick('c','Print',this)">IV. Print</button>
+          <button class="choice-btn" data-col="c" onclick="pick('c','Collage',this)">V. Collage</button>
+          <button class="choice-btn" data-col="c" onclick="pick('c','Photography',this)">VI. Photography</button>
+          <button class="choice-btn" data-col="c" onclick="pick('c','Mixed Media',this)">VII. Mixed Media</button>
+          <button class="choice-btn" data-col="c" onclick="pick('c','Digital',this)">VIII. Digital</button>
+          <button class="choice-btn" data-col="c" onclick="pick('c','Video/Animation',this)">IX. Video/Animation</button>
         </div>
-
-        <!-- Column D: Purpose -->
         <div class="board-col col-d">
           <div class="board-col-header">Purpose</div>
-          <button class="choice-btn" data-col="d" onclick="pick('d', 'Teach & Inform', this)">a. Teach & Inform</button>
-          <button class="choice-btn" data-col="d" onclick="pick('d', 'Persuade & Advocate', this)">b. Persuade & Advocate</button>
-          <button class="choice-btn" data-col="d" onclick="pick('d', 'Tell a Story', this)">c. Tell a Story</button>
-          <button class="choice-btn" data-col="d" onclick="pick('d', 'Document & Record', this)">d. Document & Record</button>
-          <button class="choice-btn" data-col="d" onclick="pick('d', 'Express Emotion', this)">e. Express Emotion</button>
-          <button class="choice-btn" data-col="d" onclick="pick('d', 'Solve a Problem', this)">f. Solve a Problem</button>
-          <button class="choice-btn" data-col="d" onclick="pick('d', 'Question & Challenge', this)">g. Question & Challenge</button>
-          <button class="choice-btn" data-col="d" onclick="pick('d', 'Celebrate & Honor', this)">h. Celebrate & Honor</button>
-          <button class="choice-btn" data-col="d" onclick="pick('d', 'Reflect & Analyze', this)">i. Reflect & Analyze</button>
+          <button class="choice-btn" data-col="d" onclick="pick('d','Teach & Inform',this)">a. Teach & Inform</button>
+          <button class="choice-btn" data-col="d" onclick="pick('d','Persuade & Advocate',this)">b. Persuade & Advocate</button>
+          <button class="choice-btn" data-col="d" onclick="pick('d','Tell a Story',this)">c. Tell a Story</button>
+          <button class="choice-btn" data-col="d" onclick="pick('d','Document & Record',this)">d. Document & Record</button>
+          <button class="choice-btn" data-col="d" onclick="pick('d','Express Emotion',this)">e. Express Emotion</button>
+          <button class="choice-btn" data-col="d" onclick="pick('d','Solve a Problem',this)">f. Solve a Problem</button>
+          <button class="choice-btn" data-col="d" onclick="pick('d','Question & Challenge',this)">g. Question & Challenge</button>
+          <button class="choice-btn" data-col="d" onclick="pick('d','Celebrate & Honor',this)">h. Celebrate & Honor</button>
+          <button class="choice-btn" data-col="d" onclick="pick('d','Reflect & Analyze',this)">i. Reflect & Analyze</button>
         </div>
       </div>
-
-      <!-- Selection Summary -->
       <div class="selection-summary">
         <div class="summary-pill" id="sum-a">Subject Focus</div>
         <div class="summary-pill" id="sum-b">Pathway</div>
@@ -614,17 +378,15 @@ select:focus { border-color: var(--red); box-shadow: 0 0 0 3px rgba(192,74,32,0.
       </div>
     </div>
 
-    <!-- STEP 3: INTEREST -->
+    <!-- STEP 3 -->
     <div class="section-card">
       <div class="section-title"><span class="section-title-icon">💭</span> Step 3 — What are you into?</div>
-      <div class="interest-wrap">
-        <input type="text" class="interest-input" id="interest" placeholder="Sports, music, a place you love, a person who inspires you, something you care about...">
-      </div>
+      <input type="text" class="interest-input" id="interest" placeholder="Sports, music, a place you love, a person who inspires you, something you care about...">
     </div>
 
     <!-- STEP 4: ADD-ONS -->
     <div class="section-card">
-      <div class="section-title"><span class="section-title-icon">➕</span> Step 4 — Optional add-ons <span style="font-size:11px; font-weight:400; color:#aaa;">(teacher extras for printing)</span></div>
+      <div class="section-title"><span class="section-title-icon">➕</span> Step 4 — Optional add-ons <span style="font-size:11px;font-weight:400;color:#aaa;">(teacher extras for printing)</span></div>
       <div class="addon-grid">
         <label class="addon-item" id="addon-standards">
           <input type="checkbox" value="standards" onchange="toggleAddon(this)"> 📐 National Standards
@@ -636,13 +398,18 @@ select:focus { border-color: var(--red); box-shadow: 0 0 0 3px rgba(192,74,32,0.
           <input type="checkbox" value="finalcrit" onchange="toggleAddon(this)"> 🎭 Final critique questions
         </label>
         <label class="addon-item" id="addon-scaffold" onclick="openScaffold(event)">
-          <input type="checkbox" value="scaffold" onchange="toggleAddon(this)"> 📝 Printable project scaffold
+          <input type="checkbox" value="scaffold" onchange="toggleAddon(this)"> 📝 Progress Packet & Rubric
         </label>
       </div>
     </div>
 
     <!-- GENERATE -->
-    <button class="generate-btn" id="genBtn" onclick="generate()">🚀 Launch my project brief</button>
+    <button class="generate-btn" id="genBtn" onclick="generate()">🎨 Launch my project brief</button>
+
+    <!-- FEEDBACK BANNER -->
+    <div class="feedback-banner">
+      🧪 <strong>Beta version</strong> — How is this working for you? <a onclick="openFeedback()">Send us feedback!</a>
+    </div>
 
     <!-- OUTPUT -->
     <div id="output"></div>
@@ -650,108 +417,112 @@ select:focus { border-color: var(--red); box-shadow: 0 0 0 3px rgba(192,74,32,0.
   </div>
 </div>
 
-<script>
-// ── PASSWORD GATE ──────────────────────────────────────────────────────────
-const VALID_CODES = ['artedguru'];
+<!-- FEEDBACK MODAL -->
+<div class="modal-overlay" id="feedbackModal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeFeedback()">&times;</button>
+    <h2>Send Feedback</h2>
+    <p style="font-size:14px;color:#555;margin-bottom:1.25rem;">Thanks for helping make ArtEdGuru better! Share what's working, what isn't, or any ideas you have.</p>
+    <input type="text" class="modal-input" id="fbName" placeholder="Your name (optional)">
+    <textarea class="modal-textarea" id="fbMessage" placeholder="Your feedback..." rows="5"></textarea>
+    <button class="modal-send-btn" onclick="submitFeedback()">Send Feedback</button>
+    <div class="modal-status" id="fbStatus"></div>
+  </div>
+</div>
 
+<script>
+// PASSWORD GATE
+const VALID_CODES = ['artedguru'];
 function checkCode() {
   const val = document.getElementById('codeInput').value.trim().toLowerCase();
   if (VALID_CODES.includes(val)) {
-    sessionStorage.setItem('aeg_student_auth', '1');
+    sessionStorage.setItem('aeg_student_auth','1');
     showApp();
   } else {
     document.getElementById('gateError').style.display = 'block';
     document.getElementById('codeInput').focus();
   }
 }
-
-document.getElementById('codeInput').addEventListener('keydown', function(e) {
-  if (e.key === 'Enter') checkCode();
-});
-
+document.getElementById('codeInput').addEventListener('keydown', e => { if (e.key==='Enter') checkCode(); });
 function showApp() {
   document.getElementById('password-gate').style.display = 'none';
   document.getElementById('app').style.display = 'block';
 }
+if (sessionStorage.getItem('aeg_student_auth')==='1') showApp();
 
-// Check session on load
-if (sessionStorage.getItem('aeg_student_auth') === '1') {
-  showApp();
-}
-
-// ── CHOICE BOARD ──────────────────────────────────────────────────────────
+// CHOICE BOARD
 const selections = { a: null, b: null, c: null, d: null };
-
 function pick(col, value, btn) {
-  // Deselect others in column
   document.querySelectorAll(`.choice-btn[data-col="${col}"]`).forEach(b => b.classList.remove('selected'));
   btn.classList.add('selected');
   selections[col] = value;
   updateSummary();
   updateProgress();
 }
-
 function updateSummary() {
-  const cols = {
-    a: { label: 'Subject Focus', cls: 'col-a' },
-    b: { label: 'Pathway', cls: 'col-b' },
-    c: { label: 'Media', cls: 'col-c' },
-    d: { label: 'Purpose', cls: 'col-d' }
-  };
-  for (const [col, meta] of Object.entries(cols)) {
-    const el = document.getElementById(`sum-${col}`);
-    if (selections[col]) {
-      el.textContent = selections[col];
-      el.className = `summary-pill filled ${meta.cls}`;
-    } else {
-      el.textContent = meta.label;
-      el.className = 'summary-pill';
-    }
+  const cols = { a:{label:'Subject Focus',cls:'col-a'}, b:{label:'Pathway',cls:'col-b'}, c:{label:'Media',cls:'col-c'}, d:{label:'Purpose',cls:'col-d'} };
+  for (const [col,meta] of Object.entries(cols)) {
+    const el = document.getElementById('sum-'+col);
+    if (selections[col]) { el.textContent = selections[col]; el.className = 'summary-pill filled '+meta.cls; }
+    else { el.textContent = meta.label; el.className = 'summary-pill'; }
   }
 }
-
 function updateProgress() {
   const made = Object.values(selections).filter(Boolean).length;
-  const pct = (made / 4) * 100;
-  document.getElementById('progressBar').style.width = pct + '%';
-  document.getElementById('progressPct').textContent = `${made} of 4 choices made`;
+  document.getElementById('progressBar').style.width = (made/4*100)+'%';
+  document.getElementById('progressPct').textContent = made+' of 4 choices made';
 }
 
+// ADD-ONS
 function toggleAddon(cb) {
   const label = cb.closest('.addon-item');
   if (cb.checked) label.classList.add('checked');
   else label.classList.remove('checked');
 }
-
 function openScaffold(e) {
-  if (e.target.tagName === 'INPUT') return;
-  window.open('https://www.artedguru.com/uploads/3/0/6/1/30613521/independent_progress_packet.pdf', '_blank');
+  if (e.target.tagName==='INPUT') return;
+  window.open('https://www.artedguru.com/uploads/3/0/6/1/30613521/independent_progress_packet.pdf','_blank');
 }
 
-// ── GENERATE ──────────────────────────────────────────────────────────────
+// FEEDBACK MODAL
+function openFeedback() { document.getElementById('feedbackModal').classList.add('open'); }
+function closeFeedback() { document.getElementById('feedbackModal').classList.remove('open'); document.getElementById('fbStatus').textContent=''; }
+document.addEventListener('click', e => { if (e.target.id==='feedbackModal') closeFeedback(); });
+
+async function submitFeedback() {
+  const name = document.getElementById('fbName').value.trim();
+  const message = document.getElementById('fbMessage').value.trim();
+  const status = document.getElementById('fbStatus');
+  if (!message) { status.textContent='Please enter a message before sending.'; return; }
+  status.textContent='Sending...';
+  try {
+    const res = await fetch('https://formspree.io/f/xojynwbj', {
+      method:'POST',
+      headers:{'Content-Type':'application/json','Accept':'application/json'},
+      body: JSON.stringify({ name: name||'Anonymous', message, _replyto:'lovsart@gmail.com' })
+    });
+    if (res.ok) {
+      status.textContent='✅ Thank you! Your feedback has been sent.';
+      document.getElementById('fbName').value='';
+      document.getElementById('fbMessage').value='';
+    } else { status.textContent='Something went wrong. Please try again.'; }
+  } catch(e) { status.textContent='Something went wrong. Please try again.'; }
+}
+
+// GENERATE
 let lastBriefText = '';
-
 async function generate() {
-  // Validate choices
   const missing = ['a','b','c','d'].filter(c => !selections[c]);
-  if (missing.length) {
-    alert(`Please make a choice in ${missing.length === 1 ? 'one more column' : missing.length + ' more columns'} before generating.`);
-    return;
-  }
-
+  if (missing.length) { alert('Please make a selection in every column before generating.'); return; }
   const grade    = document.getElementById('grade').value;
   const period   = document.getElementById('period').value;
   const duration = document.getElementById('duration').value;
   const interest = document.getElementById('interest').value.trim();
   const addons   = [...document.querySelectorAll('.addon-item input:checked')].map(c => c.value);
-
-  const btn    = document.getElementById('genBtn');
+  const btn = document.getElementById('genBtn');
   const output = document.getElementById('output');
-  btn.disabled = true;
-  btn.textContent = '🎨 Building your brief...';
-  lastBriefText = '';
+  btn.disabled = true; btn.textContent = '🎨 Building your brief...'; lastBriefText = '';
 
-  // Build prompt
   let addonsBlock = '';
   if (addons.length) {
     addonsBlock = '\n\nADDITIONAL SECTIONS — include these after YOUR FORMS:\n';
@@ -761,7 +532,6 @@ async function generate() {
   }
 
   const interestLine = interest ? `Personal interest / inspiration: ${interest}` : '';
-
   const prompt = `%%STUDENT_PROJECT%%
 
 Generate a Launch Brief for a student's independent art project based on their Choice Board selections.
@@ -775,218 +545,141 @@ Media: ${selections.c}
 Purpose: ${selections.d}
 ${interestLine}
 
-Write the Launch Brief now. Talk directly to the student. Warm, encouraging, exciting tone matched to grade level. Use plain text ALL CAPS section headers. No markdown.${addonsBlock}`;
+Generate THREE separate Launch Briefs — label them IDEA 1, IDEA 2, and IDEA 3. Each should feel genuinely different from the others — vary the spark, the artists, and the starting points. The student picks the one that excites them most.
 
-  output.innerHTML = `
-    <div class="loading-card">
-      <span class="loading-spinner">🎨</span>
-      <h3>Building your brief<span class="loading-dots"></span></h3>
-      <p>Just a moment — something great is coming.</p>
-    </div>`;
+For each idea, use these plain text ALL CAPS section headers in order:
+IDEA 1 (or 2 or 3)
+YOUR SPARK
+ARTISTS TO EXPLORE
+POSSIBLE STARTING POINTS
+YOUR FORMS (include only once, after IDEA 3)
+
+Talk directly to the student. Warm, encouraging, exciting tone matched to grade level. No markdown.${addonsBlock}`;
+
+  output.innerHTML = `<div class="loading-card"><span class="loading-spinner">🎨</span><h3>Building your brief<span class="loading-dots"></span></h3><p>Just a moment — something great is coming.</p></div>`;
 
   try {
     const res = await fetch('/generate', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        prompt,
-        subjectArea: selections.a,
-        standardsDisplay: addons.includes('standards') ? 'national' : 'none',
-        ncArts: false,
-        gradeBand: grade
-      })
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ prompt, subjectArea: selections.a, standardsDisplay: addons.includes('standards')?'national':'none', ncArts: false, gradeBand: grade })
     });
-
     const data = await res.json();
-    if (!res.ok || data.error) throw new Error(data.error || 'API error');
-
-    lastBriefText = (data.content || []).map(b => b.text || '').join('');
+    if (!res.ok || data.error) throw new Error(data.error||'API error');
+    lastBriefText = (data.content||[]).map(b=>b.text||'').join('');
     if (!lastBriefText) throw new Error('No content returned');
-
-    const formattedHTML = formatBrief(lastBriefText);
     output.innerHTML = `
       <div class="output-card">
         <div class="output-toolbar">
-          <span class="output-title">Your Launch Brief 🚀</span>
+          <span class="output-title">Your 3 Project Ideas 🎨</span>
           <div class="export-row">
             <button class="export-btn" onclick="exportText()">Plain text</button>
             <button class="export-btn" onclick="printBrief()">Print</button>
             <button class="export-btn primary" onclick="copyBrief()">Copy text</button>
           </div>
         </div>
-        <div class="brief-content">${formattedHTML}</div>
+        <div class="brief-content">${formatBrief(lastBriefText)}</div>
       </div>`;
-
   } catch(e) {
     output.innerHTML = `<div class="error-msg">Something went wrong: ${e.message}. Please try again in a moment.</div>`;
   }
-
-  btn.disabled = false;
-  btn.textContent = '🚀 Launch my project brief';
+  btn.disabled = false; btn.textContent = '🎨 Launch my project brief';
 }
 
-// ── FORMATTER ────────────────────────────────────────────────────────────
+// FORMATTER
 function formatBrief(text) {
-  const SECTIONS = ['YOUR SPARK', 'ARTISTS TO EXPLORE', 'POSSIBLE STARTING POINTS', 'YOUR FORMS', 'NATIONAL STANDARDS', 'MID-PROJECT CHECK-IN QUESTIONS', 'FINAL REFLECTION QUESTIONS'];
-  const ICONS = {
-    'YOUR SPARK': '✨',
-    'ARTISTS TO EXPLORE': '🎨',
-    'POSSIBLE STARTING POINTS': '💡',
-    'YOUR FORMS': '📋',
-    'NATIONAL STANDARDS': '📐',
-    'MID-PROJECT CHECK-IN QUESTIONS': '🔍',
-    'FINAL REFLECTION QUESTIONS': '🎭'
-  };
-
+  const IDEA_HEADERS = ['IDEA 1','IDEA 2','IDEA 3'];
+  const SECTIONS = ['YOUR SPARK','ARTISTS TO EXPLORE','POSSIBLE STARTING POINTS','YOUR FORMS','NATIONAL STANDARDS','MID-PROJECT CHECK-IN QUESTIONS','FINAL REFLECTION QUESTIONS'];
+  const ICONS = {'YOUR SPARK':'✨','ARTISTS TO EXPLORE':'🎨','POSSIBLE STARTING POINTS':'💡','YOUR FORMS':'📋','NATIONAL STANDARDS':'📐','MID-PROJECT CHECK-IN QUESTIONS':'🔍','FINAL REFLECTION QUESTIONS':'🎭'};
+  const IDEA_COLORS = ['#c04a20','#1a3a5c','#2a9d6e'];
   const lines = text.split('\n');
-  let html = '';
-  let currentSection = '';
-  let sectionLines = [];
+  let html='', currentSection='', sectionLines=[], ideaIndex=-1;
 
   function flush() {
     if (!currentSection && !sectionLines.join('').trim()) return;
-    html += renderSection(currentSection, sectionLines);
-    sectionLines = [];
+    html += renderSection(currentSection, sectionLines); sectionLines=[];
   }
-
   function renderSection(header, contentLines) {
     const body = contentLines.join('\n').trim();
     if (!body && !header) return '';
-    const icon = ICONS[header] || '';
-    let out = `<div class="brief-section">`;
-    if (header) out += `<div class="brief-header">${icon ? '<span>' + icon + '</span>' : ''}${toTitleCase(header)}</div>`;
-
-    if (header === 'YOUR SPARK') {
-      out += `<div class="spark-box">${esc(body)}</div>`;
-    } else if (header === 'ARTISTS TO EXPLORE') {
-      out += renderArtists(body);
-    } else if (header === 'POSSIBLE STARTING POINTS') {
-      out += renderStartingPoints(body);
-    } else if (header === 'YOUR FORMS') {
+    const icon = ICONS[header]||'';
+    let out = '<div class="brief-section">';
+    if (header) out += `<div class="brief-header">${icon?'<span>'+icon+'</span>':''}${toTitleCase(header)}</div>`;
+    if (header==='YOUR SPARK') out += `<div class="spark-box">${esc(body)}</div>`;
+    else if (header==='ARTISTS TO EXPLORE') out += renderArtists(body);
+    else if (header==='POSSIBLE STARTING POINTS') out += renderStartingPoints(body);
+    else if (header==='YOUR FORMS') {
       out += `<p class="generic-p">Your next step is to download and fill in your own forms.</p>`;
-      out += `<div class="forms-cta">
-        <p>The form stays blank until <strong>you</strong> fill it in. That's the point.</p>
-        <a href="https://www.artedguru.com/uploads/3/0/6/1/30613521/independent_progress_packet.pdf" target="_blank">Download Independent Progress Packet →</a>
-      </div>`;
-    } else {
-      out += renderBody(body);
-    }
-
-    out += `</div>`;
-    return out;
+      out += `<div class="forms-cta"><p>The form stays blank until <strong>you</strong> fill it in. That's the point.</p><a href="https://www.artedguru.com/uploads/3/0/6/1/30613521/independent_progress_packet.pdf" target="_blank">Download Progress Packet & Rubric →</a></div>`;
+    } else out += renderBody(body);
+    out += '</div>'; return out;
   }
-
   lines.forEach(line => {
-    const up = line.trim().toUpperCase().replace(/:$/, '');
-    const matched = SECTIONS.find(s => up === s);
-    if (matched) {
-      flush();
-      currentSection = matched;
-    } else {
-      sectionLines.push(line);
+    const up = line.trim().toUpperCase().replace(/:$/,'');
+    // Check for IDEA N dividers first
+    const ideaMatch = IDEA_HEADERS.find(h => up===h || up.startsWith(h+' ') || up.startsWith(h+':'));
+    if (ideaMatch) {
+      flush(); currentSection=''; sectionLines=[];
+      ideaIndex++;
+      const color = IDEA_COLORS[ideaIndex % IDEA_COLORS.length];
+      const num = ideaIndex+1;
+      html += `<div style="margin:2rem 0 1rem;padding:14px 20px;background:${color};border-radius:12px;color:#fff;font-size:18px;font-weight:900;font-family:'Playfair Display',serif;letter-spacing:0.02em;">💡 Idea ${num} of 3</div>`;
+      return;
     }
+    const matched = SECTIONS.find(s => up===s);
+    if (matched) { flush(); currentSection=matched; } else sectionLines.push(line);
   });
   flush();
-
   html += `<div class="credit-line">Generated with <a href="https://artedguru.com" target="_blank">ArtEdGuru</a> — <a href="https://artedguru.com" target="_blank">artedguru.com</a></div>`;
   return html;
 }
-
 function renderArtists(body) {
-  const lines = body.split('\n').filter(l => l.trim());
-  let out = '';
-  lines.forEach(line => {
-    const trimmed = line.trim().replace(/^[-•*\d.]+\s*/, '');
-    const dashIdx = trimmed.indexOf(' — ');
-    const enDashIdx = trimmed.indexOf(' – ');
-    const idx = dashIdx !== -1 ? dashIdx : enDashIdx !== -1 ? enDashIdx : -1;
-    if (idx !== -1) {
-      const name = trimmed.substring(0, idx);
-      const desc = trimmed.substring(idx + 3);
-      out += `<div class="artist-item"><span class="artist-name">${esc(name)}</span> <span class="artist-desc">— ${esc(desc)}</span></div>`;
-    } else if (trimmed) {
-      out += `<div class="artist-item">${esc(trimmed)}</div>`;
-    }
+  let out='';
+  body.split('\n').filter(l=>l.trim()).forEach(line => {
+    const t = line.trim().replace(/^[-•*\d.]+\s*/,'');
+    const i = t.indexOf(' — ')!==-1?t.indexOf(' — '):t.indexOf(' – ')!==-1?t.indexOf(' – '):-1;
+    if (i!==-1) out += `<div class="artist-item"><span class="artist-name">${esc(t.substring(0,i))}</span> <span class="artist-desc">— ${esc(t.substring(i+3))}</span></div>`;
+    else if (t) out += `<div class="artist-item">${esc(t)}</div>`;
   });
   return out;
 }
-
 function renderStartingPoints(body) {
-  const paras = body.split(/\n\n+/);
-  let out = '';
-  let items = [];
-  let trailer = '';
-
+  let items=[], trailer='';
   body.split('\n').forEach(line => {
-    const trimmed = line.trim();
-    if (/^[123][\.\)]\s/.test(trimmed) || /^Consider starting with/i.test(trimmed)) {
-      items.push(trimmed.replace(/^[123][\.\)]\s/, ''));
-    } else if (trimmed && items.length >= 3) {
-      trailer = trimmed;
-    }
+    const t=line.trim();
+    if (/^[123][\.\)]\s/.test(t)||/^Consider starting with/i.test(t)) items.push(t.replace(/^[123][\.\)]\s/,''));
+    else if (t && items.length>=3) trailer=t;
   });
-
   if (items.length) {
-    items.slice(0, 3).forEach((item, i) => {
-      out += `<div class="starting-point"><strong>Option ${i + 1}:</strong> ${esc(item)}</div>`;
-    });
-    if (trailer) out += `<p class="generic-p" style="color:var(--muted); font-size:14px; margin-top:8px;">${esc(trailer)}</p>`;
-  } else {
-    out += renderBody(body);
+    let out='';
+    items.slice(0,3).forEach((item,i) => out+=`<div class="starting-point"><strong>Option ${i+1}:</strong> ${esc(item)}</div>`);
+    if (trailer) out+=`<p class="generic-p" style="color:var(--muted);font-size:14px;margin-top:8px;">${esc(trailer)}</p>`;
+    return out;
   }
-  return out;
+  return renderBody(body);
 }
-
 function renderBody(body) {
-  let out = '';
-  const paras = body.split(/\n\n+/);
-  paras.forEach(para => {
-    para = para.trim();
-    if (!para) return;
-    const paraLines = para.split('\n');
-    const isNumbered = paraLines.filter(l => l.trim()).every(l => /^\d+[\.\)]\s/.test(l.trim()));
-    const isBullet   = paraLines.filter(l => l.trim()).every(l => /^[-•*]\s/.test(l.trim()));
-    if ((isNumbered || isBullet) && paraLines.filter(l => l.trim()).length > 1) {
-      out += isNumbered ? '<ol class="generic-ol">' : '<ul class="generic-ul">';
-      paraLines.forEach(l => {
-        const t = l.trim();
-        if (!t) return;
-        out += `<li>${esc(t.replace(/^\d+[\.\)]\s/, '').replace(/^[-•*]\s/, ''))}</li>`;
-      });
-      out += isNumbered ? '</ol>' : '</ul>';
-    } else {
-      paraLines.forEach(l => {
-        const t = l.trim();
-        if (t) out += `<p class="generic-p">${esc(t)}</p>`;
-      });
-    }
+  let out='';
+  body.split(/\n\n+/).forEach(para => {
+    para=para.trim(); if(!para) return;
+    const pl=para.split('\n');
+    const isN=pl.filter(l=>l.trim()).every(l=>/^\d+[\.\)]\s/.test(l.trim()));
+    const isB=pl.filter(l=>l.trim()).every(l=>/^[-•*]\s/.test(l.trim()));
+    if ((isN||isB)&&pl.filter(l=>l.trim()).length>1) {
+      out+=isN?'<ol class="generic-ol">':'<ul class="generic-ul">';
+      pl.forEach(l=>{const t=l.trim();if(t)out+=`<li>${esc(t.replace(/^\d+[\.\)]\s/,'').replace(/^[-•*]\s/,''))}</li>`;});
+      out+=isN?'</ol>':'</ul>';
+    } else { pl.forEach(l=>{const t=l.trim();if(t)out+=`<p class="generic-p">${esc(t)}</p>`;}); }
   });
   return out;
 }
-
 function toTitleCase(str) {
-  const small = new Set(['a','an','the','and','but','or','for','nor','on','at','to','by','in','of','up','as','is']);
-  return str.toLowerCase().split(' ').map((w, i) => (i === 0 || !small.has(w)) ? w.charAt(0).toUpperCase() + w.slice(1) : w).join(' ');
+  const small=new Set(['a','an','the','and','but','or','for','nor','on','at','to','by','in','of','up','as','is']);
+  return str.toLowerCase().split(' ').map((w,i)=>(i===0||!small.has(w))?w.charAt(0).toUpperCase()+w.slice(1):w).join(' ');
 }
-function esc(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-
-function copyBrief() {
-  if (!lastBriefText) return;
-  navigator.clipboard.writeText(lastBriefText).then(() => {
-    const b = document.querySelector('.export-btn.primary');
-    const orig = b.textContent;
-    b.textContent = '✅ Copied!';
-    setTimeout(() => b.textContent = orig, 2000);
-  });
-}
-function exportText() {
-  if (!lastBriefText) return;
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(new Blob([lastBriefText], {type:'text/plain'}));
-  a.download = 'artedguru-project-brief.txt';
-  a.click();
-}
-function printBrief() { window.print(); }
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function copyBrief(){if(!lastBriefText)return;navigator.clipboard.writeText(lastBriefText).then(()=>{const b=document.querySelector('.export-btn.primary');const o=b.textContent;b.textContent='✅ Copied!';setTimeout(()=>b.textContent=o,2000);});}
+function exportText(){if(!lastBriefText)return;const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([lastBriefText],{type:'text/plain'}));a.download='artedguru-project-brief.txt';a.click();}
+function printBrief(){window.print();}
 </script>
 </body>
 </html>
