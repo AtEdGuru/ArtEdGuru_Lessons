@@ -106,6 +106,13 @@ body { font-family: 'Source Sans 3', sans-serif; background-color: #faf9f7; back
 .header-tagline { font-size: 15px; color: #444; margin-top: 10px; line-height: 1.6; max-width: 580px; margin-left: auto; margin-right: auto; }
 .header-tagline strong { font-weight: 600; color: #1a1a1a; }
 
+  .header-keywords {
+  font-size: 14px;
+  color: #555;
+  margin-top: 8px;
+  text-align: center;
+  line-height: 1.5;
+}
 /* SUBJECT PILLS */
 .section-label { font-size: 11px; font-weight: 600; color: #999; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 10px; }
 .subject-pills { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 8px; }
@@ -296,6 +303,17 @@ select:focus, input[type=text]:focus { border-color: #c04a20; box-shadow: 0 0 0 
 .forms-links a:hover { text-decoration: underline; }
 @media print { .output-toolbar, .export-row, .generate-btn, .site-footer, .feedback-banner, .header, .subject-pills, .subject-desc, .form-grid, #std-toggle, #addon-checks, .section-label { display: none !important; } }
 </style>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "ArtEdGuru Lesson Generator",
+  "applicationCategory": "EducationalApplication",
+  "operatingSystem": "Web",
+  "description": "Generate standards-aligned lesson plans for K-12 teachers using real classroom experience from ArtEdGuru.",
+  "url": "https://app.artedguru.com"
+}
+</script>
 </head>
 <body>
 <div class="app">
@@ -333,6 +351,11 @@ select:focus, input[type=text]:focus { border-color: #c04a20; box-shadow: 0 0 0 
       <strong>Collaborate with ArtEdGuru.</strong><br>
       Choose your subject, grade, media, and goals. Then generate a classroom-ready lesson plan.
     </div>
+    <p style="font-size:14px; color:#555; margin-top:8px; text-align:center;">
+Generate standards-aligned art and STEAM lesson plans for K–12 teachers in minutes.
+<p class="header-keywords">
+  Generate standards-aligned art and STEAM lesson plans for K–12 teachers in minutes.
+</p>
   </div>
 
   <!-- SUBJECT AREA -->
