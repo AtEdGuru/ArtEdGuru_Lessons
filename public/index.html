@@ -26,18 +26,77 @@
 body { font-family: 'Source Sans 3', sans-serif; background-color: #faf9f7; background-image: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.015) 2px, rgba(0,0,0,0.015) 3px), repeating-linear-gradient(90deg, transparent, transparent 4px, rgba(0,0,0,0.01) 4px, rgba(0,0,0,0.01) 5px); color: #1a1a1a; min-height: 100vh; }
 .app { max-width: 860px; margin: 0 auto; padding: 2rem 1rem 3rem; }
 
-/* SEO LANDING SECTION */
-.seo-landing { background: #fff; border: 1px solid #e8e4df; border-radius: 12px; padding: 2rem; margin-bottom: 2rem; }
-.seo-landing h1 { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 400; color: #1a1a1a; margin-bottom: 0.5rem; line-height: 1.3; }
-.seo-subhead { font-size: 15px; font-weight: 600; color: #c04a20; margin-bottom: 1rem; }
-.seo-body { font-size: 14px; line-height: 1.8; color: #444; margin-bottom: 1rem; }
-.seo-benefits { list-style: none; margin-bottom: 1.25rem; }
-.seo-benefits li { font-size: 14px; color: #333; padding: 4px 0; }
-.seo-testimonials { background: #faf9f7; border-left: 3px solid #c04a20; padding: 1rem 1.25rem; border-radius: 0 8px 8px 0; margin-bottom: 1rem; }
-.seo-quote { font-size: 14px; font-style: italic; color: #444; margin-bottom: 0.5rem; line-height: 1.7; }
-.seo-quote:last-child { margin-bottom: 0; }
-.seo-attribution { font-style: normal; font-weight: 600; color: #1a1a1a; }
-.seo-cta { font-size: 14px; font-weight: 600; color: #1a1a1a; text-align: center; margin-top: 0.5rem; }
+/* COMPACT SEO INTRO */
+.seo-landing.compact-seo {
+  background: #1a3a5c;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 0;
+  margin-bottom: 1.15rem;
+  overflow: hidden;
+}
+.compact-seo summary {
+  list-style: none;
+  cursor: pointer;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 13px;
+  line-height: 1.4;
+  font-weight: 600;
+}
+.compact-seo summary::-webkit-details-marker { display: none; }
+.compact-seo summary span::after {
+  content: "  ▼";
+  font-size: 10px;
+  opacity: 0.75;
+}
+.compact-seo[open] summary span::after { content: "  ▲"; }
+.compact-seo summary a {
+  color: #fff;
+  text-decoration: underline;
+  font-size: 12px;
+  white-space: nowrap;
+  font-weight: 600;
+}
+.compact-seo summary a:hover { opacity: 0.85; }
+.seo-expanded {
+  background: #fff;
+  color: #333;
+  padding: 1rem 1.25rem 1.15rem;
+  border: 1px solid #e8e4df;
+  border-top: none;
+  border-radius: 0 0 10px 10px;
+}
+.seo-subhead {
+  font-size: 14px;
+  font-weight: 600;
+  color: #c04a20;
+  margin-bottom: 0.5rem;
+}
+.seo-body {
+  font-size: 13.5px;
+  line-height: 1.65;
+  color: #444;
+  margin-bottom: 0.75rem;
+}
+.seo-benefits {
+  list-style: none;
+  margin-bottom: 0.75rem;
+}
+.seo-benefits li {
+  font-size: 13.5px;
+  color: #333;
+  padding: 2px 0;
+}
+.seo-cta {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #1a1a1a;
+}
 
 /* HEADER */
 .header { text-align: center; margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 1px solid #e8e4df; }
@@ -241,23 +300,30 @@ select:focus, input[type=text]:focus { border-color: #c04a20; box-shadow: 0 0 0 
 <body>
 <div class="app">
 
-  <!-- SEO LANDING SECTION -->
-<div class="seo-landing">
-  <h1>AI-Powered Art Lesson Plans Built on 40 Years of Classroom Experience</h1>
-  <p class="seo-subhead">Not AI slop. Real lessons, real experience, real classrooms.</p>
-  <p class="seo-body">The ArtEdGuru Lesson Generator draws on 40 years of lessons, projects, and resources created by Eric Gibbons — National Board Certified art educator, author of 20+ books, and classroom teacher. Instead of generating generic content from thin sources, this platform cross-references a database of hundreds of real, tested lessons to build something worth teaching.</p>
-  <ul class="seo-benefits">
-    <li>✔ Standards-aligned lesson plans for K-12 art and STEAM teachers</li>
-    <li>✔ Covers 11 subject areas — Fine Arts, Science, Math, History, Literacy, and more</li>
-    <li>✔ Generates a complete, classroom-ready lesson plan in under 2 minutes</li>
-    <li>✔ Free to try — no account required</li>
-  </ul>
-  <div class="seo-testimonials">
-    <p class="seo-quote">"This app is a godsend. I'm beyond grateful." <span class="seo-attribution">— Sue K., middle school art teacher</span></p>
-    <p class="seo-quote">"Within seconds a beautiful lesson plan was generated. What an amazing resource you have created that will be a gift to our profession." <span class="seo-attribution">— Mary R., educator</span></p>
-  </div>
-  <p class="seo-cta">Select your subject area below and generate your first lesson — free.</p>
-</div>
+  <!-- COMPACT SEO INTRO -->
+  <details class="seo-landing compact-seo">
+    <summary>
+      <span>AI-powered lesson plans built on 40 years of real classroom experience</span>
+      <a href="https://www.artedguru.com/appreviews.html" target="_blank" onclick="event.stopPropagation();">See Reviews</a>
+    </summary>
+
+    <div class="seo-expanded">
+      <p class="seo-subhead">Not AI slop. Real lessons, real experience, real classrooms.</p>
+
+      <p class="seo-body">
+        The ArtEdGuru Lesson Generator draws on decades of lessons, projects, books, videos, and classroom resources created by Eric Gibbons — National Board Certified art educator, author, and working classroom teacher. Instead of generating generic content from thin sources, this platform cross-references real ArtEdGuru resources to build something worth teaching.
+      </p>
+
+      <ul class="seo-benefits">
+        <li>✔ Standards-aligned lesson plans for K–12 art and STEAM teachers</li>
+        <li>✔ Covers Fine Arts, Science, Math, History, Literacy, SEL, Media Arts, and more</li>
+        <li>✔ Generates a complete classroom-ready lesson plan in minutes</li>
+        <li>✔ Free to try — no account required</li>
+      </ul>
+
+      <p class="seo-cta">Select your subject area below and generate your first lesson free.</p>
+    </div>
+  </details>
 
 <!-- HEADER -->
   <div class="header">
@@ -265,7 +331,7 @@ select:focus, input[type=text]:focus { border-color: #c04a20; box-shadow: 0 0 0 
     <div class="header-sub">Lesson Generator</div>
     <div class="header-tagline">
       <strong>Collaborate with ArtEdGuru.</strong><br>
-      Select your parameters below, and this platform will cross reference 40 years of lessons and resources created by ArtEdGuru to craft a comprehensive, standards-aligned lesson plan ready for your classroom.
+      Choose your subject, grade, media, and goals. Then generate a classroom-ready lesson plan.
     </div>
   </div>
 
