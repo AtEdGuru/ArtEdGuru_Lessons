@@ -554,6 +554,9 @@ async function fetchNCStandards(subjectArea, gradeBand) {
 app.get('/portal', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'portal.html'));
 });
+app.get('/student', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'student.html'));
+});
 
 app.post('/generate', async (req, res) => {
   const { prompt, subjectArea, standardsDisplay, ncArts, gradeBand } = req.body;
