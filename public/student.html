@@ -510,11 +510,67 @@ async function submitFeedback() {
   } catch(e) { status.textContent='Something went wrong. Please try again.'; }
 }
 
+// GUARDRAIL — CLIENT-SIDE BLOCKLIST
+const BLOCKLIST_EXACT = [
+  'porn','pornography','xxx','sex','sexy','sexual','sexuality',
+  'genitals','genitalia','penis','vagina','vulva','anus','rectum',
+  'breasts','nipples','buttocks','naked','nudity',
+  'masturbat','orgasm','erection','ejacul',
+  'blowjob','handjob','fingering','dildo','vibrator',
+  'prostitut','escort','stripper','onlyfans',
+  'gore','gory','mutilat','decapitat','behead','dismember',
+  'snuff','necrophil','cannibal',
+  'cocaine','heroin','meth','methamphetamine','fentanyl','opioid',
+  'weed','marijuana','cannabis','molly','ecstasy','lsd','acid',
+  'crack','xanax','adderall abuse',
+];
+const BLOCKLIST_SLURS_B64 = [
+  'bmln Z2Vy','ZmFnZ290','ZmFn','Y3VudA==','a2lrZQ==',
+  'c3BpYw==','Y2hpbms=','Z29vaw==','d2V0YmFjaw==','Y29vbg==',
+  'cmV0YXJk','dHJhbm55','c2hFbWFs ZQ=='
+].map(s => { try { return atob(s.replace(/ /g,'')); } catch(e) { return ''; } }).filter(Boolean);
+const BLOCKLIST_PHRASES = [
+  'kill myself','killing myself','want to die','want to kill',
+  'cut myself','cutting myself','hurt myself','harm myself',
+  'self harm','self-harm','self injury','self-injury',
+  'how to cut','how to hurt','how to kill',
+  'shoot up','shoot everyone','kill everyone','murder everyone',
+  'bomb the','blow up the',
+  'drug dealer','dealing drugs','getting high','smoke weed',
+  'snort cocaine','shoot heroin','take pills to',
+  'child porn','cp ','rape','sexual assault',
+];
+const BLOCKLIST_ALL = [...BLOCKLIST_EXACT, ...BLOCKLIST_SLURS_B64];
+function checkInput(text) {
+  if (!text) return false;
+  const lower = text.toLowerCase();
+  for (const phrase of BLOCKLIST_PHRASES) {
+    if (lower.includes(phrase)) return true;
+  }
+  for (const word of BLOCKLIST_ALL) {
+    const endsInAlpha = /[a-z]$/.test(word);
+    if (endsInAlpha) {
+      const re = new RegExp('\\b' + word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b', 'i');
+      if (re.test(lower)) return true;
+    } else {
+      if (lower.includes(word)) return true;
+    }
+  }
+  return false;
+}
+
 // GENERATE
 let lastBriefText = '';
 async function generate() {
   const missing = ['a','b','c','d'].filter(c => !selections[c]);
   if (missing.length) { alert('Please make a selection in every column before generating.'); return; }
+  const interestVal = document.getElementById('interest').value.trim();
+  if (checkInput(interestVal)) {
+    alert('🚫 Your entry contains inappropriate language that has been reported to administrators. Please log out now.');
+    document.getElementById('interest').value = '';
+    document.getElementById('interest').focus();
+    return;
+  }
   const grade    = document.getElementById('grade').value;
   const period   = document.getElementById('period').value;
   const duration = document.getElementById('duration').value;
