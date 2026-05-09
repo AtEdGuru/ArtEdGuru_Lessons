@@ -708,11 +708,11 @@ async function handleSignup() {
     return;
   }
 
-  if (data?.user) {
-    // Write profile row — transfer anon lesson count
+  const signedUpUser = data?.user || data?.session?.user;
+if (signedUpUser) {
     const anonCount = getAnonCount();
     await _supabase.from('profiles').upsert({
-      id: data.user.id,
+      id: signedUpUser.id,
       email: email,
       lesson_count: anonCount,
       marketing_opt_in: optIn,
@@ -720,7 +720,6 @@ async function handleSignup() {
     });
     resetAnonCount();
 
-    // Kit opt-in — fire and forget
     if (optIn) {
       fetch('/kit-optin', {
         method: 'POST',
@@ -729,7 +728,7 @@ async function handleSignup() {
       }).catch(() => {});
     }
 
-    currentUser = data.user;
+    currentUser = signedUpUser;
     updateAccountButton();
     setAuthStatus('signupStatus', '✅ Account created! Welcome to ArtEdGuru.', 'success');
     setTimeout(() => closeAuth(), 1800);
