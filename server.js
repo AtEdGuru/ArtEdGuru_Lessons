@@ -723,7 +723,7 @@ app.post('/kit-optin', async (req, res) => {
     });
 
     const data = await response.json();
-    console.log('Kit opt-in:', email, data.subscription ? 'success' : 'failed');
+    console.log('Kit opt-in response:', email, JSON.stringify(data));
     res.json({ ok: !!data.subscription });
   } catch(e) {
     console.error('Kit opt-in error:', e.message);
