@@ -636,7 +636,46 @@ app.post('/generate', async (req, res) => {
     res.status(500).json({ error: err.message || 'Internal server error' });
   }
 });
+// ── STRIPE WEBHOOK ────────────────────────────────────────────────────────────
+app.post('/webhook/stripe', express.raw({ type: 'application/json' }), async (req, res) => {
+  const sig = req.headers['stripe-signature'];
+  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
+  let event;
+  try {
+    const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+    event = stripe.webhooks.constructEvent(req.body, sig, webhookSecret);
+  } catch (err) {
+    console.error('Webhook signature error:', err.message);
+    return res.status(400).send(`Webhook Error: ${err.message}`);
+  }
+
+  if (event.type === 'checkout.session.completed' ||
+      event.type === 'invoice.payment_succeeded') {
+    const email = event.data.object.customer_email ||
+                  event.data.object.customer_details?.email;
+    if (email) {
+      const db = getSupabase();
+      await db.from('profiles')
+        .update({ subscribed: true })
+        .eq('email', email);
+      console.log('Subscribed:', email);
+    }
+  }
+
+  if (event.type === 'customer.subscription.deleted') {
+    const email = event.data.object.customer_email;
+    if (email) {
+      const db = getSupabase();
+      await db.from('profiles')
+        .update({ subscribed: false })
+        .eq('email', email);
+      console.log('Unsubscribed:', email);
+    }
+  }
+
+  res.json({ received: true });
+});
 // ── PAYWALL STATUS ENDPOINT ───────────────────────────────────────────────────
 // Returns whether a user is allowed to generate.
 // PAYWALL_ACTIVE = false means all logged-in users get through freely.
