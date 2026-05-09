@@ -721,12 +721,12 @@ if (signedUpUser) {
     resetAnonCount();
 
     if (optIn) {
-      fetch('/kit-optin', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email })
-      }).catch(() => {});
-    }
+  fetch('https://api.convertkit.com/v3/forms/9423904/subscribe', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ api_key: 'eune9XXE4ynQge21hu1bZQ', email })
+  }).catch(() => {});
+}
 
     currentUser = signedUpUser;
     updateAccountButton();
