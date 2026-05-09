@@ -637,6 +637,37 @@ app.post('/generate', async (req, res) => {
   }
 });
 
+// ── PAYWALL STATUS ENDPOINT ───────────────────────────────────────────────────
+// Returns whether a user is allowed to generate.
+// PAYWALL_ACTIVE = false means all logged-in users get through freely.
+// Flip to true in August when Stripe goes live.
+const PAYWALL_ACTIVE = false;
+
+app.post('/api/user-status', async (req, res) => {
+  const { userId } = req.body;
+  if (!userId) return res.json({ allowed: true, reason: 'anonymous' });
+
+  try {
+    const db = getSupabase();
+    const { data, error } = await db
+      .from('profiles')
+      .select('subscribed, lesson_count')
+      .eq('id', userId)
+      .single();
+
+    if (error || !data) return res.json({ allowed: true, reason: 'no_profile' });
+
+    if (!PAYWALL_ACTIVE) return res.json({ allowed: true, reason: 'paywall_inactive' });
+
+    const allowed = data.subscribed === true;
+    return res.json({ allowed, reason: allowed ? 'subscribed' : 'not_subscribed' });
+
+  } catch(e) {
+    console.error('user-status error:', e.message);
+    return res.json({ allowed: true, reason: 'error_fallback' });
+  }
+});
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`ArtEdGuru server running on port ${PORT}`);
