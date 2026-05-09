@@ -758,10 +758,18 @@ async function handleLogin() {
   }
 
   currentUser = data.user;
-  updateAccountButton();
-  setAuthStatus('loginStatus', '✅ Signed in!', 'success');
-  setTimeout(() => closeAuth(), 1200);
-  btn.disabled = false;
+updateAccountButton();
+// Ensure profile row exists (in case user signed up before profiles table existed)
+await _supabase.from('profiles').upsert({
+  id: data.user.id,
+  email: data.user.email,
+  lesson_count: 0,
+  marketing_opt_in: false,
+  subscribed: false
+}, { ignoreDuplicates: true });
+setAuthStatus('loginStatus', '✅ Signed in!', 'success');
+setTimeout(() => closeAuth(), 1200);
+btn.disabled = false;
 }
 
 // ── SIGN OUT ──────────────────────────────────────────────────────────────────
