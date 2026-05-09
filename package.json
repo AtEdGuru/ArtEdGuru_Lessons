@@ -4,7 +4,8 @@
   "description": "ArtEdGuru AI Lesson Plan Generator — Express proxy for Anthropic API",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "build": "npm install"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.103.3",
