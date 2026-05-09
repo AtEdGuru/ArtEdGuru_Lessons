@@ -706,7 +706,30 @@ app.post('/api/user-status', async (req, res) => {
     return res.json({ allowed: true, reason: 'error_fallback' });
   }
 });
+// ── KIT OPT-IN ENDPOINT ───────────────────────────────────────────────────────
+app.post('/kit-optin', async (req, res) => {
+  const { email } = req.body;
+  if (!email) return res.json({ ok: false });
 
+  try {
+    const kitSecret = process.env.KIT_API_SECRET;
+    const kitFormId = process.env.KIT_FORM_ID;
+    if (!kitSecret || !kitFormId) return res.json({ ok: false, reason: 'not configured' });
+
+    const response = await fetch(`https://api.convertkit.com/v3/forms/${kitFormId}/subscribe`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ api_secret: kitSecret, email })
+    });
+
+    const data = await response.json();
+    console.log('Kit opt-in:', email, data.subscription ? 'success' : 'failed');
+    res.json({ ok: !!data.subscription });
+  } catch(e) {
+    console.error('Kit opt-in error:', e.message);
+    res.json({ ok: false });
+  }
+});
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`ArtEdGuru server running on port ${PORT}`);
