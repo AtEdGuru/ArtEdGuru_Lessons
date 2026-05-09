@@ -26,93 +26,21 @@
 body { font-family: 'Source Sans 3', sans-serif; background-color: #faf9f7; background-image: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.015) 2px, rgba(0,0,0,0.015) 3px), repeating-linear-gradient(90deg, transparent, transparent 4px, rgba(0,0,0,0.01) 4px, rgba(0,0,0,0.01) 5px); color: #1a1a1a; min-height: 100vh; }
 .app { max-width: 860px; margin: 0 auto; padding: 2rem 1rem 3rem; }
 
-/* COMPACT SEO INTRO */
-.seo-landing.compact-seo {
-  background: #1a3a5c;
-  color: #fff;
-  border: none;
-  border-radius: 10px;
-  padding: 0;
-  margin-bottom: 1.15rem;
-  overflow: hidden;
-}
-.compact-seo summary {
-  list-style: none;
-  cursor: pointer;
-  padding: 10px 14px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  font-size: 13px;
-  line-height: 1.4;
-  font-weight: 600;
-}
-.compact-seo summary::-webkit-details-marker { display: none; }
-.compact-seo summary span::after {
-  content: "  ▼";
-  font-size: 10px;
-  opacity: 0.75;
-}
-.compact-seo[open] summary span::after { content: "  ▲"; }
-.compact-seo summary a {
-  color: #fff;
-  text-decoration: underline;
-  font-size: 12px;
-  white-space: nowrap;
-  font-weight: 600;
-}
-.compact-seo summary a:hover { opacity: 0.85; }
-.seo-expanded {
-  background: #fff;
-  color: #333;
-  padding: 1rem 1.25rem 1.15rem;
-  border: 1px solid #e8e4df;
-  border-top: none;
-  border-radius: 0 0 10px 10px;
-}
-.seo-subhead {
-  font-size: 14px;
-  font-weight: 600;
-  color: #c04a20;
-  margin-bottom: 0.5rem;
-}
-.seo-body {
-  font-size: 13.5px;
-  line-height: 1.65;
-  color: #444;
-  margin-bottom: 0.75rem;
-}
-.seo-benefits {
-  list-style: none;
-  margin-bottom: 0.75rem;
-}
-.seo-benefits li {
-  font-size: 13.5px;
-  color: #333;
-  padding: 2px 0;
-}
-.seo-cta {
-  font-size: 13.5px;
-  font-weight: 600;
-  color: #1a1a1a;
-}
-
 /* HEADER */
-.header { text-align: center; margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 1px solid #e8e4df; }
+.header { text-align: center; margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 1px solid #e8e4df; position: relative; }
 .header-logo { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 400; color: #1a1a1a; letter-spacing: -0.5px; }
 .header-logo span { color: #c04a20; }
 .header-sub { font-size: 13px; font-weight: 300; color: #888; letter-spacing: 0.08em; text-transform: uppercase; margin-top: 2px; }
 .header-tagline { font-size: 15px; color: #444; margin-top: 10px; line-height: 1.6; max-width: 580px; margin-left: auto; margin-right: auto; }
 .header-tagline strong { font-weight: 600; color: #1a1a1a; }
 
-  .header-keywords {
-  font-size: 14px;
-  color: #555;
-  margin-top: 8px;
-  text-align: center;
-  line-height: 1.5;
-}
+/* ACCOUNT BUTTON */
+.account-btn-wrap { position: absolute; top: 0; right: 0; }
+.account-btn { font-size: 12px; padding: 7px 14px; border-radius: 20px; border: 1px solid #ddd; background: #fff; color: #444; cursor: pointer; font-family: 'Source Sans 3', sans-serif; transition: all .2s; white-space: nowrap; }
+.account-btn:hover { border-color: #c04a20; color: #c04a20; }
+.account-btn.signed-in { background: #1a3a5c; color: #fff; border-color: #1a3a5c; }
+.account-btn.signed-in:hover { background: #c04a20; border-color: #c04a20; }
+
 /* SUBJECT PILLS */
 .section-label { font-size: 11px; font-weight: 600; color: #999; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 10px; }
 .subject-pills { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 8px; }
@@ -132,7 +60,7 @@ select, input[type=text] { width: 100%; font-size: 14px; padding: 9px 12px; bord
 select:focus, input[type=text]:focus { border-color: #c04a20; box-shadow: 0 0 0 3px rgba(192,74,32,0.08); }
 .full-width { grid-column: 1 / -1; }
 
-/* TEACHER-ONLY FIELDS — hidden in Independent Project mode */
+/* TEACHER-ONLY FIELDS */
 .teacher-only { display: flex; }
 .independent-mode .teacher-only { display: none; }
 
@@ -220,11 +148,11 @@ select:focus, input[type=text]:focus { border-color: #c04a20; box-shadow: 0 0 0 
 .footer-legal a:hover { color: #c04a20; }
 
 /* FEEDBACK BANNER */
-.feedback-banner { background: #c04a20; border: none; border-radius: 8px; padding: 14px 20px; margin-top: 1.5rem; font-size: 15px; font-weight: 600; color: #fff; text-align: center; letter-spacing: 0.01em; }
+.feedback-banner { background: #1a3a5c; border: none; border-radius: 8px; padding: 14px 20px; margin-top: 1.5rem; font-size: 15px; font-weight: 500; color: #fff; text-align: center; letter-spacing: 0.01em; }
 .feedback-banner a { color: #fff; font-weight: 700; text-decoration: underline; }
 .feedback-banner a:hover { opacity: 0.85; }
 
-/* TERMS MODAL */
+/* MODAL BASE */
 .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center; }
 .modal-overlay.open { display: flex; }
 .modal-box { background: #fff; border-radius: 12px; padding: 2rem; max-width: 600px; width: 90%; max-height: 80vh; overflow-y: auto; position: relative; }
@@ -233,43 +161,51 @@ select:focus, input[type=text]:focus { border-color: #c04a20; box-shadow: 0 0 0 
 .modal-close { position: absolute; top: 1rem; right: 1rem; background: none; border: none; font-size: 22px; cursor: pointer; color: #888; }
 .modal-close:hover { color: #1a1a1a; }
 
+/* AUTH MODAL */
+.auth-modal-box { background: #fff; border-radius: 12px; padding: 2rem; max-width: 420px; width: 90%; position: relative; border-top: 5px solid #c04a20; }
+.auth-modal-box h2 { font-family: 'Playfair Display', serif; font-size: 22px; color: #1a1a1a; margin-bottom: 0.5rem; }
+.auth-modal-box .auth-sub { font-size: 14px; color: #666; margin-bottom: 1.5rem; line-height: 1.5; }
+.auth-tabs { display: flex; border-bottom: 1px solid #eee; margin-bottom: 1.5rem; gap: 0; }
+.auth-tab { font-size: 14px; font-weight: 600; padding: 8px 20px; background: none; border: none; cursor: pointer; color: #999; font-family: 'Source Sans 3', sans-serif; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: all .15s; }
+.auth-tab.active { color: #c04a20; border-bottom-color: #c04a20; }
+.auth-field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+.auth-field label { font-size: 12px; font-weight: 600; color: #777; letter-spacing: 0.05em; text-transform: uppercase; }
+.auth-field input { width: 100%; font-size: 14px; padding: 10px 12px; border: 1px solid #ddd; border-radius: 8px; font-family: 'Source Sans 3', sans-serif; outline: none; transition: border-color .2s; }
+.auth-field input:focus { border-color: #c04a20; box-shadow: 0 0 0 3px rgba(192,74,32,0.08); }
+.auth-submit-btn { width: 100%; padding: 12px; font-size: 15px; font-weight: 700; border-radius: 8px; border: none; background: #c04a20; color: #fff; font-family: 'Source Sans 3', sans-serif; cursor: pointer; margin-top: 6px; transition: background .15s; }
+.auth-submit-btn:hover { background: #a33d18; }
+.auth-submit-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+.auth-status { font-size: 13px; color: #888; text-align: center; margin-top: 10px; min-height: 18px; }
+.auth-status.error { color: #c0392b; }
+.auth-status.success { color: #27ae60; }
+.auth-switch { font-size: 13px; color: #888; text-align: center; margin-top: 14px; }
+.auth-switch a { color: #c04a20; cursor: pointer; text-decoration: underline; }
+.auth-opt-in { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 14px; font-size: 13px; color: #555; line-height: 1.5; }
+.auth-opt-in input { accent-color: #c04a20; width: 15px; height: 15px; margin-top: 2px; flex-shrink: 0; }
+
+/* LESSON WALL MODAL */
+.wall-modal-box { background: #fff; border-radius: 12px; padding: 2rem; max-width: 440px; width: 90%; position: relative; text-align: center; border-top: 5px solid #c04a20; }
+.wall-icon { font-size: 44px; display: block; margin-bottom: 0.75rem; }
+.wall-modal-box h2 { font-family: 'Playfair Display', serif; font-size: 22px; color: #1a1a1a; margin-bottom: 0.75rem; }
+.wall-modal-box p { font-size: 14px; line-height: 1.7; color: #555; margin-bottom: 1.25rem; }
+.wall-cta-btn { display: inline-block; padding: 12px 32px; background: #c04a20; color: #fff; border: none; border-radius: 8px; font-size: 15px; font-weight: 700; font-family: 'Source Sans 3', sans-serif; cursor: pointer; transition: background .15s; width: 100%; margin-bottom: 10px; }
+.wall-cta-btn:hover { background: #a33d18; }
+.wall-signin-link { font-size: 13px; color: #888; }
+.wall-signin-link a { color: #c04a20; cursor: pointer; text-decoration: underline; }
+
+/* ACCOUNT MENU MODAL */
+.account-menu-box { background: #fff; border-radius: 12px; padding: 1.75rem; max-width: 360px; width: 90%; position: relative; }
+.account-menu-box h2 { font-family: 'Playfair Display', serif; font-size: 20px; color: #1a1a1a; margin-bottom: 0.5rem; }
+.account-email { font-size: 13px; color: #888; margin-bottom: 1.5rem; word-break: break-all; }
+.account-signout-btn { width: 100%; padding: 10px; font-size: 14px; font-weight: 600; border-radius: 8px; border: 1px solid #ddd; background: #f5f2ee; color: #444; font-family: 'Source Sans 3', sans-serif; cursor: pointer; transition: all .15s; }
+.account-signout-btn:hover { background: #c04a20; color: #fff; border-color: #c04a20; }
+
 /* GUARDRAIL WARNING MODAL */
-.guardrail-modal-box {
-  background: #fff;
-  border-radius: 12px;
-  padding: 2rem;
-  max-width: 460px;
-  width: 90%;
-  position: relative;
-  text-align: center;
-  border-top: 5px solid #c04a20;
-}
+.guardrail-modal-box { background: #fff; border-radius: 12px; padding: 2rem; max-width: 460px; width: 90%; position: relative; text-align: center; border-top: 5px solid #c04a20; }
 .guardrail-icon { font-size: 40px; margin-bottom: 0.75rem; display: block; }
-.guardrail-modal-box h2 {
-  font-family: 'Playfair Display', serif;
-  font-size: 20px;
-  color: #1a1a1a;
-  margin-bottom: 0.75rem;
-}
-.guardrail-modal-box p {
-  font-size: 14px;
-  line-height: 1.7;
-  color: #555;
-  margin-bottom: 1.25rem;
-}
-.guardrail-dismiss-btn {
-  display: inline-block;
-  padding: 10px 28px;
-  background: #c04a20;
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  font-size: 14px;
-  font-weight: 600;
-  font-family: 'Source Sans 3', sans-serif;
-  cursor: pointer;
-  transition: background .15s;
-}
+.guardrail-modal-box h2 { font-family: 'Playfair Display', serif; font-size: 20px; color: #1a1a1a; margin-bottom: 0.75rem; }
+.guardrail-modal-box p { font-size: 14px; line-height: 1.7; color: #555; margin-bottom: 1.25rem; }
+.guardrail-dismiss-btn { display: inline-block; padding: 10px 28px; background: #c04a20; color: #fff; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; font-family: 'Source Sans 3', sans-serif; cursor: pointer; transition: background .15s; }
 .guardrail-dismiss-btn:hover { background: #a33d18; }
 
 @media print {
@@ -283,6 +219,7 @@ select:focus, input[type=text]:focus { border-color: #c04a20; box-shadow: 0 0 0 
   .form-grid { grid-template-columns: 1fr; }
   .full-width { grid-column: 1; }
   .header-logo { font-size: 22px; }
+  .account-btn-wrap { position: static; text-align: right; margin-bottom: 10px; }
 }
 
 .form-suggestions { background: #f0f7ff; border: 1px solid #2e7ac4; border-radius: 10px; padding: 1.25rem; margin-top: 1.5rem; }
@@ -302,8 +239,23 @@ select:focus, input[type=text]:focus { border-color: #c04a20; box-shadow: 0 0 0 
 .forms-links a { color: #c04a20; text-decoration: none; font-weight: 500; }
 .forms-links a:hover { text-decoration: underline; }
 @media print { .output-toolbar, .export-row, .generate-btn, .site-footer, .feedback-banner, .header, .subject-pills, .subject-desc, .form-grid, #std-toggle, #addon-checks, .section-label { display: none !important; } }
+
+/* COMPACT SEO INTRO */
+.seo-landing.compact-seo { background: #1a3a5c; color: #fff; border: none; border-radius: 10px; padding: 0; margin-bottom: 1.15rem; overflow: hidden; }
+.compact-seo summary { list-style: none; cursor: pointer; padding: 10px 14px; display: flex; align-items: center; justify-content: space-between; gap: 12px; font-size: 13px; line-height: 1.4; font-weight: 600; }
+.compact-seo summary::-webkit-details-marker { display: none; }
+.compact-seo summary span::after { content: "  ▼"; font-size: 10px; opacity: 0.75; }
+.compact-seo[open] summary span::after { content: "  ▲"; }
+.compact-seo summary a { color: #fff; text-decoration: underline; font-size: 12px; white-space: nowrap; font-weight: 600; }
+.compact-seo summary a:hover { opacity: 0.85; }
+.seo-expanded { background: #fff; color: #333; padding: 1rem 1.25rem 1.15rem; border: 1px solid #e8e4df; border-top: none; border-radius: 0 0 10px 10px; }
+.seo-subhead { font-size: 14px; font-weight: 600; color: #c04a20; margin-bottom: 0.5rem; }
+.seo-body { font-size: 13.5px; line-height: 1.65; color: #444; margin-bottom: 0.75rem; }
+.seo-benefits { list-style: none; margin-bottom: 0.75rem; }
+.seo-benefits li { font-size: 13.5px; color: #333; padding: 2px 0; }
+.seo-cta { font-size: 13.5px; font-weight: 600; color: #1a1a1a; }
 </style>
-  <script type="application/ld+json">
+<script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
@@ -315,10 +267,7 @@ select:focus, input[type=text]:focus { border-color: #c04a20; box-shadow: 0 0 0 
   "url": "https://app.artedguru.com",
   "description": "The ArtEdGuru Lesson Generator is an AI-powered lesson planning platform for K-12 teachers across all subject areas, built on 40 years of real classroom experience by Eric Gibbons. Generates complete, standards-aligned lesson plans for Fine Arts, STEAM, Science, Math, History, Literacy, SEL, Media Arts, and more.",
   "educationalLevel": "K-12",
-  "audience": {
-    "@type": "EducationalAudience",
-    "educationalRole": "teacher"
-  },
+  "audience": { "@type": "EducationalAudience", "educationalRole": "teacher" },
   "about": [
     { "@type": "Thing", "name": "Art Education" },
     { "@type": "Thing", "name": "Lesson Planning" },
@@ -340,12 +289,7 @@ select:focus, input[type=text]:focus { border-color: #c04a20; box-shadow: 0 0 0 
       "https://www.teacherspayteachers.com/store/art-ed-guru-dot-com"
     ]
   },
-  "offers": {
-    "@type": "Offer",
-    "price": "0",
-    "priceCurrency": "USD",
-    "description": "Free to use"
-  }
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD", "description": "Free to use" }
 }
 </script>
 </head>
@@ -358,14 +302,9 @@ select:focus, input[type=text]:focus { border-color: #c04a20; box-shadow: 0 0 0 
       <span>What exactly is this app? Open for details.</span>
       <a href="https://www.artedguru.com/appreviews.html" target="_blank" onclick="event.stopPropagation();">See Reviews</a>
     </summary>
-
     <div class="seo-expanded">
       <p class="seo-subhead">Not AI slop. Real lessons, real experience, real classrooms.</p>
-
-      <p class="seo-body">
-        The ArtEdGuru Lesson Generator draws exclusively from Eric Gibbons' own body of work, held in a private database that includes over 1,000 real lessons, 20 published books, and 145 blog posts created by a National Board Certified art educator with 40 years of K-12 classroom experience. 
-      </p>
-
+      <p class="seo-body">The ArtEdGuru Lesson Generator draws exclusively from Eric Gibbons' own body of work, held in a private database that includes over 1,000 real lessons, 20 published books, and 145 blog posts created by a National Board Certified art educator with 40 years of K-12 classroom experience.</p>
       <ul class="seo-benefits">
         <li>✔ Standards-aligned lesson plans for K–12 art and STEAM teachers</li>
         <li>✔ Covers Fine Arts, Science, Math, History, Literacy, SEL, Media Arts, and more</li>
@@ -373,28 +312,25 @@ select:focus, input[type=text]:focus { border-color: #c04a20; box-shadow: 0 0 0 
         <li>✔ Scaffolds for "Gold Standard PBL" experiences</li>
         <li>✔ Free to try — no account required</li>
       </ul>
-      <p class="seo-body" style="margin-top:12px;">
-        <a href="https://www.artedguru.com/home/building-an-app" target="_blank" style="color:#c04a20; font-weight:600;">Want to know how I built this? Read the story behind the app →</a>
-      </p>
-
+      <p class="seo-body" style="margin-top:12px;"><a href="https://www.artedguru.com/home/building-an-app" target="_blank" style="color:#c04a20; font-weight:600;">Want to know how I built this? Read the story behind the app →</a></p>
       <p class="seo-cta">Select your subject area below and generate your first lesson free.</p>
     </div>
   </details>
 
-<!-- HEADER -->
-<div class="header">
-  <div class="header-logo">Art<span>Ed</span>Guru<sup style="font-size:10px; color:#c04a20; vertical-align:super;">™</sup></div>
-  <div class="header-sub">Lesson Generator</div>
-
-  <div class="header-tagline">
-    <strong>Create classroom-ready lesson plans.</strong><br>
-    Choose your subject, grade, media, and goals — then generate in 60 seconds.
+  <!-- HEADER -->
+  <div class="header">
+    <div class="account-btn-wrap">
+      <button class="account-btn" id="accountBtn" onclick="handleAccountBtn()">Sign In</button>
+    </div>
+    <div class="header-logo">Art<span>Ed</span>Guru<sup style="font-size:10px; color:#c04a20; vertical-align:super;">™</sup></div>
+    <div class="header-sub">Lesson Generator</div>
+    <div class="header-tagline">
+      <strong>Create classroom-ready lesson plans.</strong><br>
+      Choose your subject, grade, media, and goals — then generate in 60 seconds.
+    </div>
   </div>
 
-  
-</div>
-
-<!-- SUBJECT AREA -->
+  <!-- SUBJECT AREA -->
   <div class="section-label">Select Subject Area</div>
   <div class="subject-pills">
     <button class="pill active" onclick="setSubject('art',this)">Fine Arts</button>
@@ -455,8 +391,8 @@ select:focus, input[type=text]:focus { border-color: #c04a20; box-shadow: 0 0 0 
         <option value="Sculpture (found objects)">Sculpture — found objects</option>
         <option value="Photography & Digital Art">Photography &amp; digital art</option>
         <option value="Fiber Arts">Fiber arts</option>
-<option value="Mosaic">Mosaic</option>
-<option value="">Other — Add it to #7 Optional below</option>
+        <option value="Mosaic">Mosaic</option>
+        <option value="">Other — Add it to #7 Optional below</option>
       </select>
     </div>
     <div class="form-group">
@@ -469,7 +405,6 @@ select:focus, input[type=text]:focus { border-color: #c04a20; box-shadow: 0 0 0 
       </select>
     </div>
 
-    <!-- FIELD 5 — teacher only, hidden in Independent Project mode -->
     <div class="form-group teacher-only">
       <label>5. Mode of Purpose</label>
       <select id="purpose">
@@ -483,7 +418,6 @@ select:focus, input[type=text]:focus { border-color: #c04a20; box-shadow: 0 0 0 
       </select>
     </div>
 
-    <!-- FIELD 6 — teacher only, hidden in Independent Project mode -->
     <div class="form-group teacher-only">
       <label>6. Art History / Cultural Connection</label>
       <select id="culture">
@@ -555,9 +489,9 @@ select:focus, input[type=text]:focus { border-color: #c04a20; box-shadow: 0 0 0 
 
   <button class="generate-btn" id="genBtn" onclick="generateLesson()">Generate my lesson plan</button>
 
-  <!-- BETA FEEDBACK BANNER -->
+  <!-- FEEDBACK BANNER -->
   <div class="feedback-banner">
-    🧪 <strong>Beta version</strong> — How is ArtEdGuru working for you? <a href="#" onclick="openFeedback(); return false;">Send us feedback!</a>
+    How is ArtEdGuru working for you? <a href="#" onclick="openFeedback(); return false;">Send us feedback</a> or <a href="https://www.artedguru.com/appreviews.html" target="_blank">a review</a>!
   </div>
 
   <div id="output"></div>
@@ -624,12 +558,263 @@ select:focus, input[type=text]:focus { border-color: #c04a20; box-shadow: 0 0 0 
   </div>
 </div>
 
+<!-- LESSON WALL MODAL -->
+<div class="modal-overlay" id="wallModal">
+  <div class="wall-modal-box">
+    <span class="wall-icon">🎨</span>
+    <h2>You've used your 5 free lessons!</h2>
+    <p>Create a free account to keep generating unlimited lesson plans. No payment required — it's completely free.</p>
+    <button class="wall-cta-btn" onclick="closeWall(); openAuth('signup');">Create my free account</button>
+    <div class="wall-signin-link">Already have an account? <a onclick="closeWall(); openAuth('login');">Sign in</a></div>
+  </div>
+</div>
+
+<!-- AUTH MODAL (Sign Up / Sign In) -->
+<div class="modal-overlay" id="authModal">
+  <div class="auth-modal-box">
+    <button class="modal-close" onclick="closeAuth()">&times;</button>
+    <h2 id="authTitle">Create your free account</h2>
+    <p class="auth-sub" id="authSub">Unlimited lesson plans, free forever during our launch period.</p>
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="tabSignup" onclick="switchAuthTab('signup')">Sign Up</button>
+      <button class="auth-tab" id="tabLogin" onclick="switchAuthTab('login')">Sign In</button>
+    </div>
+    <div id="authFormSignup">
+      <div class="auth-field">
+        <label>Email</label>
+        <input type="text" id="signupEmail" placeholder="your@email.com" autocomplete="email">
+      </div>
+      <div class="auth-field">
+        <label>Password</label>
+        <input type="password" id="signupPassword" placeholder="Choose a password (6+ characters)" autocomplete="new-password">
+      </div>
+      <div class="auth-opt-in">
+        <input type="checkbox" id="marketingOptIn" checked>
+        <span>Yes, send me updates about new ArtEdGuru books, resources, and offers.</span>
+      </div>
+      <button class="auth-submit-btn" id="signupBtn" onclick="handleSignup()">Create Free Account</button>
+      <div class="auth-status" id="signupStatus"></div>
+    </div>
+    <div id="authFormLogin" style="display:none;">
+      <div class="auth-field">
+        <label>Email</label>
+        <input type="text" id="loginEmail" placeholder="your@email.com" autocomplete="email">
+      </div>
+      <div class="auth-field">
+        <label>Password</label>
+        <input type="password" id="loginPassword" placeholder="Your password" autocomplete="current-password">
+      </div>
+      <button class="auth-submit-btn" id="loginBtn" onclick="handleLogin()">Sign In</button>
+      <div class="auth-status" id="loginStatus"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ACCOUNT MENU MODAL -->
+<div class="modal-overlay" id="accountModal">
+  <div class="account-menu-box">
+    <button class="modal-close" onclick="closeAccountMenu()">&times;</button>
+    <h2>Your Account</h2>
+    <div class="account-email" id="accountEmail"></div>
+    <button class="account-signout-btn" onclick="handleSignOut()">Sign Out</button>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
+// ── SUPABASE CLIENT ───────────────────────────────────────────────────────────
+const SUPABASE_URL = 'https://cqgwlosjodiflfihaodr.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNxZ3dsb3Nqb2RpZmxmaWhhb2RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU5MjMwOTcsImV4cCI6MjA5MTQ5OTA5N30.L3cuuYT5Zm_fiythJ2RMWI1FmG9OlNIo-y9iar0M4wU';
+const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// ── FREE LESSON LIMIT ─────────────────────────────────────────────────────────
+// Change this to 3 when the Stripe paywall goes live in August/September
+const FREE_LESSON_LIMIT = 5;
+
+// ── APP STATE ─────────────────────────────────────────────────────────────────
 let currentSubject = 'art';
 let currentMode = 'lesson';
 let stdMode = 'none';
 let ncArtsMode = false;
 let lastLessonText = '';
+let currentUser = null;
+
+// ── COOKIE COUNTER (anonymous users) ─────────────────────────────────────────
+function getAnonCount() {
+  return parseInt(localStorage.getItem('aeg_lesson_count') || '0', 10);
+}
+function incrementAnonCount() {
+  const n = getAnonCount() + 1;
+  localStorage.setItem('aeg_lesson_count', n);
+  return n;
+}
+function resetAnonCount() {
+  localStorage.removeItem('aeg_lesson_count');
+}
+
+// ── AUTH STATE ────────────────────────────────────────────────────────────────
+async function initAuth() {
+  const { data: { session } } = await _supabase.auth.getSession();
+  if (session?.user) {
+    currentUser = session.user;
+    updateAccountButton();
+  }
+  _supabase.auth.onAuthStateChange((_event, session) => {
+    currentUser = session?.user || null;
+    updateAccountButton();
+  });
+}
+
+function updateAccountButton() {
+  const btn = document.getElementById('accountBtn');
+  if (currentUser) {
+    const email = currentUser.email || '';
+    const label = email.length > 22 ? email.substring(0, 20) + '…' : email;
+    btn.textContent = '👤 ' + label;
+    btn.classList.add('signed-in');
+  } else {
+    btn.textContent = 'Sign In';
+    btn.classList.remove('signed-in');
+  }
+}
+
+function handleAccountBtn() {
+  if (currentUser) {
+    openAccountMenu();
+  } else {
+    openAuth('signup');
+  }
+}
+
+// ── SIGNUP ────────────────────────────────────────────────────────────────────
+async function handleSignup() {
+  const email = document.getElementById('signupEmail').value.trim();
+  const password = document.getElementById('signupPassword').value;
+  const optIn = document.getElementById('marketingOptIn').checked;
+  const status = document.getElementById('signupStatus');
+  const btn = document.getElementById('signupBtn');
+
+  if (!email || !password) { setAuthStatus('signupStatus', 'Please enter your email and a password.', 'error'); return; }
+  if (password.length < 6) { setAuthStatus('signupStatus', 'Password must be at least 6 characters.', 'error'); return; }
+
+  btn.disabled = true;
+  setAuthStatus('signupStatus', 'Creating your account…', '');
+
+  const { data, error } = await _supabase.auth.signUp({ email, password });
+
+  if (error) {
+    setAuthStatus('signupStatus', error.message, 'error');
+    btn.disabled = false;
+    return;
+  }
+
+  if (data?.user) {
+    // Write profile row — transfer anon lesson count
+    const anonCount = getAnonCount();
+    await _supabase.from('profiles').upsert({
+      id: data.user.id,
+      email: email,
+      lesson_count: anonCount,
+      marketing_opt_in: optIn,
+      subscribed: false
+    });
+    resetAnonCount();
+
+    // Kit opt-in — fire and forget
+    if (optIn) {
+      fetch('/kit-optin', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      }).catch(() => {});
+    }
+
+    currentUser = data.user;
+    updateAccountButton();
+    setAuthStatus('signupStatus', '✅ Account created! Welcome to ArtEdGuru.', 'success');
+    setTimeout(() => closeAuth(), 1800);
+  }
+
+  btn.disabled = false;
+}
+
+// ── LOGIN ─────────────────────────────────────────────────────────────────────
+async function handleLogin() {
+  const email = document.getElementById('loginEmail').value.trim();
+  const password = document.getElementById('loginPassword').value;
+  const btn = document.getElementById('loginBtn');
+
+  if (!email || !password) { setAuthStatus('loginStatus', 'Please enter your email and password.', 'error'); return; }
+
+  btn.disabled = true;
+  setAuthStatus('loginStatus', 'Signing in…', '');
+
+  const { data, error } = await _supabase.auth.signInWithPassword({ email, password });
+
+  if (error) {
+    setAuthStatus('loginStatus', error.message, 'error');
+    btn.disabled = false;
+    return;
+  }
+
+  currentUser = data.user;
+  updateAccountButton();
+  setAuthStatus('loginStatus', '✅ Signed in!', 'success');
+  setTimeout(() => closeAuth(), 1200);
+  btn.disabled = false;
+}
+
+// ── SIGN OUT ──────────────────────────────────────────────────────────────────
+async function handleSignOut() {
+  await _supabase.auth.signOut();
+  currentUser = null;
+  updateAccountButton();
+  closeAccountMenu();
+}
+
+// ── AUTH MODAL HELPERS ────────────────────────────────────────────────────────
+function openAuth(tab) {
+  document.getElementById('authModal').classList.add('open');
+  switchAuthTab(tab || 'signup');
+}
+function closeAuth() {
+  document.getElementById('authModal').classList.remove('open');
+  setAuthStatus('signupStatus', '', '');
+  setAuthStatus('loginStatus', '', '');
+}
+function switchAuthTab(tab) {
+  const isSignup = tab === 'signup';
+  document.getElementById('authFormSignup').style.display = isSignup ? 'block' : 'none';
+  document.getElementById('authFormLogin').style.display = isSignup ? 'none' : 'block';
+  document.getElementById('tabSignup').classList.toggle('active', isSignup);
+  document.getElementById('tabLogin').classList.toggle('active', !isSignup);
+  document.getElementById('authTitle').textContent = isSignup ? 'Create your free account' : 'Welcome back';
+  document.getElementById('authSub').textContent = isSignup
+    ? 'Unlimited lesson plans, free forever during our launch period.'
+    : 'Sign in to continue generating lessons.';
+}
+function setAuthStatus(id, msg, type) {
+  const el = document.getElementById(id);
+  el.textContent = msg;
+  el.className = 'auth-status' + (type ? ' ' + type : '');
+}
+
+// ── WALL MODAL ────────────────────────────────────────────────────────────────
+function openWall() { document.getElementById('wallModal').classList.add('open'); }
+function closeWall() { document.getElementById('wallModal').classList.remove('open'); }
+
+// ── ACCOUNT MENU ──────────────────────────────────────────────────────────────
+function openAccountMenu() {
+  document.getElementById('accountEmail').textContent = currentUser?.email || '';
+  document.getElementById('accountModal').classList.add('open');
+}
+function closeAccountMenu() { document.getElementById('accountModal').classList.remove('open'); }
+
+// ── CHECK if user can generate ────────────────────────────────────────────────
+function canGenerate() {
+  if (currentUser) return true; // logged-in users always get through (paywall logic added later)
+  return getAnonCount() < FREE_LESSON_LIMIT;
+}
 
 const NC_ARTS_SUBJECTS = new Set(['art','music','media']);
 
@@ -739,7 +924,6 @@ function setMode(mode, btn) {
   currentMode = mode;
   document.querySelectorAll('#mode-toggle .seg-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
-  // Toggle independent-mode class to show/hide teacher-only fields (5 and 6)
   const grid = document.getElementById('main-form-grid');
   if (mode === 'independent') {
     grid.classList.add('independent-mode');
@@ -830,10 +1014,15 @@ function closeFeedback() { document.getElementById('feedbackModal').classList.re
 document.addEventListener('click', function(e) {
   if (e.target.id === 'termsModal') closeTerms();
   if (e.target.id === 'feedbackModal') closeFeedback();
-  // guardrailModal intentionally NOT dismissible by clicking overlay
+  if (e.target.id === 'authModal') closeAuth();
+  if (e.target.id === 'accountModal') closeAccountMenu();
+  // wallModal and guardrailModal intentionally NOT dismissible by clicking overlay
 });
 
-document.addEventListener('DOMContentLoaded', updateNcArtsButton);
+document.addEventListener('DOMContentLoaded', () => {
+  updateNcArtsButton();
+  initAuth();
+});
 
 async function submitFeedback() {
   const name = document.getElementById('fbName').value.trim();
@@ -876,6 +1065,15 @@ async function generateLesson() {
   if (checkInput(customVal)) {
     openGuardrail();
     return;
+  }
+
+  // LESSON WALL CHECK — anonymous users only
+  if (!currentUser) {
+    const count = getAnonCount();
+    if (count >= FREE_LESSON_LIMIT) {
+      openWall();
+      return;
+    }
   }
 
   const grade    = document.getElementById('grade').value;
@@ -942,6 +1140,9 @@ Write the Launch Brief now. Use plain text ALL CAPS section headers. No markdown
       if (!res.ok || data.error) throw new Error(data.error || 'API error');
       lastLessonText = (data.content || []).map(b => b.text || '').join('');
       if (!lastLessonText) throw new Error('No content returned from API');
+
+      // Increment anon count after successful generation
+      if (!currentUser) incrementAnonCount();
 
       const formattedHTML = formatLaunchBrief(lastLessonText);
       output.innerHTML = `
@@ -1049,6 +1250,9 @@ Generated with ArtEdGuru — artedguru.com | FirehousePublications.com`;
     lastLessonText = (data.content || []).map(b => b.text || '').join('');
     const resources = data.artedguru_resources || [];
     if (!lastLessonText) throw new Error('No content returned from API');
+
+    // Increment anon count after successful generation
+    if (!currentUser) incrementAnonCount();
 
     const formattedHTML = formatLesson(lastLessonText);
     const resourcesHTML = resources.length ? `<div class="resources-block"><strong>📚 Other Lessons by ArtEdGuru:</strong><ul>${resources.map(r => `<li><a href="${r.URL}" target="_blank">${r.Title}</a></li>`).join('')}</ul></div>` : '';
@@ -1307,7 +1511,7 @@ function exportPlainText() {
 }
 function printLesson() { window.print(); }
 
-  function exportGoogleDoc() {
+function exportGoogleDoc() {
   if (!lastLessonText) return;
   alert('Heads up! Your browser may ask permission to access your clipboard — please click Allow.\n\nThis simply copies your lesson plan so you can paste it into Google Docs with Ctrl+V (Windows) or Cmd+V (Mac).\n\nClick OK to continue.');
   navigator.clipboard.writeText(lastLessonText).then(() => {
